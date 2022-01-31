@@ -4,19 +4,19 @@ app = Flask(__name__)
 
 
 @app.route("/")
-def hello():
+def home_page():
     return "Hello World!"
 
 @app.route("/list")
-def hello():
+def list_questions():
     return "Hello World!"
 
 @app.route("/question/<question_id>")
-def hello():
+def display_question():
     return "Hello World!"
 
 @app.route("/add-question", methods=['GET','POST'])
-def hello():
+def add_question():
     if request.method == 'GET':
         return render_template('add-question.html')
     elif request.method == 'POST':
@@ -24,7 +24,7 @@ def hello():
     return "Hello World!"
 
 @app.route("/question/<question_id>/new-answer")
-def hello():
+def add_answer():
     return "Hello World!"
 
 
