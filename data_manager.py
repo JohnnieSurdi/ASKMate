@@ -1,10 +1,13 @@
 import string
 from random import sample
 import ast
+ID_NUMBER = 0
 
 def add_question_to_file(title,question,submission_time):
     question_dict = {}
-    id = generate_id()
+    global ID_NUMBER
+    id = ID_NUMBER
+    ID_NUMBER += 1
     view_number = 0
     vote_number = 0
     image = ''

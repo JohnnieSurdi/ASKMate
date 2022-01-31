@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for
 import time
 import data_manager
 
-
 from datetime import datetime
 
 app = Flask(__name__)
@@ -18,7 +17,6 @@ def list_questions():
 
 @app.route("/question/<question_id>")
 def display_question():
-    print('x')
     return "Hello World!"
 
 @app.route("/add-question", methods=['GET','POST'])
