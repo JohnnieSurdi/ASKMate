@@ -13,7 +13,8 @@ adding_answer = {}
 
 @app.route("/")
 def home_page():
-    return "Hello World!"
+    q = connection.read_all_questions_from_file()
+    return f'{q}'
 
 
 @app.route("/list")
@@ -23,10 +24,9 @@ def list_questions():
 
 @app.route("/question/<question_id>")
 def display_question(question_id):
-    question = data_manager.display_question(question_id)
-    answers = data_manager.get_answers_for_question(question_id)
+    question = connection.display_question(question_id)
+    answers = connection.get_answers_for_question(question_id)
     return render_template("display_question.html", question_id=question_id, question=question, answers=answers)
-
 
 
 
@@ -52,7 +52,7 @@ def add_answer(question_id):
         adding_answer['vote_number'] = 0
         adding_answer['question_id'] = question_id
         adding_answer['message'] = request.form['new_answer']
-        adding_answer['image'] = ""
+        adding_answer['image'] = -1
         connection.write_new_answer_to_file(adding_answer)
         return redirect('/question/'+str(question_id))
     return render_template('add_new_answer.html', question_id=question_id)
