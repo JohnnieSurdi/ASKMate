@@ -3,7 +3,6 @@ import time
 import data_manager
 import connection
 
-from datetime import datetime
 
 app = Flask(__name__)
 adding_answer = {}
@@ -13,13 +12,18 @@ adding_answer = {}
 def home_page():
     return "Hello World!"
 
+
 @app.route("/list")
 def list_questions():
     return "Hello World!"
 
+
 @app.route("/question/<question_id>")
-def display_question():
-    return "Hello World!"
+def display_question(question_id):
+    question = data_manager.display_question(question_id)
+    answers = data_manager.get_answers_for_question(question_id)
+    return render_template("display_question.html", question_id=question_id, question=question, answers=answers)
+
 
 @app.route("/add-question", methods=['GET','POST'])
 def add_question():
@@ -46,11 +50,11 @@ def add_answer(question_id):
         return redirect('/question/<question_id>')
     return render_template('add_new_answer.html')
 
+
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
     connection.delete_question_from_file(question_id)
     return redirect('/list')
-
 
 
 if __name__ == "__main__":
