@@ -34,13 +34,15 @@ def create_new_id(file):
     max_id = 0
     csv_file_rows = rows_from_file(file)
     for row in csv_file_rows:
-        id_number = 0
+        id_number = ""
         for element in row:
             if element.isdigit():
-                id_number += int(element)
+                id_number += element
             else:
-                if id_number > max_id:
-                    max_id = id_number
+                if id_number == "":
+                    id_number = "0"
+                if int(id_number) > max_id:
+                    max_id = int(id_number)
                 break
     new_id = max_id + 1
     return new_id
