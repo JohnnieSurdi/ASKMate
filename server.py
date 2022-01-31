@@ -18,6 +18,7 @@ def list_questions():
 
 @app.route("/question/<question_id>")
 def display_question():
+    print('x')
     return "Hello World!"
 
 @app.route("/add-question", methods=['GET','POST'])
@@ -27,9 +28,9 @@ def add_question():
     elif request.method == 'POST':
         title = request.form.get('title')
         question = request.form.get('question')
-        timestamp = time.time()
-
-        return render_template('index.html')
+        submission_time = time.time()
+        id = data_manager.add_question_to_file(title,question,submission_time)
+        return redirect(url_for('display_question',question_id=id))
     return "Hello World!"
 
 
