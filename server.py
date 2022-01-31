@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import time
 import data_manager
+import connection
 
 from datetime import datetime
 
@@ -28,7 +29,7 @@ def add_question():
         title = request.form.get('title')
         question = request.form.get('question')
         submission_time = time.time()
-        id = data_manager.add_question_to_file(title,question,submission_time)
+        id = connection.add_question_to_file(title,question,submission_time)
         return redirect(url_for('display_question',question_id=id))
     return "Hello World!"
 
@@ -44,6 +45,12 @@ def add_answer(question_id):
         adding_answer['image'] = ""
         return redirect('/question/<question_id>')
     return render_template('add_new_answer.html')
+
+@app.route("/question/<question_id>/delete")
+def delete_question(question_id):
+    connection.delete_question_from_file(question_id)
+    return redirect('/list')
+
 
 
 if __name__ == "__main__":
