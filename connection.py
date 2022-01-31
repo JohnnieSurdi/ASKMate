@@ -53,7 +53,7 @@ def add_question_to_file(title,question,submission_time):
     id = create_new_id(file)
     view_number = 0
     vote_number = 0
-    image = ''
+    image = -1
     with open(file, "a") as f:
         f.write(f'{id},{submission_time},{view_number},{vote_number},{title},{question},{image}\n')
     return id
@@ -65,6 +65,7 @@ def read_all_questions_from_file():
         for line in data_file:
             line = line.replace('\n', '')
             line = line.split(',')
+            print(line)
             dict = {}
             dict['id']=line[0]
             dict['submission_time']=line[1]
@@ -95,7 +96,7 @@ def delete_question_from_file(question_id):
     with open('C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv','w') as f:
         for item in list:
             print(item)
-            f.write(f'{item[0]},{item[1]},{item[2]},{item[3]},{item[4]},{item[5]}\n')
+            f.write(f'{item[0]},{item[1]},{item[2]},{item[3]},{item[4]},{item[5]},{item[6]}\n')
 
 
 
