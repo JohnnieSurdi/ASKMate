@@ -19,8 +19,10 @@ def hello():
 def hello():
     return "Hello World!"
 
+
 @app.route("/question/<question_id>/new-answer")
-def hello():
+def add_new_answer():
+
     return "Hello World!"
 
 
