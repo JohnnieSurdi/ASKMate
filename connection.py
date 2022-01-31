@@ -1,12 +1,13 @@
 import ast
 
+
 def create_new_answer_for_file(new_answer):
     new_answer_list = []
     for index, value in enumerate(new_answer.values()):
         if index == 4:
             value = "\"" + value + "\""
         new_answer_list.append(str(value))
-    file_answer_message = ", ".join(new_answer_list)
+    file_answer_message = ",".join(new_answer_list)
     file_answer_message += "\n"
     return file_answer_message
 
@@ -17,9 +18,6 @@ def write_new_answer_to_file(new_answer):
     with open('sample_data/answer.csv', 'a+') as answers:
         answers.write(file_answer_message)
 
-
-# new_answer = {'id': 6, 'w}evw': 3, 'erqnbeqr': 2, 'qrbqrb': 0, 'message': 'kjbrqeirub', 'fqb': ''}
-# write_new_answer_to_file(new_answer)
 
 def rows_from_file(file):
     csv_file_rows = []
@@ -35,19 +33,19 @@ def create_new_id(file):
     csv_file_rows = rows_from_file(file)
     for row in csv_file_rows:
         id_number = ""
-        for element in row:
-            if element.isdigit():
-                id_number += element
-            else:
-                if id_number == "":
-                    id_number = "0"
-                if int(id_number) > max_id:
-                    max_id = int(id_number)
-                break
-    new_id = max_id + 1
+        if row.count(',') >= 4:
+            for element in row:
+                if element.isdigit():
+                    id_number += element
+                else:
+                    if id_number == "":
+                        id_number = "0"
+                    if int(id_number) > max_id:
+                        max_id = int(id_number)
+                    break
+        new_id = max_id + 1
     return new_id
 
-# create_new_id('sample_data/answer.csv')
 
 def add_question_to_file(title,question,submission_time):
     question_dict = {}
@@ -77,6 +75,7 @@ def read_all_questions_from_file():
             list_of_dicts.append(ast.literal_eval(line))
     return list_of_dicts
 
+
 def delete_question_from_file(question_id):
     all_questions = read_all_questions_from_file()
     questions_to_keep = []
@@ -85,7 +84,6 @@ def delete_question_from_file(question_id):
             pass
         else:
             questions_to_keep.append(question)
-
 
 
 def update_id_in_questions(questions_to_keep):
