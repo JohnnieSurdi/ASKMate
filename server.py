@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
+adding_answer = {}
 
 
 @app.route("/")
@@ -24,9 +25,17 @@ def add_question():
     return "Hello World!"
 
 
-@app.route("/question/<question_id>/new-answer")
-def add_answer():
-    return "Hello World!"
+@app.route("/question/<question_id>/new-answer", methods=['GET', 'POST'])
+def add_answer(question_id):
+    if request.method == 'POST':
+        adding_answer['id'] = 1
+        adding_answer['submission_time'] = 1
+        adding_answer['vote_number'] = 0
+        adding_answer['question_id'] = question_id
+        adding_answer['message'] = request.form['new_answer']
+        adding_answer['image'] = ""
+        return redirect('/question/<question_id>')
+    return render_template('add_new_answer.html')
 
 
 if __name__ == "__main__":
