@@ -1,4 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
+import time
+import data_manager
+
+
+from datetime import datetime
 
 app = Flask(__name__)
 adding_answer = {}
@@ -14,6 +19,7 @@ def list_questions():
 
 @app.route("/question/<question_id>")
 def display_question():
+    print('x')
     return "Hello World!"
 
 @app.route("/add-question", methods=['GET','POST'])
@@ -21,7 +27,11 @@ def add_question():
     if request.method == 'GET':
         return render_template('add-question.html')
     elif request.method == 'POST':
-        return render_template('index.html')
+        title = request.form.get('title')
+        question = request.form.get('question')
+        submission_time = time.time()
+        id = data_manager.add_question_to_file(title,question,submission_time)
+        return redirect(url_for('display_question',question_id=id))
     return "Hello World!"
 
 
