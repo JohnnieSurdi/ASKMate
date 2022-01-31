@@ -1,4 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
+import time
+import data_manager
+
+
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -20,6 +25,10 @@ def add_question():
     if request.method == 'GET':
         return render_template('add-question.html')
     elif request.method == 'POST':
+        title = request.form.get('title')
+        question = request.form.get('question')
+        timestamp = time.time()
+
         return render_template('index.html')
     return "Hello World!"
 
