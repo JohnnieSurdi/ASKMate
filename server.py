@@ -32,6 +32,7 @@ def add_question():
         return render_template('index.html')
     return "Hello World!"
 
+
 @app.route("/question/<question_id>/new-answer")
 def add_answer():
     return "Hello World!"
