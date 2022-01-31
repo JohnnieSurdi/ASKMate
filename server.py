@@ -1,28 +1,31 @@
-from flask import Flask
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
 
 @app.route("/")
-def hello():
+def home_page():
     return "Hello World!"
 
 @app.route("/list")
-def hello():
+def list_questions():
     return "Hello World!"
 
 @app.route("/question/<question_id>")
-def hello():
+def display_question():
     return "Hello World!"
 
-@app.route("/add-question")
-def hello():
+@app.route("/add-question", methods=['GET','POST'])
+def add_question():
+    if request.method == 'GET':
+        return render_template('add-question.html')
+    elif request.method == 'POST':
+        return render_template('index.html')
     return "Hello World!"
 
 
 @app.route("/question/<question_id>/new-answer")
-def add_new_answer():
-
+def add_answer():
     return "Hello World!"
 
 
