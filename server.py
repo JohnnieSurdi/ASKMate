@@ -11,14 +11,15 @@ adding_answer = {}
 
 @app.route("/")
 def home_page():
-    return "Hello World!"
+    q = connection.read_all_questions_from_file()
+    return f'{q}'
 
 @app.route("/list")
 def list_questions():
     return "Hello World!"
 
 @app.route("/question/<question_id>")
-def display_question():
+def display_question(question_id):
     return "Hello World!"
 
 @app.route("/add-question", methods=['GET','POST'])

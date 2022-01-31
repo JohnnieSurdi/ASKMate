@@ -1,4 +1,3 @@
-import ast
 
 def create_new_answer_for_file(new_answer):
     new_answer_list = []
@@ -42,41 +41,56 @@ def create_new_id(file):
 # create_new_id('sample_data/answer.csv')
 
 def add_question_to_file(title,question,submission_time):
-    question_dict = {}
-    global ID_NUMBER
-    id = ID_NUMBER
-    ID_NUMBER += 1
+    file = 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv'
+    id = create_new_id(file)
     view_number = 0
     vote_number = 0
     image = ''
-    question_dict['id'] = id
-    question_dict['submission_time'] = submission_time
-    question_dict['view_number'] = view_number
-    question_dict['vote_number'] = vote_number
-    question_dict['title'] = title
-    question_dict['message'] = question
-    question_dict['image'] = image
-    with open('C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv', "a") as f:
-        f.write(str(question_dict) + '\n')
+    with open(file, "a") as f:
+        f.write(f'{id},{submission_time},{view_number},{vote_number},{title},{question},{image}\n')
     return id
 
 
 def read_all_questions_from_file():
     list_of_dicts = []
-    with open('sample_data/question.csv') as data_file:
+    with open('C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv') as data_file:
         for line in data_file:
             line = line.replace('\n', '')
-            list_of_dicts.append(ast.literal_eval(line))
-    return list_of_dicts
+            line = line.split(',')
+            dict = {}
+            dict['id']=line[0]
+            dict['submission_time']=line[1]
+            dict['view_number']=line[2]
+            dict['vote_number']=line[3]
+            dict['title']=line[4]
+            dict['message']=line[5]
+            dict['image']=line[6]
+            list_of_dicts.append(dict)
+    return list_of_dicts[1:]
 
 def delete_question_from_file(question_id):
-    all_questions = read_all_questions_from_file()
-    questions_to_keep = []
-    for question in all_questions:
-        if question['id']==question_id:
-            pass
-        else:
-            questions_to_keep.append(question)
+    list = []
+    with open('C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv') as data_file:
+        for line in data_file:
+            raw_line = line
+            line = line.replace('\n', '')
+            line = line.split(',')
+            if line[0]==question_id:
+                continue
+            else:
+                list.append(line)
+    counter = 1
+    for item in list:
+        if item[0] != 'id':
+            item[0]=counter
+            counter+=1
+    with open('C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv','w') as f:
+        for item in list:
+            print(item)
+            f.write(f'{item[0]},{item[1]},{item[2]},{item[3]},{item[4]},{item[5]}\n')
+
+
+
 
 
 
