@@ -94,5 +94,33 @@ def delete_answer(answer_id):
     return redirect('/question/'+str(question_id))
 
 
+@app.route("/question/<question_id>/vote_up")
+def vote_up_question(question_id):
+
+
+    return redirect('/list')
+
+
+@app.route("/question/<question_id>/vote_down")
+def vote_down_question(question_id):
+
+
+    return redirect('/list')
+
+
+@app.route("/answer/<answer_id>/vote_up")
+def vote_up_answer(answer_id):
+    question_id = 0
+
+    return redirect('/question/'+str(question_id))
+
+
+@app.route("/answer/<answer_id>/vote_down")
+def vote_down_answer(answer_id):
+    question_id = 0
+
+    return redirect('/question/'+str(question_id))
+
+
 if __name__ == "__main__":
     app.run()
