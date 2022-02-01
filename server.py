@@ -26,19 +26,18 @@ def upload_image(image):
     if image and allowed_file(image.filename):
         filename = secure_filename(image.filename)
         image.save(
-            'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/' + os.path.join(app.config['UPLOAD_FOLDER'],
-                                                                                       filename))
+            os.path.join(app.config['UPLOAD_FOLDER'], filename))
         image_path = filename
     return image_path
 
 def answer_path():
-    #return 'sample_data/answer.csv'
-    return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/answer.csv'
+    return 'sample_data/answer.csv'
+    #return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/answer.csv'
 
 
 def question_path():
-    #return 'sample_data/question.csv'
-    return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv'
+    return 'sample_data/question.csv'
+    #return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv'
 
 
 @app.route("/")
