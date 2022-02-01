@@ -25,9 +25,15 @@
                 </td>
                 <td>{{ question['message'] }}</td>
                 <td>{{ question['submission_time'] }}</td>
+                {% if question['image'] == 'no_image' %}
                 <td>
-                    <img src="..." width="100" hight="100">
+                    No image uploaded
                 </td>
+                {% else %}
+                <td>
+                    <img src="/static/uploads/{{ question['image'] }}" width="100" hight="100">
+                </td>
+                {% endif %}
             </tr>
         </table>
         <h2>Answers:</h2>
@@ -50,9 +56,15 @@
                 </td>
                 <td>{{ answer['message'] }}</td>
                 <td>{{ answer['submission_time'] }}</td>
+                {% if answer['image'] == 'no_image' %}
                 <td>
-                    <img src="..." width="100" hight="100">
+                    No image uploaded
                 </td>
+                {% else %}
+                <td>
+                    <img src="/static/uploads/{{ answer['image'] }}" width="100" hight="100">
+                </td>
+                {% endif %}
             </tr>
             {% endfor %}
         </table>

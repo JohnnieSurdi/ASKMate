@@ -95,7 +95,9 @@ def add_answer(question_id):
         adding_answer['vote_number'] = 0
         adding_answer['question_id'] = question_id
         adding_answer['message'] = request.form['new_answer']
-        adding_answer['image'] = -1
+        image = request.files['image']
+        image_path = upload_image(image)
+        adding_answer['image'] = image_path
         connection.write_new_answer_to_file(adding_answer)
         return redirect('/question/'+str(question_id))
     return render_template('add_new_answer.html', question_id=question_id)
@@ -124,7 +126,7 @@ def edit_question(question_id):
 
 @app.route("/answer/<answer_id>/delete")
 def delete_answer(answer_id):
-    question_id = connection.delete_from_file(answer_id, 'sample_data/answer.csv')
+    question_id = connection.delete_from_file(answer_id, answer_path())
     return redirect('/question/'+str(question_id))
 
 
