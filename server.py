@@ -62,8 +62,14 @@ def add_answer(question_id):
 
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
-    connection.delete_question_from_file(question_id)
+    connection.delete_from_file(question_id, 'sample_data/question.csv')
     return redirect('/list')
+
+
+@app.route("/answer/<answer_id>/delete")
+def delete_answer(answer_id):
+    question_id = connection.delete_from_file(answer_id, 'sample_data/answer.csv')
+    return redirect('/question/'+str(question_id))
 
 
 if __name__ == "__main__":

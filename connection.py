@@ -76,28 +76,32 @@ def read_all_questions_from_file():
     return list_of_dicts[1:]
 
 
-def delete_question_from_file(question_id):
-    list = []
-    with open('C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv') as data_file:
+def delete_from_file(data_id, file):
+    list_of_lines = []
+    with open(file) as data_file:
         for line in data_file:
-            raw_line = line
             line = line.replace('\n', '')
             line = line.split(',')
-            if line[0]==question_id:
+            if line[0] == data_id:
+                if len(line) == 6:
+                    question_id = line[3]
                 continue
             else:
-                list.append(line)
+                list_of_lines.append(line)
     counter = 1
-    for item in list:
+    for item in list_of_lines:
         if item[0] != 'id':
-            item[0]=counter
-            counter+=1
-    with open('C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv','w') as f:
-        for item in list:
+            item[0] = counter
+            counter += 1
+    with open(file, 'w') as f:
+        for item in list_of_lines:
             print(item)
-            f.write(f'{item[0]},{item[1]},{item[2]},{item[3]},{item[4]},{item[5]},{item[6]}\n')
-
-
+            if len(item) == 6:
+                f.write(f'{item[0]},{item[1]},{item[2]},{item[3]},{item[4]},{item[5]}\n')
+            elif len(item) == 7:
+                f.write(f'{item[0]},{item[1]},{item[2]},{item[3]},{item[4]},{item[5]},{item[6]}\n')
+    if len(list_of_lines[0]) == 6:
+        return question_id
 
 
 
