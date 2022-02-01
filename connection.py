@@ -4,7 +4,7 @@ import server
 
 def write_new_answer_to_file(new_answer):
     with open(server.answer_path(), 'a', newline='') as csvfile:
-        fieldnames = ['id','submission_time','vote_number','question_id','message','image']
+        fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writerow({'id': new_answer['id'], 'submission_time': new_answer['submission_time'],
                          'vote_number': new_answer['vote_number'], 'question_id': new_answer['question_id'],
@@ -106,13 +106,5 @@ def edit_question_in_file(question_id, edited_title, edited_question, new_submis
             item['submission_time'] = new_submission_time
             item['title'] = edited_title
             item['message'] = edited_question
-    # with open(server.question_path(), 'w', newline='') as csvfile:
-    #     fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
-    #     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-    #     writer.writeheader()
-    #     for item in data_list:
-    #         writer.writerow({'id': item['id'], 'submission_time': item['submission_time'],
-    #                          'view_number': item['view_number'], 'vote_number': item['vote_number'],
-    #                          'title': item['title'], 'message': item['message'], 'image': item['image']})
     update_file(server.question_path(), data_list)
 
