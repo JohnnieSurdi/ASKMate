@@ -1,4 +1,5 @@
 import csv
+import server
 
 
 QUESTION_TITLE = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
@@ -19,7 +20,7 @@ def get_data_by_id(filename, id_):
 
 
 def get_answers_by_id(id_):
-    list_of_answers = get_all_data('sample_data/answer.csv')
+    list_of_answers = get_all_data(server.answer_path())
     return [answer for answer in list_of_answers if answer['question_id'] == id_]
 
 

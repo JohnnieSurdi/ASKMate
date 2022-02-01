@@ -2,6 +2,7 @@ import csv
 import server
 
 
+
 def write_new_answer_to_file(new_answer):
     with open(server.answer_path(), 'a', newline='') as csvfile:
         fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
@@ -17,17 +18,17 @@ def create_new_id(file):
     return new_id
 
 
-def add_question_to_file(title, question, submission_time):
+def add_question_to_file(title, question, submission_time,image):
     file = server.question_path()
     new_id = create_new_id(file)
     view_number = 0
     vote_number = 0
-    image = -1
     with open(server.question_path(), 'a', newline='') as csvfile:
         fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writerow({'id': new_id, 'submission_time': submission_time, 'view_number': view_number,
                          'vote_number': vote_number, 'title': title, 'message': question, 'image': image})
+    return new_id
 
 
 def delete_item_from_list(data_id, data_list):
@@ -109,6 +110,7 @@ def edit_question_in_file(question_id, edited_title, edited_question, new_submis
     update_file(server.question_path(), data_list)
 
 
+
 def vote_up(file, data_id):
     data_list = read_file(file)
     for item in data_list:
@@ -137,4 +139,5 @@ def vote_down(file, data_id):
     update_file(file, data_list)
     if len(data_list[0]) == 6:
         return question_id
+
 
