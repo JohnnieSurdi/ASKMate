@@ -13,6 +13,7 @@
                 <th>Votes</th>
                 <th>Question</th>
                 <th>Submission Time</th>
+                <th>Question Image</th>
             </tr>
             <tr>
                 <td>{{ question['id'] }}</td>
@@ -24,17 +25,19 @@
                 </td>
                 <td>{{ question['message'] }}</td>
                 <td>{{ question['submission_time'] }}</td>
+                <td>
+                    <img src="..." width="100" hight="100">
+                </td>
             </tr>
         </table>
-        {% block extension %}
         <h2>Answers:</h2>
         <table>
             <tr>
                 <th>Id</th>
-                <th></th>
                 <th>Votes</th>
                 <th>Answer</th>
                 <th>Submission Time</th>
+                <th>Answer Image</th>
             </tr>
             {% for answer in answers %}
             <tr>
@@ -47,6 +50,9 @@
                 </td>
                 <td>{{ answer['message'] }}</td>
                 <td>{{ answer['submission_time'] }}</td>
+                <td>
+                    <img src="..." width="100" hight="100">
+                </td>
             </tr>
             {% endfor %}
         </table>
@@ -56,8 +62,7 @@
         </p>
         <p>
             <a href="/list"><button>Back</button></a>
-            <a href="/question/{{ question['id'] }}/delete"><button>Delete Question</button></a>
+            <a href="/question/{{ question['id'] }}/delete"><button>Delete question</button></a>
         </p>
-        {% endblock %}
     </body>
 </html>
