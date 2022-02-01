@@ -13,7 +13,7 @@ adding_answer = {}
 
 @app.route("/")
 def home_page():
-    q = connection.read_all_questions_from_file()
+    q = connection.read_file('C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv')
     return f'{q}'
 
 
