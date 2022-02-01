@@ -2,22 +2,11 @@ import csv
 import server
 
 
-def create_new_answer_for_file(new_answer):
-    new_answer_list = []
-    for index, value in enumerate(new_answer.values()):
-        if index == 4:
-            value = "\"" + value + "\""
-        new_answer_list.append(str(value))
-    file_answer_message = ",".join(new_answer_list)
-    file_answer_message += "\n"
-    return file_answer_message
-
-
 def write_new_answer_to_file(new_answer):
-    file_answer_message = create_new_answer_for_file(new_answer)
-    print(file_answer_message)
-    with open(server.answer_path(), 'a+') as answers:
-        answers.write(file_answer_message)
+    with open(server.answer_path(), 'a', newline='') as csvfile:
+        fieldnames = ['id','submission_time','vote_number','question_id','message','image']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writerow({'id': new_answer['id'], 'submission_time': new_answer['submission_time'], 'vote_number': new_answer['vote_number'], 'question_id': new_answer['question_id'], 'message': new_answer['message'], 'image': new_answer['image']})
 
 
 def rows_from_file(file):
@@ -56,9 +45,10 @@ def add_question_to_file(title,question,submission_time):
     view_number = 0
     vote_number = 0
     image = -1
-    with open(file, "a") as f:
-        f.write(f'{id},{submission_time},{view_number},{vote_number},{title},{question},{image}\n')
-    return id
+    with open(server.question_path(), 'a', newline='') as csvfile:
+        fieldnames = ['id', 'submission_time','view_number','vote_number','title','message','image']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writerow({'id': id, 'submission_time': submission_time, 'view_number': view_number, 'vote_number': vote_number, 'title': title, 'message': question, 'image': image})
 
 
 def read_all_questions_from_file():
@@ -81,37 +71,56 @@ def read_all_questions_from_file():
 
 
 def delete_question_from_file(question_id):
-    list = []
-    with open(server.question_path()) as data_file:
-        for line in data_file:
-            raw_line = line
-            line = line.replace('\n', '')
-            line = line.split(',')
-            if line[0]==question_id:
-                continue
-            else:
-                list.append(line)
-    counter = 1
+    list = read_file(server.question_path())
+    list_updated = []
     for item in list:
-        if item[0] != 'id':
-            item[0]=counter
-            counter+=1
-    with open(server.question_path(),'w') as f:
-        for item in list:
-            print(item)
-            f.write(f'{item[0]},{item[1]},{item[2]},{item[3]},{item[4]},{item[5]},{item[6]}\n')
+        if item['id'] == question_id:
+            continue
+        else:
+            list_updated.append(item)
+    with open(server.question_path(), 'w', newline='') as csvfile:
+        fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        counter = 1
+        for item in list_updated:
+            writer.writerow(
+                {'id': counter, 'submission_time': item['submission_time'], 'view_number': item['view_number'],
+                 'vote_number': item['vote_number'], 'title': item['title'], 'message': item['message'],
+                 'image': item['image']})
+            counter += 1
 
 
 
 
-
-def update_id_in_questions(questions_to_keep):
+'''def update_id_in_questions(questions_to_keep):
     id = 1
     for question in questions_to_keep:
         question['id'] = id
-        id += 1
+        id += 1'''
 
 def read_file(filename):
     with open(filename, mode="r") as csv_file:
         csv_reader = csv.DictReader(csv_file)
         return list(csv_reader)
+
+
+def get_question_to_edit(question_id):
+    list = read_file(server.question_path())
+    for item in list:
+        if item['id'] == question_id:
+            return item
+
+def edit_question_in_file(question_id,edited_title,edited_question,new_submission_time):
+    list = read_file(server.question_path())
+    for item in list:
+        if item['id']==question_id:
+            item['submission_time']=new_submission_time
+            item['title']=edited_title
+            item['message']=edited_question
+    with open(server.question_path(), 'w', newline='') as csvfile:
+        fieldnames = ['id', 'submission_time','view_number','vote_number','title','message','image']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for item in list:
+            writer.writerow({'id': item['id'], 'submission_time': item['submission_time'], 'view_number': item['view_number'], 'vote_number': item['vote_number'], 'title': item['title'], 'message': item['message'], 'image': item['image']})

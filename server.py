@@ -70,9 +70,16 @@ def delete_question(question_id):
     connection.delete_question_from_file(question_id)
     return redirect('/list')
 
-@app.route("/question/<question_id>/edit")
+@app.route("/question/<question_id>/edit", methods=['GET', 'POST'])
 def edit_question(question_id):
-    pass
-
+    if request.method == 'GET':
+        question_to_edit = connection.get_question_to_edit(question_id)
+        return render_template('edit-question.html', question_to_edit=question_to_edit)
+    if request.method == 'POST':
+        edited_title = request.form.get('title')
+        edited_question = request.form.get('question')
+        new_submission_time = time.time()
+        connection.edit_question_in_file(question_id,edited_title,edited_question,new_submission_time)
+        return redirect('/list')
 if __name__ == "__main__":
     app.run()
