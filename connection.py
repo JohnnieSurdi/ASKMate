@@ -1,4 +1,6 @@
 import csv
+import server
+
 
 def create_new_answer_for_file(new_answer):
     new_answer_list = []
@@ -14,7 +16,7 @@ def create_new_answer_for_file(new_answer):
 def write_new_answer_to_file(new_answer):
     file_answer_message = create_new_answer_for_file(new_answer)
     print(file_answer_message)
-    with open('sample_data/answer.csv', 'a+') as answers:
+    with open(server.answer_path(), 'a+') as answers:
         answers.write(file_answer_message)
 
 
@@ -43,11 +45,13 @@ def create_new_id(file):
                         max_id = int(id_number)
                     break
         new_id = max_id + 1
+    if max_id == 0:
+        new_id = 1
     return new_id
 
 
 def add_question_to_file(title,question,submission_time):
-    file = 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv'
+    file = server.question_path()
     id = create_new_id(file)
     view_number = 0
     vote_number = 0
@@ -59,7 +63,7 @@ def add_question_to_file(title,question,submission_time):
 
 def read_all_questions_from_file():
     list_of_dicts = []
-    with open('C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv') as data_file:
+    with open(server.question_path()) as data_file:
         for line in data_file:
             line = line.replace('\n', '')
             line = line.split(',')
@@ -78,7 +82,7 @@ def read_all_questions_from_file():
 
 def delete_question_from_file(question_id):
     list = []
-    with open('C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv') as data_file:
+    with open(server.question_path()) as data_file:
         for line in data_file:
             raw_line = line
             line = line.replace('\n', '')
@@ -92,7 +96,7 @@ def delete_question_from_file(question_id):
         if item[0] != 'id':
             item[0]=counter
             counter+=1
-    with open('C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv','w') as f:
+    with open(server.question_path(),'w') as f:
         for item in list:
             print(item)
             f.write(f'{item[0]},{item[1]},{item[2]},{item[3]},{item[4]},{item[5]},{item[6]}\n')

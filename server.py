@@ -4,8 +4,13 @@ import data_manager
 import connection
 
 from datetime import datetime
+def answer_path():
+    #return 'sample_data/answer.csv'
+    return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/answer.csv'
 
-
+def question_path():
+    #return 'sample_data/question.csv'
+    return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv'
 
 app = Flask(__name__)
 adding_answer = {}
@@ -13,13 +18,13 @@ adding_answer = {}
 
 @app.route("/")
 def home_page():
-    q = connection.read_file('C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv')
+    q = connection.read_file(question_path())
     return f'{q}'
 
 
 @app.route("/list")
 def list_questions():
-    data = connection.read_file('sample_data/question.csv')
+    data = connection.read_file(question_path())
     data_sorted_by_id = sorted(data, key=lambda d: d['id'], reverse=True)
     return render_template('list.html', data=data_sorted_by_id)
 
@@ -49,7 +54,7 @@ def add_question():
 def add_answer(question_id):
     print(question_id)
     if request.method == 'POST':
-        adding_answer['id'] = connection.create_new_id('sample_data/answer.csv')
+        adding_answer['id'] = connection.create_new_id(answer_path())
         adding_answer['submission_time'] = time.time()
         adding_answer['vote_number'] = 0
         adding_answer['question_id'] = question_id
@@ -65,6 +70,9 @@ def delete_question(question_id):
     connection.delete_question_from_file(question_id)
     return redirect('/list')
 
+@app.route("/question/<question_id>/edit")
+def edit_question(question_id):
+    pass
 
 if __name__ == "__main__":
     app.run()
