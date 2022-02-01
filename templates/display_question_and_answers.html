@@ -3,6 +3,11 @@
     <head>
         <meta charset="UTF-8">
         <title>AskMate: {{ question['title'] }}</title>
+        <style>
+            table, th, td {
+            border: 1px solid black;
+             }
+        </style>
     </head>
     <body>
         <h1>{{ question['title'] }}</h1>
@@ -26,13 +31,13 @@
                 <td>{{ question['message'] }}</td>
                 <td>{{ question['submission_time'] }}</td>
                 {% if question['image'] == 'no_image' %}
-                <td>
+                    <td>
                     No image uploaded
-                </td>
+                    </td>
                 {% else %}
-                <td>
+                    <td>
                     <img src="/static/uploads/{{ question['image'] }}" width="100" hight="100">
-                </td>
+                    </td>
                 {% endif %}
             </tr>
         </table>
@@ -48,7 +53,6 @@
             {% for answer in answers %}
             <tr>
                 <td>{{ answer['id'] }}</td>
-                <td></td>
                 <td>
                     <p><a href="/answer/{{ answer['id'] }}/vote_up"><button>UP_VOTE</button></a></p>
                     <p>{{ answer['vote_number'] }}</p>
