@@ -19,7 +19,9 @@ def home_page():
 
 @app.route("/list")
 def list_questions():
-    return "Hello World!"
+    data = connection.read_file('sample_data/question.csv')
+    data_sorted_by_id = sorted(data, key=lambda d: d['id'], reverse=True)
+    return render_template('list.html', data=data_sorted_by_id)
 
 
 @app.route("/question/<question_id>")
