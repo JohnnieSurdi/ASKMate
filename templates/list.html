@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List of all questions</title>
+    <style>
+        * {
+            font-family: Arial;
+            background-color: navajowhite;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #11557C;
+        }
+
+        a:hover {
+            text-transform: uppercase;
+            text-underline: none;
+            color: #9C1A1C;
+            background-color: darkcyan;
+        }
+    </style>
+</head>
+<body >
+    <div>
+        <div class="nav">
+        <a href="/"><h1>Main page</h1></a>
+        </div>
+
+        <div>
+        <h1>List of all questions:</h1>
+        <table>
+            <tr>
+                <td>
+                    <ul>
+                    {% for dict in data %}
+                        <li><a href="/question/{{ dict["id"] }}">{{ dict["title"] }}</a></li>
+                    {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+        </table>
+        </div>
+
+        <form action="/add_question">
+        <button>Add question</button>
+        </form>
+    </div>
+</body>
+</html>

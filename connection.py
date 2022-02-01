@@ -1,4 +1,4 @@
-
+import csv
 
 def create_new_answer_for_file(new_answer):
     new_answer_list = []
@@ -106,3 +106,8 @@ def update_id_in_questions(questions_to_keep):
     for question in questions_to_keep:
         question['id'] = id
         id += 1
+
+def read_file(filename):
+    with open(filename, mode="r") as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        return list(csv_reader)
