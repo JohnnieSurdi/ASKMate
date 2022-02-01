@@ -4,16 +4,19 @@ import data_manager
 import connection
 
 from datetime import datetime
-def answer_path():
-    #return 'sample_data/answer.csv'
-    return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/answer.csv'
-
-def question_path():
-    #return 'sample_data/question.csv'
-    return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv'
 
 app = Flask(__name__)
 adding_answer = {}
+
+
+def answer_path():
+    return 'sample_data/answer.csv'
+    #return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/answer.csv'
+
+
+def question_path():
+    return 'sample_data/question.csv'
+    #return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv'
 
 
 @app.route("/")
@@ -34,7 +37,6 @@ def display_question(question_id):
     question = connection.display_question(question_id)
     answers = connection.get_answers_for_question(question_id)
     return render_template("display_question.html", question_id=question_id, question=question, answers=answers)
-
 
 
 @app.route("/add-question", methods=['GET','POST'])
