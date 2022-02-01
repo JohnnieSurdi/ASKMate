@@ -18,9 +18,9 @@
                 <td>{{ question['id'] }}</td>
                 <td>{{ question['view_number'] }}</td>
                 <td>
-                    <p><a href="/question/{{ question['id'] }}/1"><button>UP_VOTE</button></a></p>
+                    <p><a href="/question/{{ question['id'] }}/vote_up"><button>UP_VOTE</button></a></p>
                     <p>{{ question['vote_number'] }}</p>
-                    <p><a href="/question/{{ question['id'] }}/-1"> <button>DOWN_VOTE</button></a></p>
+                    <p><a href="/question/{{ question['id'] }}/vote_down"> <button>DOWN_VOTE</button></a></p>
                 </td>
                 <td>{{ question['message'] }}</td>
                 <td>{{ question['submission_time'] }}</td>
@@ -41,9 +41,9 @@
                 <td>{{ answer['id'] }}</td>
                 <td></td>
                 <td>
-                    <p><a href="/question/{{ question['id'] }}/{{ answer['id'] }}/1"><button>UP_VOTE</button></a></p>
+                    <p><a href="/answer/{{ answer['id'] }}/vote_up"><button>UP_VOTE</button></a></p>
                     <p>{{ answer['vote_number'] }}</p>
-                    <p><a href="/question/{{ question['id'] }}/{{ answer['id'] }}/-1"><button>DOWN_VOTE</button></a></p>
+                    <p><a href="/answer/{{ answer['id'] }}/vote_down"><button>DOWN_VOTE</button></a></p>
                 </td>
                 <td>{{ answer['message'] }}</td>
                 <td>{{ answer['submission_time'] }}</td>
@@ -52,7 +52,7 @@
         </table>
         <p>
             <a href="/question/{{ question['id'] }}/new-answer"><button>Add a new answer</button></a>
-            <a href="/question/{{ question['id'] }}/edit-a-question"><button>Edit the question</button></a>
+            <a href="/question/{{ question['id'] }}/edit"><button>Edit question</button></a>
         </p>
         <p>
             <a href="/list"><button>Back</button></a>
