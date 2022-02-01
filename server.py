@@ -96,29 +96,25 @@ def delete_answer(answer_id):
 
 @app.route("/question/<question_id>/vote_up")
 def vote_up_question(question_id):
-
-
+    connection.vote_up(question_path(), question_id)
     return redirect('/list')
 
 
 @app.route("/question/<question_id>/vote_down")
 def vote_down_question(question_id):
-
-
+    connection.vote_down(question_path(), question_id)
     return redirect('/list')
 
 
 @app.route("/answer/<answer_id>/vote_up")
 def vote_up_answer(answer_id):
-    question_id = 0
-
+    question_id = connection.vote_up(answer_path(), answer_id)
     return redirect('/question/'+str(question_id))
 
 
 @app.route("/answer/<answer_id>/vote_down")
 def vote_down_answer(answer_id):
-    question_id = 0
-
+    question_id = connection.vote_down(answer_path(), answer_id)
     return redirect('/question/'+str(question_id))
 
 

@@ -108,3 +108,33 @@ def edit_question_in_file(question_id, edited_title, edited_question, new_submis
             item['message'] = edited_question
     update_file(server.question_path(), data_list)
 
+
+def vote_up(file, data_id):
+    data_list = read_file(file)
+    for item in data_list:
+        if item['id'] == data_id:
+            if len(data_list[0]) == 6:
+                question_id = item['question_id']
+            new_vote_number = int(item['vote_number'])
+            new_vote_number += 1
+            item['vote_number'] = str(new_vote_number)
+            break
+    update_file(file, data_list)
+    if len(data_list[0]) == 6:
+        return question_id
+
+
+def vote_down(file, data_id):
+    data_list = read_file(file)
+    for item in data_list:
+        if item['id'] == data_id:
+            if len(data_list[0]) == 6:
+                question_id = item['question_id']
+            new_vote_number = int(item['vote_number'])
+            new_vote_number -= 1
+            item['vote_number'] = str(new_vote_number)
+            break
+    update_file(file, data_list)
+    if len(data_list[0]) == 6:
+        return question_id
+
