@@ -72,9 +72,9 @@ def delete_question(question_id):
     connection.delete_from_file(question_id, question_path())
     return redirect('/list')
 
+
 @app.route("/question/<question_id>/edit", methods=['GET', 'POST'])
 def edit_question(question_id):
-
     if request.method == 'GET':
         question_to_edit = connection.get_question_to_edit(question_id)
         return render_template('edit-question.html', question_to_edit=question_to_edit)
@@ -87,11 +87,11 @@ def edit_question(question_id):
 
     pass
 
+
 @app.route("/answer/<answer_id>/delete")
 def delete_answer(answer_id):
     question_id = connection.delete_from_file(answer_id, 'sample_data/answer.csv')
     return redirect('/question/'+str(question_id))
-
 
 
 if __name__ == "__main__":
