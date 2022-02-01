@@ -3,6 +3,8 @@ import time
 import connection
 import os
 from werkzeug.utils import secure_filename
+import data_handler
+
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 adding_answer = {}
@@ -52,11 +54,22 @@ def list_questions():
     return render_template('list.html', data=data_sorted_by_id)
 
 
-@app.route("/question/<question_id>")
-def display_question(question_id):
-    question = connection.display_question(question_id)
-    answers = connection.get_answers_for_question(question_id)
-    return render_template("display_question.html", question_id=question_id, question=question, answers=answers)
+@app.route('/question/<question_id>')
+def route_question_by_id(question_id):
+    answers = data_handler.get_answers_by_id(question_id)
+    for answer in answers:
+        answer.pop('question_id', None)
+    question = data_handler.get_data_by_id(question_path(), question_id)
+    return render_template('display_question_and_answers.html', question=question, answers=answers)
+
+
+@app.route('/question/<question_id>/')
+def route_question_view_count(question_id):
+    question = data_handler.get_data_by_id(question_path(), question_id)
+    question['view_number'] = str(int(question['view_number']) + 1)
+    final_data = data_handler.edit_data(question_id, question, question_path())
+    data_handler.data_writer(question_path(), final_data, data_handler.QUESTION_TITLE)
+    return redirect(f'/question/{question_id}')
 
 
 @app.route("/add-question", methods=['GET','POST'])
@@ -118,29 +131,25 @@ def delete_answer(answer_id):
 
 @app.route("/question/<question_id>/vote_up")
 def vote_up_question(question_id):
-
-
-    return redirect('/list')
+    connection.vote_up(question_path(), question_id)
+    return redirect('/question/'+str(question_id))
 
 
 @app.route("/question/<question_id>/vote_down")
 def vote_down_question(question_id):
-
-
-    return redirect('/list')
+    connection.vote_down(question_path(), question_id)
+    return redirect('/question/'+str(question_id))
 
 
 @app.route("/answer/<answer_id>/vote_up")
 def vote_up_answer(answer_id):
-    question_id = 0
-
+    question_id = connection.vote_up(answer_path(), answer_id)
     return redirect('/question/'+str(question_id))
 
 
 @app.route("/answer/<answer_id>/vote_down")
 def vote_down_answer(answer_id):
-    question_id = 0
-
+    question_id = connection.vote_down(answer_path(), answer_id)
     return redirect('/question/'+str(question_id))
 
 
