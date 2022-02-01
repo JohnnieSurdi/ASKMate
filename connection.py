@@ -9,34 +9,9 @@ def write_new_answer_to_file(new_answer):
         writer.writerow({'id': new_answer['id'], 'submission_time': new_answer['submission_time'], 'vote_number': new_answer['vote_number'], 'question_id': new_answer['question_id'], 'message': new_answer['message'], 'image': new_answer['image']})
 
 
-
-def rows_from_file(file):
-    csv_file_rows = []
-    with open(file, 'r') as csvfile:
-        for index, row in enumerate(csvfile):
-            if index != 0:
-                csv_file_rows.append(row)
-    return csv_file_rows
-
-
 def create_new_id(file):
-    max_id = 0
-    csv_file_rows = rows_from_file(file)
-    for row in csv_file_rows:
-        id_number = ""
-        if row.count(',') >= 4:
-            for element in row:
-                if element.isdigit():
-                    id_number += element
-                else:
-                    if id_number == "":
-                        id_number = "0"
-                    if int(id_number) > max_id:
-                        max_id = int(id_number)
-                    break
-        new_id = max_id + 1
-    if max_id == 0:
-        new_id = 1
+    list = read_file(file)
+    new_id = len(list) + 1
     return new_id
 
 
@@ -71,25 +46,37 @@ def read_all_questions_from_file():
     return list_of_dicts[1:]
 
 
-def delete_from_file(question_id):
-    list = read_file(server.question_path())
+def delete_from_file(data_id, file):
+    data_list = read_file(file)
     list_updated = []
-    for item in list:
-        if item['id'] == question_id:
+    for item in data_list:
+        if item['id'] == data_id:
+            if len(item) == 6:
+                question_id = item['question_id']
             continue
         else:
             list_updated.append(item)
-    with open(server.question_path(), 'w', newline='') as csvfile:
-        fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
+    with open(file, 'w', newline='') as csvfile:
+        if len(list_updated[0]) == 7:
+            fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
+        elif len(list_updated[0]) == 6:
+            fieldnames = ['id','submission_time','vote_number','question_id','message','image']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         counter = 1
         for item in list_updated:
-            writer.writerow(
-                {'id': counter, 'submission_time': item['submission_time'], 'view_number': item['view_number'],
-                 'vote_number': item['vote_number'], 'title': item['title'], 'message': item['message'],
-                 'image': item['image']})
+            if len(list_updated[0]) == 7:
+                writer.writerow(
+                    {'id': counter, 'submission_time': item['submission_time'], 'view_number': item['view_number'],
+                     'vote_number': item['vote_number'], 'title': item['title'], 'message': item['message'],
+                     'image': item['image']})
+            if len(list_updated[0]) == 6:
+                writer.writerow({'id': counter, 'submission_time': item['submission_time'],
+                                 'vote_number': item['vote_number'], 'question_id': item['question_id'],
+                                 'message': item['message'], 'image': item['image']})
             counter += 1
+    if len(list_updated[0]) == 6:
+        return question_id
 
 
 

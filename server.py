@@ -69,7 +69,7 @@ def add_answer(question_id):
 
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
-    connection.delete_from_file(question_id)
+    connection.delete_from_file(question_id, question_path())
     return redirect('/list')
 
 @app.route("/question/<question_id>/edit", methods=['GET', 'POST'])
