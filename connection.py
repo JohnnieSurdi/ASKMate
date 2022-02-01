@@ -9,6 +9,7 @@ def write_new_answer_to_file(new_answer):
         writer.writerow({'id': new_answer['id'], 'submission_time': new_answer['submission_time'], 'vote_number': new_answer['vote_number'], 'question_id': new_answer['question_id'], 'message': new_answer['message'], 'image': new_answer['image']})
 
 
+
 def rows_from_file(file):
     csv_file_rows = []
     with open(file, 'r') as csvfile:
@@ -94,6 +95,37 @@ def delete_question_from_file(question_id):
 
 
 '''def update_id_in_questions(questions_to_keep):
+=======
+def delete_from_file(data_id, file):
+    list_of_lines = []
+    with open(file) as data_file:
+        for line in data_file:
+            line = line.replace('\n', '')
+            line = line.split(',')
+            if line[0] == data_id:
+                if len(line) == 6:
+                    question_id = line[3]
+                continue
+            else:
+                list_of_lines.append(line)
+    counter = 1
+    for item in list_of_lines:
+        if item[0] != 'id':
+            item[0] = counter
+            counter += 1
+    with open(file, 'w') as f:
+        for item in list_of_lines:
+            if len(item) == 6:
+                f.write(f'{item[0]},{item[1]},{item[2]},{item[3]},{item[4]},{item[5]}\n')
+            elif len(item) == 7:
+                f.write(f'{item[0]},{item[1]},{item[2]},{item[3]},{item[4]},{item[5]},{item[6]}\n')
+    if len(list_of_lines[0]) == 6:
+        return question_id
+
+
+
+def update_id_in_questions(questions_to_keep):
+>>>>>>> b80340767e16978989c23fc3a890fa335846d3c7
     id = 1
     for question in questions_to_keep:
         question['id'] = id
@@ -124,3 +156,4 @@ def edit_question_in_file(question_id,edited_title,edited_question,new_submissio
         writer.writeheader()
         for item in list:
             writer.writerow({'id': item['id'], 'submission_time': item['submission_time'], 'view_number': item['view_number'], 'vote_number': item['vote_number'], 'title': item['title'], 'message': item['message'], 'image': item['image']})
+

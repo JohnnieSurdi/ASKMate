@@ -67,11 +67,12 @@ def add_answer(question_id):
 
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
-    connection.delete_question_from_file(question_id)
+    connection.delete_from_file(question_id, 'sample_data/question.csv')
     return redirect('/list')
 
 @app.route("/question/<question_id>/edit", methods=['GET', 'POST'])
 def edit_question(question_id):
+<<<<<<< HEAD
     if request.method == 'GET':
         question_to_edit = connection.get_question_to_edit(question_id)
         return render_template('edit-question.html', question_to_edit=question_to_edit)
@@ -81,5 +82,15 @@ def edit_question(question_id):
         new_submission_time = time.time()
         connection.edit_question_in_file(question_id,edited_title,edited_question,new_submission_time)
         return redirect('/list')
+=======
+    pass
+
+@app.route("/answer/<answer_id>/delete")
+def delete_answer(answer_id):
+    question_id = connection.delete_from_file(answer_id, 'sample_data/answer.csv')
+    return redirect('/question/'+str(question_id))
+
+
+>>>>>>> b80340767e16978989c23fc3a890fa335846d3c7
 if __name__ == "__main__":
     app.run()
