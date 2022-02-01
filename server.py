@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import time
 import data_manager
 import connection
+import data_handler
 
 from datetime import datetime
 
@@ -32,11 +33,22 @@ def list_questions():
     return render_template('list.html', data=data_sorted_by_id)
 
 
-@app.route("/question/<question_id>")
-def display_question(question_id):
-    question = connection.display_question(question_id)
-    answers = connection.get_answers_for_question(question_id)
-    return render_template("display_question.html", question_id=question_id, question=question, answers=answers)
+@app.route('/question/<question_id>')
+def route_question_by_id(question_id):
+    answers = data_handler.get_answers_by_id(question_id)
+    for answer in answers:
+        answer.pop('question_id', None)
+    question = data_handler.get_data_by_id(question_path(), question_id)
+    return render_template('display_question_and_answers.html', question=question, answers=answers)
+
+
+@app.route('/question/<question_id>/')
+def route_question_view_count(question_id):
+    question = data_handler.get_data_by_id(question_path(), question_id)
+    question['view_number'] = str(int(question['view_number']) + 1)
+    final_data = data_handler.edit_data(question_id, question, question_path())
+    data_handler.data_writer(question_path(), final_data, data_handler.QUESTION_TITLE)
+    return redirect(f'/question/{question_id}')
 
 
 @app.route("/add-question", methods=['GET','POST'])
