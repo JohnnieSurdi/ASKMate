@@ -15,7 +15,6 @@ def create_new_answer_for_file(new_answer):
 
 def write_new_answer_to_file(new_answer):
     file_answer_message = create_new_answer_for_file(new_answer)
-    print(file_answer_message)
     with open(server.answer_path(), 'a+') as answers:
         answers.write(file_answer_message)
 
