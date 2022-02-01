@@ -6,10 +6,15 @@
 </head>
 <body>
     <h1>Add new answer to question {{ question_id }}</h1>
-    <form action="/question/{{ question_id }}/new-answer" method="post">
+    <form action="/question/{{ question_id }}/new-answer" method="post" enctype="multipart/form-data">
         <label for="post_new_answer"><h2>Your answer:</h2></label>
         <textarea id="post_new_answer" name="new_answer" rows="20" cols="100"></textarea>
-
+        <div class="form-group">
+        <label for="image">Add image</label>
+        <input type="file"
+       id="image" name="image"
+       accept="image/png, image/jpeg">
+    </div>
         <button type="submit">Post your answer</button>
     </form>
 </body>
