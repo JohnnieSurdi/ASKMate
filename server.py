@@ -1,22 +1,42 @@
 from flask import Flask, render_template, request, redirect, url_for
 import time
-import data_manager
 import connection
+import os
+from werkzeug.utils import secure_filename
 
-from datetime import datetime
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+adding_answer = {}
+UPLOAD_FOLDER = 'static/uploads/'
 
 app = Flask(__name__)
-adding_answer = {}
+app.secret_key = "secret key"
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def upload_image(image):
+    if image.filename == '':
+        image_path = 'no_image'
+    if image and allowed_file(image.filename):
+        filename = secure_filename(image.filename)
+        image.save(
+            'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/' + os.path.join(app.config['UPLOAD_FOLDER'],
+                                                                                       filename))
+        image_path = filename
+    return image_path
 
 def answer_path():
-    return 'sample_data/answer.csv'
-    #return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/answer.csv'
+    #return 'sample_data/answer.csv'
+    return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/answer.csv'
 
 
 def question_path():
-    return 'sample_data/question.csv'
-    #return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv'
+    #return 'sample_data/question.csv'
+    return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv'
 
 
 @app.route("/")
@@ -47,8 +67,10 @@ def add_question():
         title = request.form.get('title')
         question = request.form.get('question')
         submission_time = time.time()
-        id = connection.add_question_to_file(title,question,submission_time)
-        return redirect(url_for('display_question',question_id=id))
+        image = request.files['image']
+        image_path = upload_image(image)
+        id = connection.add_question_to_file(title,question,submission_time,image_path)
+        return redirect('/question/'+str(id))
     return "Hello World!"
 
 
