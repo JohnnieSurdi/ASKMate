@@ -4,25 +4,36 @@
     <meta charset="UTF-8">
     <title>List of all questions</title>
     <style>
-        * {
-            font-family: Arial;
-            background-color: navajowhite;
-            box-sizing: border-box;
+        #customers {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
         }
 
-        h1 {
-            color: #11557C;
+        #customers td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
         }
 
-        a:hover {
+        #customers tr:nth-child(even){
+            background-color: #f2f2f2;
+        }
+
+        #customers tr:hover {
+            background-color: #ddd;
+        }
+
+        #customers th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
             text-transform: uppercase;
-            text-underline: none;
-            color: #9C1A1C;
-            background-color: darkcyan;
-        }
+}
     </style>
 </head>
-<body >
+<body>
     <div>
         <div class="nav">
         <a href="/"><h1>Main page</h1></a>
@@ -30,19 +41,43 @@
 
         <div>
         <h1>List of all questions:</h1>
-        <table>
-            <tr>
-                <td>
-                    <ul>
-                    {% for dict in data %}
-                        <li><a href="/question/{{ dict["id"] }}">{{ dict["title"] }}</a></li>
-                    {% endfor %}
-                    </ul>
-                </td>
-            </tr>
-        </table>
-        </div>
 
+        <table id="customers">
+            <thead>
+                <tr>
+                    {% for header in headers %}
+                       <th>
+                       {% if header =="submission_time" %}
+                           Submission time
+                           {% elif header =="view_number" %}
+                           Number of views
+                            {% elif header =="vote_number" %}
+                           Number of votes
+                        {% else %}
+                           {{ header }}
+                       {% endif %}
+                       </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for dict in data %}
+                    <tr>
+                        {% for header in headers %}
+                            <td>
+                            {% if header == 'title' %}
+                                <a href="/question/{{ dict["id"] }}">{{ dict["title"] }}</a>
+                            {% else %}
+                            {{ dict[header] }}
+                            {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+            <br>
+            <br>
         <a href="/add-question">
         <button>Add question</button>
         </a>
