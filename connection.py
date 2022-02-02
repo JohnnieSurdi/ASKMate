@@ -160,25 +160,17 @@ def edit_question_in_file(question_id, edited_title, edited_question, new_submis
 
 def vote_up(file, data_id):
     data_list = read_file(file)
+    question_id = ""
     for item in data_list:
         if item['id'] == data_id:
             if len(data_list[0]) == 6:
                 question_id = item['question_id']
+                question_list = vote_dont_change_view(data_list, item, question_id)
+            else:
+                data_list = vote_dont_change_view(data_list, item, question_id)
             new_vote_number = int(item['vote_number'])
             new_vote_number += 1
             item['vote_number'] = str(new_vote_number)
-            if len(data_list[0]) == 7:
-                new_view_number = int(item['view_number'])
-                new_view_number -= 1
-                item['view_number'] = str(new_view_number)
-            else:
-                question_list = read_file(server.question_path())
-                for element in question_list:
-                    if element['id'] == question_id:
-                        new_view_number = int(element['view_number'])
-                        new_view_number -= 1
-                        element['view_number'] = str(new_view_number)
-                        break
             break
     update_file(file, data_list)
     if len(data_list[0]) == 6:
@@ -188,30 +180,39 @@ def vote_up(file, data_id):
 
 def vote_down(file, data_id):
     data_list = read_file(file)
+    question_id = ""
     for item in data_list:
         if item['id'] == data_id:
             if len(data_list[0]) == 6:
                 question_id = item['question_id']
+                question_list = vote_dont_change_view(data_list, item, question_id)
+            else:
+                data_list = vote_dont_change_view(data_list, item, question_id)
             new_vote_number = int(item['vote_number'])
             new_vote_number -= 1
             item['vote_number'] = str(new_vote_number)
-            if len(data_list[0]) == 7:
-                new_view_number = int(item['view_number'])
-                new_view_number -= 1
-                item['view_number'] = str(new_view_number)
-            else:
-                question_list = read_file(server.question_path())
-                for element in question_list:
-                    if element['id'] == question_id:
-                        new_view_number = int(element['view_number'])
-                        new_view_number -= 1
-                        element['view_number'] = str(new_view_number)
-                        break
             break
     update_file(file, data_list)
     if len(data_list[0]) == 6:
         update_file(server.question_path(), question_list)
         return question_id
+
+
+def vote_dont_change_view(data_list, item, question_id):
+    if len(data_list[0]) == 7:
+        new_view_number = int(item['view_number'])
+        new_view_number -= 1
+        item['view_number'] = str(new_view_number)
+        return data_list
+    else:
+        question_list = read_file(server.question_path())
+        for element in question_list:
+            if element['id'] == question_id:
+                new_view_number = int(element['view_number'])
+                new_view_number -= 1
+                element['view_number'] = str(new_view_number)
+                return question_list
+
 
 def sort_data(data, order_by, order_direction):
     if order_direction == "ascending":
