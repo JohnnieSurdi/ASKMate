@@ -1,7 +1,7 @@
 import csv
 import server
 import os
-
+from datetime import datetime
 
 def write_new_answer_to_file(new_answer):
     with open(server.answer_path(), 'a', newline='') as csvfile:
@@ -139,6 +139,18 @@ def read_file(filename):
     with open(file, mode="r") as csv_file:
         csv_reader = csv.DictReader(csv_file)
         return list(csv_reader)
+
+
+def timestamp_to_date(dictionary):
+    if type(dictionary) is dict:
+        dictionary['submission_time'] = dictionary['submission_time'].split('.')
+        dictionary['submission_time'] = datetime.fromtimestamp(int(dictionary['submission_time'][0]))
+    if type(dictionary) is list:
+        for one_dict in dictionary:
+            one_dict['submission_time'] = one_dict['submission_time'].split('.')
+            one_dict['submission_time'] = datetime.fromtimestamp(int(one_dict['submission_time'][0]))
+    print(dictionary)
+    return dictionary
 
 
 def get_question_to_edit(question_id):
