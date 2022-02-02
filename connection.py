@@ -64,9 +64,19 @@ def delete_from_file(data_id, file_questions, file_answers):
     else:
         question_list_updated = delete_item_from_list(data_id, question_list)
         answer_list_updated = delete_item_from_answers(data_id, answer_list)
-    update_file(file_questions, question_list_updated)
-    update_answers_question_id(file_answers, answer_list_updated,data_id)
+        update_file(file_questions, question_list_updated)
+        update_answers_question_id(file_answers, answer_list_updated,data_id)
     if len(question_list[0]) == 6:
+        return question_id
+
+def delete_answer_from_file(data_id, file):
+    data_list = read_file(file)
+    if len(data_list[0]) == 6:
+        list_updated, question_id = delete_item_from_list(data_id, data_list)
+    else:
+        list_updated = delete_item_from_list(data_id, data_list)
+    update_file(file, list_updated)
+    if len(data_list[0]) == 6:
         return question_id
 
 
@@ -157,9 +167,22 @@ def vote_up(file, data_id):
             new_vote_number = int(item['vote_number'])
             new_vote_number += 1
             item['vote_number'] = str(new_vote_number)
+            if len(data_list[0]) == 7:
+                new_view_number = int(item['view_number'])
+                new_view_number -= 1
+                item['view_number'] = str(new_view_number)
+            else:
+                question_list = read_file(server.question_path())
+                for element in question_list:
+                    if element['id'] == question_id:
+                        new_view_number = int(element['view_number'])
+                        new_view_number -= 1
+                        element['view_number'] = str(new_view_number)
+                        break
             break
     update_file(file, data_list)
     if len(data_list[0]) == 6:
+        update_file(server.question_path(), question_list)
         return question_id
 
 
@@ -172,7 +195,20 @@ def vote_down(file, data_id):
             new_vote_number = int(item['vote_number'])
             new_vote_number -= 1
             item['vote_number'] = str(new_vote_number)
+            if len(data_list[0]) == 7:
+                new_view_number = int(item['view_number'])
+                new_view_number -= 1
+                item['view_number'] = str(new_view_number)
+            else:
+                question_list = read_file(server.question_path())
+                for element in question_list:
+                    if element['id'] == question_id:
+                        new_view_number = int(element['view_number'])
+                        new_view_number -= 1
+                        element['view_number'] = str(new_view_number)
+                        break
             break
     update_file(file, data_list)
     if len(data_list[0]) == 6:
+        update_file(server.question_path(), question_list)
         return question_id

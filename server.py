@@ -120,7 +120,7 @@ def edit_question(question_id):
 
 @app.route("/answer/<answer_id>/delete")
 def delete_answer(answer_id):
-    question_id = connection.delete_from_file(answer_id, answer_path())
+    question_id = connection.delete_answer_from_file(answer_id, answer_path())
     return redirect('/question/'+str(question_id))
 
 
