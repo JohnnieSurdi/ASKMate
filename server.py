@@ -50,6 +50,7 @@ def home_page():
 def list_questions():
     headers = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
     data = connection.read_file(question_path())
+    data = connection.timestamp_to_date(data)
     data_sorted_by_id = sorted(data, key=lambda d: d['id'], reverse=True)
     return render_template('list.html', data=data_sorted_by_id, headers=headers)
 
@@ -63,6 +64,8 @@ def route_question_by_id(question_id):
     question['view_number'] = str(int(question['view_number']) + 1)
     final_data = data_handler.edit_data(question_id, question, question_path())
     data_handler.data_writer(question_path(), final_data, data_handler.QUESTION_TITLE)
+    question = connection.timestamp_to_date(question)
+    answers = connection.timestamp_to_date(answers)
     return render_template('display_question_and_answers.html', question=question, answers=answers)
 
 
