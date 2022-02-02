@@ -28,7 +28,6 @@ def upload_image(image):
         image_path = 'no_image'
     if image and allowed_file(image.filename):
         filename = secure_filename(image.filename)
-        #image.save('C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/'+os.path.join(app.config['UPLOAD_FOLDER'], filename))
         image.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
         image_path = filename
     return image_path
@@ -37,13 +36,11 @@ def upload_image(image):
 # path for answer database
 def answer_path():
     return 'sample_data/answer.csv'
-    #return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/answer.csv'
 
 
 # path for question database
 def question_path():
     return 'sample_data/question.csv'
-    #return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv'
 
 
 # load home page
