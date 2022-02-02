@@ -69,6 +69,9 @@
                     <img src="/static/uploads/{{ answer['image'] }}" width="100" hight="100">
                 </td>
                 {% endif %}
+                <td>
+                    <p><a href="/answer/{{ answer['id'] }}/delete"><button>Delete answer</button></a></p>
+                </td>
             </tr>
             {% endfor %}
         </table>
