@@ -31,11 +31,14 @@
             color: white;
             text-transform: uppercase;
 }
+        option, select, label {
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
     <div>
-        <div class="nav">
+        <div>
         <a href="/"><h1>Main page</h1></a>
         </div>
 
@@ -44,6 +47,7 @@
 
         <table id="customers">
             <thead>
+            <form method="POST">
                 <tr>
                     {% for header in headers %}
                        <th>
@@ -59,6 +63,7 @@
                        </th>
                     {% endfor %}
                 </tr>
+            </form>
             </thead>
             <tbody>
                 {% for dict in data %}
@@ -76,11 +81,28 @@
                 {% endfor %}
             </tbody>
         </table>
+        <form method="GET">
+        <label for="sort">Sort questions by:
+            <select name="order_by" id="order">
+                <option id="title">title</option>
+                <option id="submission_time">submission time</option>
+                <option id="message">message</option>
+                <option id="view_number">number of views</option>
+                <option id="vote_number">number of votes</option>
+            </select>
+            <select name="order_direction" id="direction">
+                <option id="asc">ascending</option>
+                <option id="dsc">descending</option>
+            </select>
+            <button type="submit"><strong>Sort</button>
+        </label>
+        </form>
             <br>
             <br>
         <a href="/add-question">
         <button>Add question</button>
         </a>
+    </div>
     </div>
 </body>
 </html>

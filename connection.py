@@ -179,9 +179,22 @@ def vote_up(file, data_id):
             new_vote_number = int(item['vote_number'])
             new_vote_number += 1
             item['vote_number'] = str(new_vote_number)
+            if len(data_list[0]) == 7:
+                new_view_number = int(item['view_number'])
+                new_view_number -= 1
+                item['view_number'] = str(new_view_number)
+            else:
+                question_list = read_file(server.question_path())
+                for element in question_list:
+                    if element['id'] == question_id:
+                        new_view_number = int(element['view_number'])
+                        new_view_number -= 1
+                        element['view_number'] = str(new_view_number)
+                        break
             break
     update_file(file, data_list)
     if len(data_list[0]) == 6:
+        update_file(server.question_path(), question_list)
         return question_id
 
 
@@ -194,7 +207,40 @@ def vote_down(file, data_id):
             new_vote_number = int(item['vote_number'])
             new_vote_number -= 1
             item['vote_number'] = str(new_vote_number)
+            if len(data_list[0]) == 7:
+                new_view_number = int(item['view_number'])
+                new_view_number -= 1
+                item['view_number'] = str(new_view_number)
+            else:
+                question_list = read_file(server.question_path())
+                for element in question_list:
+                    if element['id'] == question_id:
+                        new_view_number = int(element['view_number'])
+                        new_view_number -= 1
+                        element['view_number'] = str(new_view_number)
+                        break
             break
     update_file(file, data_list)
     if len(data_list[0]) == 6:
+        update_file(server.question_path(), question_list)
         return question_id
+
+def sort_data(data, order_by, order_direction):
+    if order_direction == "ascending":
+        direction = False
+    elif order_direction == "descending":
+        direction = True
+    elif order_direction == None:
+        direction = False
+
+    if order_by == "number of votes":
+        data.sort(key=lambda x: int(x["vote_number"]), reverse=direction)
+    elif order_by == 'submission time':
+        data.sort(key=lambda x: x['submission_time'], reverse=direction)
+    elif order_by == 'title':
+        data.sort(key=lambda x: x["title"], reverse=direction)
+    elif order_by == 'message':
+        data.sort(key=lambda x: x["message"], reverse=direction)
+    elif order_by == 'number of views':
+        data.sort(key=lambda x: int(x["view_number"]), reverse=direction)
+    return data
