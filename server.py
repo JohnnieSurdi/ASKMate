@@ -32,13 +32,13 @@ def upload_image(image):
     return image_path
 
 def answer_path():
-    return 'sample_data/answer.csv'
-    #return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/answer.csv'
+    #return 'sample_data/answer.csv'
+    return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/answer.csv'
 
 
 def question_path():
-    return 'sample_data/question.csv'
-    #return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv'
+    #return 'sample_data/question.csv'
+    return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv'
 
 
 @app.route("/")
@@ -127,7 +127,7 @@ def edit_question(question_id):
 
 @app.route("/answer/<answer_id>/delete")
 def delete_answer(answer_id):
-    question_id = connection.delete_from_file(answer_id, answer_path())
+    question_id = connection.delete_answer_from_file(answer_id, answer_path())
     return redirect('/question/'+str(question_id))
 
 

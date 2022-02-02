@@ -64,9 +64,19 @@ def delete_from_file(data_id, file_questions, file_answers):
     else:
         question_list_updated = delete_item_from_list(data_id, question_list)
         answer_list_updated = delete_item_from_answers(data_id, answer_list)
-    update_file(file_questions, question_list_updated)
-    update_answers_question_id(file_answers, answer_list_updated,data_id)
+        update_file(file_questions, question_list_updated)
+        update_answers_question_id(file_answers, answer_list_updated,data_id)
     if len(question_list[0]) == 6:
+        return question_id
+
+def delete_answer_from_file(data_id, file):
+    data_list = read_file(file)
+    if len(data_list[0]) == 6:
+        list_updated, question_id = delete_item_from_list(data_id, data_list)
+    else:
+        list_updated = delete_item_from_list(data_id, data_list)
+    update_file(file, list_updated)
+    if len(data_list[0]) == 6:
         return question_id
 
 
