@@ -1,5 +1,6 @@
 import csv
 import server
+import os
 
 
 
@@ -86,9 +87,12 @@ def update_file(file, list_updated):
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
 
+def get_path(filename:str):
+    return os.path.join(os.path.dirname(__file__), filename)
 
 def read_file(filename):
-    with open(filename, mode="r") as csv_file:
+    file = get_path(filename)
+    with open(file, mode="r") as csv_file:
         csv_reader = csv.DictReader(csv_file)
         return list(csv_reader)
 
