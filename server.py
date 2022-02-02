@@ -32,13 +32,13 @@ def upload_image(image):
     return image_path
 
 def answer_path():
-    #return 'sample_data/answer.csv'
-    return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/answer.csv'
+    return 'sample_data/answer.csv'
+    #return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/answer.csv'
 
 
 def question_path():
-    #return 'sample_data/question.csv'
-    return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv'
+    return 'sample_data/question.csv'
+    #return 'C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/sample_data/question.csv'
 
 
 @app.route("/")
@@ -51,7 +51,12 @@ def list_questions():
     headers = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
     data = connection.read_file(question_path())
     data_sorted_by_id = sorted(data, key=lambda d: d['id'], reverse=True)
-    return render_template('list.html', data=data_sorted_by_id, headers=headers)
+    data = data_sorted_by_id
+    if request.method == 'GET':
+        order = request.args.get('order_by')
+        direction = request.args.get('order_direction')
+        connection.sort_data(data, order, direction)
+    return render_template('list.html', data=data, headers=headers)
 
 
 @app.route('/question/<question_id>')

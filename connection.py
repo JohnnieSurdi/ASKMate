@@ -186,3 +186,23 @@ def vote_down(file, data_id):
     update_file(file, data_list)
     if len(data_list[0]) == 6:
         return question_id
+
+def sort_data(data, order_by, order_direction):
+    if order_direction == "ascending":
+        direction = False
+    elif order_direction == "descending":
+        direction = True
+    elif order_direction == None:
+        direction = False
+
+    if order_by == "number of votes":
+        data.sort(key=lambda x: int(x["vote_number"]), reverse=direction)
+    elif order_by == 'submission time':
+        data.sort(key=lambda x: x['submission_time'], reverse=direction)
+    elif order_by == 'title':
+        data.sort(key=lambda x: x["title"], reverse=direction)
+    elif order_by == 'message':
+        data.sort(key=lambda x: x["message"], reverse=direction)
+    elif order_by == 'number of views':
+        data.sort(key=lambda x: int(x["view_number"]), reverse=direction)
+    return data
