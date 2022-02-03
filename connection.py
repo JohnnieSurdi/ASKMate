@@ -228,22 +228,22 @@ def vote_dont_change_view(data_list, item, question_id):
 
 # sort list function
 def sort_data(data, order_by, order_direction):
-    if order_direction == "ascending":
+    if order_direction == "Ascending":
         direction = False
-    elif order_direction == "descending":
+    elif order_direction == "Descending":
         direction = True
     elif order_direction == None:
         direction = False
 
-    if order_by == "number of votes":
+    if order_by == "Number of votes":
         data.sort(key=lambda x: int(x["vote_number"]), reverse=direction)
-    elif order_by == 'submission time':
+    elif order_by == 'Submission time':
         data.sort(key=lambda x: x['submission_time'], reverse=direction)
-    elif order_by == 'title':
+    elif order_by == 'Title':
         data.sort(key=lambda x: x["title"], reverse=direction)
-    elif order_by == 'message':
+    elif order_by == 'Message':
         data.sort(key=lambda x: x["message"], reverse=direction)
-    elif order_by == 'number of views':
+    elif order_by == 'Number of views':
         data.sort(key=lambda x: int(x["view_number"]), reverse=direction)
     return data
 
@@ -280,3 +280,10 @@ def edit_data(id_, new_line, filename):
         if row["id"] == id_:
             list_of_data[i] = new_line
     return list_of_data
+
+
+def get_title_by_id(question_id):
+    dicts = read_file(server.question_path())
+    for dict in dicts:
+        if dict['id']==question_id:
+            return dict['title']

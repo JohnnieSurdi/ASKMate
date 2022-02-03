@@ -3,46 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>List of all questions</title>
-    <style>
-        #customers {
-            font-family: Arial, Helvetica, sans-serif;
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        #customers td, #customers th {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-
-        #customers tr:nth-child(even){
-            background-color: #f2f2f2;
-        }
-
-        #customers tr:hover {
-            background-color: #ddd;
-        }
-
-        #customers th {
-            padding-top: 12px;
-            padding-bottom: 12px;
-            text-align: left;
-            background-color: #04AA6D;
-            color: white;
-            text-transform: uppercase;
-}
-        option, select, label {
-            text-transform: uppercase;
-        }
-    </style>
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+            crossorigin="anonymous"
+    />
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+            crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div>
+    <div class="container" align="center">
         <div>
-        <a href="/"><h1>Main page</h1></a>
+        <h1>Ask Mate - Main Page</h1>
         </div>
 
-        <div>
+        <div class="form-group">
         <h1>List of all questions:</h1>
 
         <table id="customers">
@@ -84,28 +64,43 @@
         <form method="GET">
         <label for="sort">Sort questions by:
             <select name="order_by" id="order">
-                <option id="title">title</option>
-                <option id="submission_time">submission time</option>
-                <option id="message">message</option>
-                <option id="view_number">number of views</option>
-                <option id="vote_number">number of votes</option>
+                <option id="title">Title</option>
+                <option id="submission_time">Submission time</option>
+                <option id="message">Message</option>
+                <option id="view_number">Number of views</option>
+                <option id="vote_number">Number of votes</option>
             </select>
             <select name="order_direction" id="direction">
-                <option id="asc">ascending</option>
-                <option id="dsc">descending</option>
+                <option id="asc">Ascending</option>
+                <option id="dsc">Descending</option>
             </select>
-            <button type="submit"><strong>Sort</button>
+            <button type="submit" class="btn btn-primary"><strong>Sort</button>
         </label>
         </form>
             <br>
             <br>
 
-        <button>
-            <a href="/add-question">
+        <button class="btn btn-primary">
+            <a id="add_question" href="/add-question">
         Add question
             </a>
         </button>
     </div>
     </div>
+<script
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"
+></script>
+<script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"
+></script>
+<script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"
+></scrip
 </body>
 </html>
