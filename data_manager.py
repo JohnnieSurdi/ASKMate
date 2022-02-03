@@ -1,4 +1,3 @@
-from flask import request
 import time
 import connection
 import server
