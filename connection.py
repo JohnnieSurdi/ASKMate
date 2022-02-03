@@ -39,7 +39,7 @@ def delete_item_from_list(data_id, data_list):
     list_updated = []
     for item in data_list:
         if item['id'] == data_id:
-            os.remove(f"C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/static/uploads/{item['image']}")
+            os.remove(f"static/uploads/{item['image']}")
             if len(item) == server.ANSWER_DATABASE_LENGTH:
                 question_id = item['question_id']
             continue
@@ -56,7 +56,7 @@ def delete_item_from_answers(data_id, data_list):
     list_updated = []
     for item in data_list:
         if item['question_id'] == data_id:
-            os.remove(f"C:/Users/kamci/projects/ask-mate-1-python-MichalProsniak/static/uploads/{item['image']}")
+            os.remove(f"static/uploads/{item['image']}")
             continue
         else:
             list_updated.append(item)
