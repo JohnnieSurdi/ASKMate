@@ -5,12 +5,18 @@ import server
 
 
 def list_prepare_question_to_show():
-    headers = ["id", "submission_time", "view_number", "vote_number", "title", "message"]
+    headers = ["submission_time", "view_number", "vote_number", "title", "message"]
     data = connection.read_file(server.question_path())
     data = connection.timestamp_to_date(data)
+    slice_message(data)
     data_sorted_by_id = sorted(data, key=lambda d: d['id'], reverse=True)
     data = data_sorted_by_id
     return headers, data
+
+def slice_message(data):
+    for element in data:
+        if len(str(element['message'])) > 100:
+            element['message'] = element['message'][:97]+'...'
 
 
 def list_sort_question(data,order,direction):
@@ -19,6 +25,7 @@ def list_sort_question(data,order,direction):
 
 def question_display_by_id_with_answers(question_id):
     answers = connection.get_answers_by_id(question_id)
+    connection.sort_by_votes(answers)
     for answer in answers:
         answer.pop('question_id', None)
     question = connection.get_data_by_id(server.question_path(), question_id)

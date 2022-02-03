@@ -18,14 +18,14 @@
 </head>
 <body>
 <div align="center" class="container">
-                <div align="center">
-        <h1>Ask Mate</h1>
+    <div align="center">
+<a href="/"><img id="logo" src="/static/logo3.png"></a>
         </div>
     <div class="form-group">
     <h1>Add new answer to question</br> {{ title }}</h1>
     <form action="/question/{{ question_id }}/new-answer" method="post" enctype="multipart/form-data">
         <label for="post_new_answer"><h2>Your answer:</h2></label></br>
-        <textarea class="form-control" id="post_new_answer" name="new_answer" rows="3"></textarea>
+        <textarea class="form-control" id="post_new_answer" name="new_answer" rows="3"></textarea><br>
         <div class="form-group">
         <label for="image">Add image</label>
         <input type="file"

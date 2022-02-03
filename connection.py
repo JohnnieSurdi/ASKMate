@@ -5,7 +5,7 @@ from datetime import datetime
 
 # append new answer to answer.csv
 def write_new_answer_to_file(new_answer):
-    with open(server.answer_path(), 'a', newline='') as csvfile:
+    with open(server.answer_path(), 'a', newline='\n') as csvfile:
         fieldnames = server.ANSWER_TITLE
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writerow({'id': new_answer['id'], 'submission_time': new_answer['submission_time'],
@@ -26,7 +26,7 @@ def add_question_to_file(title, question, submission_time, image):
     new_id = create_new_id(file)
     view_number = 0
     vote_number = 0
-    with open(server.question_path(), 'a', newline='') as csvfile:
+    with open(server.question_path(), 'a', newline='\n') as csvfile:
         fieldnames = server.QUESTION_TITLE
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writerow({'id': new_id, 'submission_time': submission_time, 'view_number': view_number,
@@ -39,6 +39,7 @@ def delete_item_from_list(data_id, data_list):
     list_updated = []
     for item in data_list:
         if item['id'] == data_id:
+            os.remove(f"static/uploads/{item['image']}")
             if len(item) == server.ANSWER_DATABASE_LENGTH:
                 question_id = item['question_id']
             continue
@@ -55,6 +56,7 @@ def delete_item_from_answers(data_id, data_list):
     list_updated = []
     for item in data_list:
         if item['question_id'] == data_id:
+            os.remove(f"static/uploads/{item['image']}")
             continue
         else:
             list_updated.append(item)
@@ -76,6 +78,7 @@ def delete_from_file(data_id, file_questions, file_answers):
         return question_id
 
 
+
 # delete answer from file
 def delete_answer_from_file(data_id, file):
     data_list = read_file(file)
@@ -89,7 +92,7 @@ def delete_answer_from_file(data_id, file):
 
 # update question and answers id after deletion
 def update_answers_question_id(file, list_updated,data_id):
-    with open(file, 'w', newline='') as csvfile:
+    with open(file, 'w', newline='\n') as csvfile:
         if len(list_updated) > 0:
             fieldnames = server.ANSWER_TITLE
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -112,7 +115,7 @@ def update_answers_question_id(file, list_updated,data_id):
 
 # update file after deletion
 def update_file(file, list_updated):
-    with open(file, 'w', newline='') as csvfile:
+    with open(file, 'w', newline='\n') as csvfile:
         if len(list_updated) > 0:
             if len(list_updated[0]) == server.QUESTION_DATABASE_LENGTH:
                 fieldnames = server.QUESTION_TITLE
@@ -163,7 +166,6 @@ def timestamp_to_date(dictionary):
         for one_dict in dictionary:
             one_dict['submission_time'] = one_dict['submission_time'].split('.')
             one_dict['submission_time'] = datetime.fromtimestamp(int(one_dict['submission_time'][0]))
-    print(dictionary)
     return dictionary
 
 
@@ -264,6 +266,10 @@ def get_data_by_id(filename, id_):
 def get_answers_by_id(id_):
     list_of_answers = get_all_data(server.answer_path())
     return [answer for answer in list_of_answers if answer['question_id'] == id_]
+
+
+def sort_by_votes(answers):
+    sort_data(answers, "Number of votes", "Descending")
 
 
 def data_writer(filename, to_write, fieldnames):
