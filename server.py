@@ -46,7 +46,7 @@ def question_path():
 # load home page
 @app.route("/")
 def home_page():
-    return render_template('index.html')
+    return redirect('/list')
 
 
 # load question list page
@@ -87,7 +87,8 @@ def add_answer(question_id):
         image = request.files['image']
         data_manager.add_answer_to_file(question_id, message, image)
         return redirect('/question/' + str(question_id))
-    return render_template('add_new_answer.html', question_id=question_id)
+    title = connection.get_title_by_id(question_id)
+    return render_template('add_new_answer.html', question_id=question_id, title=title)
 
 
 # delete question

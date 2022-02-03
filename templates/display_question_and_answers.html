@@ -3,6 +3,18 @@
     <head>
         <meta charset="UTF-8">
         <title>AskMate: {{ question['title'] }}</title>
+                <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+            crossorigin="anonymous"
+    />
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+            crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/static/style.css">
         <style>
             table, th, td {
             border: 1px solid black;
@@ -10,8 +22,13 @@
         </style>
     </head>
     <body>
+    <div class="container">
+                    <div align="center">
+        <h1>Ask Mate</h1>
+        </div>
+        <div class="form-group" align="center">
         <h1>{{ question['title'] }}</h1>
-        <table>
+        <table id="customers">
             <tr>
                 <th>Id</th>
                 <th>Views</th>
@@ -24,9 +41,9 @@
                 <td>{{ question['id'] }}</td>
                 <td>{{ question['view_number'] }}</td>
                 <td>
-                    <p><a href="/question/{{ question['id'] }}/vote_up"><button>UP_VOTE</button></a></p>
+                    <p><a href="/question/{{ question['id'] }}/vote_up"><img src="/static/up.png"></a></p>
                     <p>{{ question['vote_number'] }}</p>
-                    <p><a href="/question/{{ question['id'] }}/vote_down"> <button>DOWN_VOTE</button></a></p>
+                    <p><a href="/question/{{ question['id'] }}/vote_down"><img src="/static/down.png"></a></p>
                 </td>
                 <td>{{ question['message'] }}</td>
                 <td>{{ question['submission_time'] }}</td>
@@ -42,21 +59,22 @@
             </tr>
         </table>
         <h2>Answers:</h2>
-        <table>
+        <table id="customers">
             <tr>
                 <th>Id</th>
                 <th>Votes</th>
                 <th>Answer</th>
                 <th>Submission Time</th>
                 <th>Answer Image</th>
+                <th> </th>
             </tr>
             {% for answer in answers %}
             <tr>
                 <td>{{ answer['id'] }}</td>
                 <td>
-                    <p><a href="/answer/{{ answer['id'] }}/vote_up"><button>UP_VOTE</button></a></p>
+                    <p><a href="/answer/{{ answer['id'] }}/vote_up"><img src="/static/up.png"></a></p>
                     <p>{{ answer['vote_number'] }}</p>
-                    <p><a href="/answer/{{ answer['id'] }}/vote_down"><button>DOWN_VOTE</button></a></p>
+                    <p><a href="/answer/{{ answer['id'] }}/vote_down"><img src="/static/down.png"></a></p>
                 </td>
                 <td>{{ answer['message'] }}</td>
                 <td>{{ answer['submission_time'] }}</td>
@@ -70,18 +88,36 @@
                 </td>
                 {% endif %}
                 <td>
-                    <p><a href="/answer/{{ answer['id'] }}/delete"><button>Delete answer</button></a></p>
+                    <p><a href="/answer/{{ answer['id'] }}/delete"><img src="/static/delete.png"></a></p>
                 </td>
             </tr>
             {% endfor %}
         </table>
+            </br>
         <p>
-            <a href="/question/{{ question['id'] }}/new-answer"><button>Add a new answer</button></a>
-            <a href="/question/{{ question['id'] }}/edit"><button>Edit question</button></a>
+            <a href="/question/{{ question['id'] }}/new-answer"><button class="btn btn-primary">Add a new answer</button></a>
+            <a href="/question/{{ question['id'] }}/edit"><button class="btn btn-primary">Edit question</button></a>
         </p>
         <p>
-            <a href="/list"><button>Back</button></a>
-            <a href="/question/{{ question['id'] }}/delete"><button>Delete question</button></a>
+            <a href="/list"><button class="btn btn-primary">Back</button></a>
+            <a href="/question/{{ question['id'] }}/delete"><button class="btn btn-primary">Delete question</button></a>
         </p>
+        </div>
+    </div>
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"
+></script>
+<script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"
+></script>
+<script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"
+></scrip
     </body>
 </html>

@@ -45,7 +45,6 @@ def add_answer_to_file(question_id,message,image):
     image_path = server.upload_image(image)
     adding_answer['image'] = image_path
     connection.write_new_answer_to_file(adding_answer)
-    return question_id
 
 def edit_question_pass_data_to_file(question_id,edited_title,edited_question):
     new_submission_time = time.time()
