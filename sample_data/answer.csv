@@ -1,2 +1,7 @@
 id,submission_time,vote_number,question_id,message,image
 1,1643792210.5827725,5,1,Add good quality flour.,maka.jpg
+2,1643893754.3251922,11,2,"Use abs as key to the sorted function or list.sort:
+
+>>> lis = [1,-5,10,6,3,-4,-9]
+>>> sorted(lis, key=abs, reverse=True)
+[10, -9, 6, -5, -4, 3, 1]",no_image
