@@ -39,7 +39,10 @@ def delete_item_from_list(data_id, data_list):
     list_updated = []
     for item in data_list:
         if item['id'] == data_id:
-            os.remove(f"static/uploads/{item['image']}")
+            try:
+                os.remove(f"static/uploads/{item['image']}")
+            except:
+                pass
             if len(item) == server.ANSWER_DATABASE_LENGTH:
                 question_id = item['question_id']
             continue
@@ -56,8 +59,10 @@ def delete_item_from_answers(data_id, data_list):
     list_updated = []
     for item in data_list:
         if item['question_id'] == data_id:
-            os.remove(f"static/uploads/{item['image']}")
-            continue
+            try:
+                os.remove(f"static/uploads/{item['image']}")
+            except:
+                pass
         else:
             list_updated.append(item)
     return list_updated

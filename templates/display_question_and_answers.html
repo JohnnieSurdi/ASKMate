@@ -74,7 +74,7 @@
                     <p>{{ answer['vote_number'] }}</p>
                     <p><a href="/answer/{{ answer['id'] }}/vote_down"><img src="/static/down.png"></a></p>
                 </td>
-                <td>{{ answer['message'] }}</td>
+                <td style="white-space: pre-wrap;">{{ answer['message'] }}</td>
                 <td>{{ answer['submission_time'] }}</td>
                 {% if answer['image'] == 'no_image' %}
                 <td>
