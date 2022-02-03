@@ -1,9 +1,9 @@
-id,submission_time,view_number,vote_number,title,message,image
-1,1643792210.5827725,66,6,How make perfect pizza?,How to make a good pizza to look like the one in the picture?,pizza.jpg
-2,1643886236.2073014,12,1,How sort list in python?,"I have this list
+id,submission_time,view_number,vote_number,title,message,image
+1,1643792210.5827725,67,6,How make perfect pizza?,How to make a good pizza to look like the one in the picture?,pizza.jpg
+2,1643886236.2073014,15,1,How sort list in python?,"I have this list
 
 [1,-5,10,6,3,-4,-9]
 But now I want the list to be sorted like this:
 
 [10,-9,6,-5,-4,3,1]
-As you can see I want to order from high to low no matter what sign each number has, but keeping the sign, is it clear?",no_image
+As you can see I want to order from high to low no matter what sign each number has, but keeping the sign, is it clear?",no_image
