@@ -274,7 +274,7 @@ def get_answers_by_id(id_):
 
 
 def sort_by_votes(answers):
-    sort_data(answers, "Number of votes", "Descending")
+    sort_data(answers, "Number of votes", "from highest")
 
 
 def data_writer(filename, to_write, fieldnames):
