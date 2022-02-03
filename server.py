@@ -141,6 +141,10 @@ def vote_down_answer(answer_id):
     question_id = connection.vote(answer_path(), answer_id,vote='-')
     return redirect('/question/' + str(question_id))
 
+@app.route("/show_image/<image>/<question_id>")
+def show_image(image, question_id):
+    return render_template('show_image.html', image=image, question_id=question_id)
+
 
 if __name__ == "__main__":
     app.run()

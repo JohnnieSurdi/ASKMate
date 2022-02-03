@@ -52,7 +52,7 @@
                 <td>{{ question['submission_time'] }}</td>
                 {% if question['image'] != 'no_image' %}
                     <td>
-                    <img src="/static/uploads/{{ question['image'] }}" width="100" hight="100">
+                        <a href="/show_image/{{ question['image'] }}/{{ question['id'] }}"><img src="/static/uploads/{{ question['image'] }}" width="100" hight="100"></a>
                     </td>
                 {% endif %}
             </tr>
@@ -82,7 +82,7 @@
                 </td>
                 {% else %}
                 <td>
-                    <img src="/static/uploads/{{ answer['image'] }}" width="100" hight="100">
+                    <a href="/show_image/{{ answer['image'] }}/{{ question['id'] }}"><img src="/static/uploads/{{ answer['image'] }}" width="100" hight="100"></a>
                 </td>
                 {% endif %}
                 <td>

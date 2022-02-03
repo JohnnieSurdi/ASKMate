@@ -235,9 +235,9 @@ def vote_dont_change_view(data_list, item, question_id):
 
 # sort list function
 def sort_data(data, order_by, order_direction):
-    if order_direction == "Ascending":
+    if order_direction == "from lowest":
         direction = False
-    elif order_direction == "Descending":
+    elif order_direction == "from highest":
         direction = True
     elif order_direction == None:
         direction = False
