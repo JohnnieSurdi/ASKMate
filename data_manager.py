@@ -1,6 +1,7 @@
 import time
 import connection
 import server
+from psycopg2.extras import RealDictCursor
 import database_common
 
 
