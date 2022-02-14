@@ -52,6 +52,9 @@ def home_page():
 # load question list page
 @app.route("/list")
 def list_questions():
+    x = data_manager.get_applicants_by_code()
+    print(x)
+    print('c')
     headers, data_questions = data_manager.list_prepare_question_to_show()
     if request.method == 'GET':
         order = request.args.get('order_by')
