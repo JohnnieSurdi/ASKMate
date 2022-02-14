@@ -6,14 +6,12 @@ import database_common
 
 
 @database_common.connection_handler
-def get_mentors(cursor: RealDictCursor):
+def get_applicants_by_code(cursor):
     query = """
-        SELECT first_name, last_name, city
-        FROM mentor
-        ORDER BY first_name"""
+        SELECT *
+        FROM answer"""
     cursor.execute(query)
     return cursor.fetchall()
-
 
 def list_prepare_question_to_show():
     headers = ["submission_time", "view_number", "vote_number", "title", "message"]
