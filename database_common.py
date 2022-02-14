@@ -1,9 +1,6 @@
 # Creates a decorator to handle the database connection/cursor opening/closing.
 # Creates the cursor with RealDictCursor, thus it returns real dictionaries, where the column names are the keys.
-<<<<<<< HEAD
 import os
-=======
->>>>>>> b0b14426b68c0d68bf7d68614dff7467606de09c
 
 import psycopg2
 import psycopg2.extras
@@ -12,21 +9,10 @@ import psycopg2.extras
 def get_connection_string():
     # setup connection string
     # to do this, please define these environment variables first
-<<<<<<< HEAD
-    os.environ['PSQL_USER_NAME'] = 'postgres'
-    os.environ['PSQL_PASSWORD'] = '123'
-    os.environ['PSQL_HOST'] = 'localhost'
-    os.environ['PSQL_DB_NAME'] = 'ask_mate_2'
     user_name = os.environ.get('PSQL_USER_NAME')
     password = os.environ.get('PSQL_PASSWORD')
     host = os.environ.get('PSQL_HOST')
     database_name = os.environ.get('PSQL_DB_NAME')
-=======
-    user_name = 'postgres'
-    password = '1234'
-    host = 'localhost'
-    database_name = 'application_process'
->>>>>>> b0b14426b68c0d68bf7d68614dff7467606de09c
 
     env_variables_defined = user_name and password and host and database_name
 
