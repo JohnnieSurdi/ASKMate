@@ -1,6 +1,18 @@
 import time
 import connection
 import server
+from psycopg2.extras import RealDictCursor
+import database_common
+
+
+@database_common.connection_handler
+def get_mentors(cursor: RealDictCursor):
+    query = """
+        SELECT first_name, last_name, city
+        FROM mentor
+        ORDER BY first_name"""
+    cursor.execute(query)
+    return cursor.fetchall()
 
 
 def list_prepare_question_to_show():

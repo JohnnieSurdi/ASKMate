@@ -4,6 +4,7 @@ import os
 from werkzeug.utils import secure_filename
 import data_manager
 
+
 QUESTION_TITLE = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
 ANSWER_TITLE = ["id", "submission_time", "vote_number", "question_id", "message", "image"]
 QUESTION_DATABASE_LENGTH = len(QUESTION_TITLE)
