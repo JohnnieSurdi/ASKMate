@@ -5,10 +5,6 @@ from werkzeug.utils import secure_filename
 import data_manager
 
 
-QUESTION_TITLE = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
-ANSWER_TITLE = ["id", "submission_time", "vote_number", "question_id", "message", "image"]
-QUESTION_DATABASE_LENGTH = len(QUESTION_TITLE)
-ANSWER_DATABASE_LENGTH = len(ANSWER_TITLE)
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 UPLOAD_FOLDER = 'static/uploads/'
@@ -34,15 +30,6 @@ def upload_image(image):
     return image_path
 
 
-# path for answer database
-def answer_path():
-    return 'sample_data/answer.csv'
-
-
-# path for question database
-def question_path():
-    return 'sample_data/question.csv'
-
 
 # load home page
 @app.route("/")
@@ -53,22 +40,20 @@ def home_page():
 # load question list page
 @app.route("/list")
 def list_questions():
-    x = data_manager.get_applicants_by_code()
-    print(x)
-    print('c')
     headers, data_questions = data_manager.list_prepare_question_to_show()
-    if request.method == 'GET':
-        order = request.args.get('order_by')
-        direction = request.args.get('order_direction')
-        data_manager.list_sort_question(data_questions,order,direction)
+    order = request.args.get('order_by')
+    direction = request.args.get('order_direction')
+    data_manager.list_sort_question(data_questions,order,direction)
     return render_template('list.html', data=data_questions, headers=headers)
 
 
 # load question detail page
 @app.route('/question/<question_id>')
 def question_display(question_id):
-    question,answers = data_manager.question_display_by_id_with_answers(question_id)
-    return render_template('display_question_and_answers.html', question=question, answers=answers)
+    connection.change_value_db('question', 'view_number', '+', 'id', question_id)
+    question, answers = data_manager.question_display_by_id_with_answers(question_id)
+    print(question)
+    return render_template('display_question_and_answers.html', question=question[0], answers=answers)
 
 
 # load add question page
@@ -98,7 +83,19 @@ def add_answer(question_id):
 # delete question
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
-    connection.delete_from_file(question_id, question_path(), answer_path())
+    images_to_delete = []
+    images_to_delete.append(connection.get_from_db('image', 'question', 'id', question_id))
+    answers_id = connection.get_answer_id_connected_to_question(question_id)
+    for id in answers_id:
+        images_to_delete.append(connection.get_from_db('image', 'answer', 'id', id))
+        connection.delete_from_db('comment', 'answer_id', id)
+    for image in images_to_delete:
+        if os.path.isfile(f"static/uploads/{image}"):
+            os.remove(f"static/uploads/{image}")
+    connection.delete_from_db('comment', 'question_id', question_id)
+    connection.delete_from_db('question_tag', 'question_id', question_id)
+    connection.delete_from_db('answer', 'question_id', question_id)
+    connection.delete_from_db('question', 'id', question_id)
     return redirect('/list')
 
 
@@ -110,38 +107,49 @@ def edit_question(question_id):
         return render_template('edit-question.html', question_to_edit=question_to_edit)
     edited_title = request.form.get('title')
     edited_question = request.form.get('question')
-    data_manager.edit_question_pass_data_to_file(question_id, edited_title, edited_question)
+    connection.update_question(question_id, edited_title, edited_question)
     return redirect('/list')
 
 
 # delete answer
 @app.route("/answer/<answer_id>/delete")
 def delete_answer(answer_id):
-    question_id = connection.delete_answer_from_file(answer_id, answer_path())
+    image_to_delete = connection.get_from_db('image', 'answer', 'id', answer_id)
+    if os.path.isfile(f"static/uploads/{image_to_delete}"):
+        os.remove(f"static/uploads/{image_to_delete}")
+    question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
+    connection.delete_from_db('answer', 'id', answer_id)
+    connection.delete_from_db('comment', 'answer_id', answer_id)
     return redirect('/question/' + str(question_id))
 
 
 @app.route("/question/<question_id>/vote_up")
 def vote_up_question(question_id):
-    connection.vote(question_path(), question_id,vote='+')
+    connection.change_value_db('question', 'vote_number', '+', 'id', question_id)
+    connection.change_value_db('question', 'view_number', '-', 'id', question_id)
     return redirect('/question/' + str(question_id))
 
 
 @app.route("/question/<question_id>/vote_down")
 def vote_down_question(question_id):
-    connection.vote(question_path(), question_id,vote='-')
+    connection.change_value_db('question', 'vote_number', '-', 'id', question_id)
+    connection.change_value_db('question', 'view_number', '-', 'id', question_id)
     return redirect('/question/' + str(question_id))
 
 
 @app.route("/answer/<answer_id>/vote_up")
 def vote_up_answer(answer_id):
-    question_id = connection.vote(answer_path(), answer_id,vote='+')
+    connection.change_value_db('answer', 'vote_number', '+', 'id', answer_id)
+    question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
+    connection.change_value_db('question', 'view_number', '-', 'id', question_id)
     return redirect('/question/' + str(question_id))
 
 
 @app.route("/answer/<answer_id>/vote_down")
 def vote_down_answer(answer_id):
-    question_id = connection.vote(answer_path(), answer_id,vote='-')
+    connection.change_value_db('answer', 'vote_number', '-', 'id', answer_id)
+    question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
+    connection.change_value_db('question', 'view_number', '-', 'id', question_id)
     return redirect('/question/' + str(question_id))
 
 
