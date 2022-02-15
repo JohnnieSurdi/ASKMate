@@ -151,23 +151,32 @@ def list_of_dicts_to_str(key,list):
     string = list[key]
     return string
 
+def convert_order(order):
+    if order == "from lowest":
+        return 'ASC'
+    elif order == "from highest":
+        return 'DESC'
 
-def sort_data(data, order_by, order_direction):
-    if order_direction == "from lowest":
-        direction = False
-    elif order_direction == "from highest":
-        direction = True
-    elif order_direction == None:
-        direction = False
+def convert_direction(direction):
+    if direction == "Number of votes":
+        return 'vote_number'
+    elif direction == 'Submission time':
+        return 'submission_time'
+    elif direction == 'Title':
+        return 'title'
+    elif direction == 'Message':
+        return 'message'
+    elif direction == 'Number of views':
+        return 'view_number'
 
-    if order_by == "Number of votes":
-        data.sort(key=lambda x: int(x["vote_number"]), reverse=direction)
-    elif order_by == 'Submission time':
-        data.sort(key=lambda x: x['submission_time'], reverse=direction)
-    elif order_by == 'Title':
-        data.sort(key=lambda x: x["title"], reverse=direction)
-    elif order_by == 'Message':
-        data.sort(key=lambda x: x["message"], reverse=direction)
-    elif order_by == 'Number of views':
-        data.sort(key=lambda x: int(x["view_number"]), reverse=direction)
-    return data
+
+@database_common.connection_handler
+def sort_questions(cursor, direction, order):
+    order = convert_order(order)
+    direction = convert_direction(direction)
+    query = """
+            SELECT *
+            FROM question
+            ORDER BY %s %s""" % (direction, order)
+    cursor.execute(query)
+    return cursor.fetchall()
