@@ -43,7 +43,8 @@ def list_questions():
     headers, data_questions = data_manager.list_prepare_question_to_show()
     order = request.args.get('order_by')
     direction = request.args.get('order_direction')
-    data_manager.list_sort_question(data_questions,order,direction)
+    if order or direction:
+        data_questions = connection.sort_questions(order, direction)
     return render_template('list.html', data=data_questions, headers=headers)
 
 
@@ -52,7 +53,6 @@ def list_questions():
 def question_display(question_id):
     connection.change_value_db('question', 'view_number', '+', 'id', question_id)
     question, answers = data_manager.question_display_by_id_with_answers(question_id)
-    print(question)
     return render_template('display_question_and_answers.html', question=question[0], answers=answers)
 
 
