@@ -53,7 +53,8 @@ def list_questions():
 def question_display(question_id):
     connection.change_value_db('question', 'view_number', '+', 'id', question_id)
     question, answers = data_manager.question_display_by_id_with_answers(question_id)
-    return render_template('display_question_and_answers.html', question=question[0], answers=answers)
+    applied_tags = data_manager.get_tags_for_question(question_id)
+    return render_template('display_question_and_answers.html', question=question[0], answers=answers, applied_tags=applied_tags)
 
 
 # load add question page
@@ -156,6 +157,28 @@ def vote_down_answer(answer_id):
 @app.route("/show_image/<image>/<question_id>")
 def show_image(image, question_id):
     return render_template('show_image.html', image=image, question_id=question_id)
+
+@app.route("/question/<question_id>/new-tag", methods=['GET', 'POST'])
+def add_new_tag(question_id):
+    if request.method == 'GET':
+        tags = connection.get_all_existing_tags()
+        applied_tags = data_manager.get_tags_for_question(question_id)
+        return render_template('add-tag.html', tags=tags, question_id=question_id,applied_tags=applied_tags)
+    new_defined_tags = request.form.get('new-tags')
+    data_manager.add_new_defined_tags(new_defined_tags)
+    return redirect('/question/' + str(question_id) + '/new-tag')
+
+@app.route("/question/<question_id>/new-tag/<tag>")
+def add_tags_to_question(question_id,tag):
+        tag_id = connection.get_id_by_tag(tag)
+        connection.apply_tag_to_question(question_id,tag_id)
+        return redirect('/question/' + str(question_id) +'/new-tag')
+
+@app.route("/question/<question_id>/new-tag/<tag>/delete")
+def delete_tags_from_question(question_id,tag):
+        tag_id = connection.get_id_by_tag(tag)
+        connection.delete_tag_from_question(question_id,tag_id)
+        return redirect('/question/' + str(question_id) +'/new-tag')
 
 
 if __name__ == "__main__":

@@ -57,6 +57,16 @@
                 {% endif %}
             </tr>
         </table>
+            <div class="tags-container">
+            <div class="tags">
+                <a class="tags-link" href="/question/{{ question['id'] }}/new-tag">Add tags</a>
+            </div>
+            {% for applied_tag in applied_tags %}
+        <div class="tags">
+                {{ applied_tag }}
+            </div>
+        {% endfor %}
+                </div>
             {% if answers %}
         <h1>Answers:</h1>
         <table id="customers">
