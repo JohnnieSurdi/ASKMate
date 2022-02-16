@@ -65,7 +65,7 @@ def add_new_defined_tags(new_defined_tags):
     else:
         new_defined_tags = new_defined_tags.strip()
         if new_defined_tags != '' and new_defined_tags not in existing_tags_list:
-
+            connection.add_new_defined_tags_to_db(new_defined_tags)
 
 def add_comment_to_question(question_id,message):
     submission_time = datetime.datetime.now()
