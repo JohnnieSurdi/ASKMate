@@ -253,6 +253,7 @@ def get_tag_by_id(cursor, id):
     tag_to_return = tag['name']
     return tag_to_return
 
+
 @database_common.connection_handler
 def get_id_by_tag(cursor, tag):
     query = """
@@ -274,6 +275,7 @@ def apply_tag_to_question(cursor, question_id,tag_id):
             ON CONFLICT DO NOTHING""" % (question_id,tag_id)
     cursor.execute(query)
 
+
 @database_common.connection_handler
 def delete_tag_from_question(cursor, question_id,tag_id):
     query = """
@@ -291,6 +293,7 @@ def add_new_defined_tags_to_db(cursor, new_defined_tags):
     cursor.execute(query)
 
 
+@database_common.connection_handler
 def search_in_question_message(cursor, searched_phrase):
     searched_phrase_in_any_position = "%" + searched_phrase + "%"
     query_message = """
@@ -313,8 +316,8 @@ def search_in_question_title(cursor, searched_phrase):
 
 
 def search_in_question(searched_phrase):
-    searched_in_message = search_in_question_message(searched_phrase)
     searched_in_title = search_in_question_title(searched_phrase)
+    searched_in_message = search_in_question_message(searched_phrase)
     searched_in_questions = [data for data in searched_in_message if data not in searched_in_title]
     for data in searched_in_title:
         searched_in_questions.append(data)
@@ -357,3 +360,14 @@ def search_in_questions_and_answers(searched_phrase):
     for question in searched_in_answer:
         searched_questions.append(question)
     return searched_questions
+
+
+def mark_searched_phrase(all_searched_questions, searched_phrase):
+    for question in all_searched_questions:
+        message = str(question['message'])
+        title = str(question['title'])
+        if searched_phrase in question['message']:
+            message = message.replace(searched_phrase, "<mark>" + searched_phrase + "</mark>")
+        elif searched_phrase in question['title']:
+            title = message.replace(searched_phrase, "<mark>" + searched_phrase + "</mark>")
+    return all_searched_questions
