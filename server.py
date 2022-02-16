@@ -5,7 +5,6 @@ from werkzeug.utils import secure_filename
 import data_manager
 
 
-
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 UPLOAD_FOLDER = 'static/uploads/'
 app = Flask(__name__)
@@ -28,7 +27,6 @@ def upload_image(image):
         image.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
         image_path = filename
     return image_path
-
 
 
 # load home page
@@ -113,6 +111,17 @@ def edit_question(question_id):
     edited_title = request.form.get('title')
     edited_question = request.form.get('question')
     connection.update_question(question_id, edited_title, edited_question)
+    return redirect('/list')
+
+
+# edit answer
+@app.route("/answer/<answer_id>/edit", methods=['GET', 'POST'])
+def edit_answer(answer_id):
+    if request.method == 'GET':
+        answer_to_edit = connection.get_answer_to_edit(answer_id)
+        return render_template('edit-answer.html', answer_to_edit=answer_to_edit)
+    edited_answer = request.form.get('answer')
+    connection.update_answer(answer_id, edited_answer)
     return redirect('/list')
 
 

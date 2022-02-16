@@ -38,5 +38,3 @@ def add_answer_to_file(question_id,message,image):
     submission_time = datetime.datetime.now()
     image_path = server.upload_image(image)
     connection.add_answer_to_db(question_id,message, submission_time, image_path)
-
-
