@@ -28,7 +28,7 @@ def get_data_questions_sort_by_id(cursor):
     query = """
         SELECT *
         FROM question
-        ORDER BY id"""
+        ORDER BY id DESC"""
     cursor.execute(query)
     return cursor.fetchall()
 
@@ -70,6 +70,19 @@ def add_answer_to_db(cursor, question_id,message, submission_time, image_path):
         VALUES ('%s','%s','%s','%s','%s')""" % (submission_time, 0, question_id, message, image_path)
     cursor.execute(query)
 
+@database_common.connection_handler
+def add_comment_to_question(cursor, question_id, message, submission_time, edited_count):
+    query = """
+        INSERT INTO comment (question_id, message, submission_time, edited_count)
+        VALUES ('%s','%s','%s','%s')""" % (question_id, message, submission_time, 0)
+    cursor.execute(query)
+
+@database_common.connection_handler
+def add_comment_to_answer(cursor, answer_id, message, submission_time, edited_count) :
+    query = """
+        INSERT INTO comment (answer_id, message, submission_time, edited_count)
+        VALUES ('%s','%s','%s','%s')""" % (answer_id, message, submission_time, 0)
+    cursor.execute(query)
 
 @database_common.connection_handler
 def change_value_db(cursor, db_name, db_col, mark, db_where, db_where_equal):
@@ -99,7 +112,9 @@ def get_id(cursor, submission_time):
         WHERE submission_time = '%s'""" % (submission_time)
     cursor.execute(query)
     id = cursor.fetchall()
+    print(id)
     id = list_of_dicts_to_str('id', id)
+    print(id)
     return id
 
 
@@ -120,6 +135,26 @@ def update_question(cursor, question_id, edited_title, edited_question):
         UPDATE question
         SET title = '%s', message = '%s'
         WHERE id = '%s'""" % (edited_title, edited_question, question_id)
+    cursor.execute(query)
+
+
+@database_common.connection_handler
+def get_answer_to_edit(cursor, answer_id):
+    query = """
+        SELECT * FROM answer
+        WHERE id = '%s'""" % (answer_id)
+    cursor.execute(query)
+    answer = cursor.fetchall()
+    answer = answer[0]
+    return answer
+
+
+@database_common.connection_handler
+def update_answer(cursor, answer_id, edited_answer):
+    query = """
+        UPDATE answer
+        SET message = '%s'
+        WHERE id = '%s'""" % (edited_answer, answer_id)
     cursor.execute(query)
 
 
@@ -159,11 +194,13 @@ def list_of_dicts_to_str(key,list):
     string = list[key]
     return string
 
+
 def convert_order(order):
     if order == "from lowest":
         return 'ASC'
     elif order == "from highest":
         return 'DESC'
+
 
 def convert_direction(direction):
     if direction == "Number of votes":
@@ -183,9 +220,9 @@ def sort_questions(cursor, direction, order):
     order = convert_order(order)
     direction = convert_direction(direction)
     query = """
-            SELECT *
-            FROM question
-            ORDER BY %s %s""" % (direction, order)
+        SELECT *
+        FROM question
+        ORDER BY %s %s""" % (direction, order)
     cursor.execute(query)
     return cursor.fetchall()
 
@@ -252,3 +289,71 @@ def add_new_defined_tags_to_db(cursor, new_defined_tags):
             VALUES ('%s')
             """ % (new_defined_tags)
     cursor.execute(query)
+
+
+def search_in_question_message(cursor, searched_phrase):
+    searched_phrase_in_any_position = "%" + searched_phrase + "%"
+    query_message = """
+                SELECT *
+                FROM question
+                WHERE LOWER(message) LIKE LOWER('%s')""" % (searched_phrase_in_any_position, )
+    cursor.execute(query_message)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def search_in_question_title(cursor, searched_phrase):
+    searched_phrase_in_any_position = "%" + searched_phrase + "%"
+    query_title = """
+                SELECT *
+                FROM question
+                WHERE LOWER(title) LIKE LOWER('%s')""" % (searched_phrase_in_any_position, )
+    cursor.execute(query_title)
+    return cursor.fetchall()
+
+
+def search_in_question(searched_phrase):
+    searched_in_message = search_in_question_message(searched_phrase)
+    searched_in_title = search_in_question_title(searched_phrase)
+    searched_in_questions = [data for data in searched_in_message if data not in searched_in_title]
+    for data in searched_in_title:
+        searched_in_questions.append(data)
+    return searched_in_questions
+
+
+@database_common.connection_handler
+def search_in_answer(cursor, searched_phrase):
+    searched_phrase_in_any_position = "%" + searched_phrase + "%"
+    query = """
+                SELECT question_id
+                FROM answer
+                WHERE LOWER(message) LIKE LOWER('%s')""" % (searched_phrase_in_any_position, )
+    cursor.execute(query)
+    id_of_questions = cursor.fetchall()
+    list_of_id = [question_id['question_id'] for question_id in id_of_questions]
+    return list_of_id
+
+
+@database_common.connection_handler
+def get_all_questions_of_specific_id(cursor, searched_phrase):
+    list_of_id = search_in_answer(searched_phrase)
+    questions = []
+    for question_id in list_of_id:
+        query = """
+                    SELECT *
+                    FROM question
+                    WHERE id = '%s'""" % (question_id, )
+        cursor.execute(query)
+        question = cursor.fetchall()
+        question = question[0]
+        questions.append(question)
+    return questions
+
+
+def search_in_questions_and_answers(searched_phrase):
+    searched_in_question = search_in_question(searched_phrase)
+    searched_in_answer = get_all_questions_of_specific_id(searched_phrase)
+    searched_questions = [question for question in searched_in_question if question not in searched_in_answer]
+    for question in searched_in_answer:
+        searched_questions.append(question)
+    return searched_questions

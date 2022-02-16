@@ -34,6 +34,7 @@ def add_question_to_file(title, question, image):
     return question_id
 
 
+
 def add_answer_to_file(question_id, message, image):
     submission_time = datetime.datetime.now()
     image_path = server.upload_image(image)
@@ -64,4 +65,20 @@ def add_new_defined_tags(new_defined_tags):
     else:
         new_defined_tags = new_defined_tags.strip()
         if new_defined_tags != '' and new_defined_tags not in existing_tags_list:
-            connection.add_new_defined_tags_to_db(new_defined_tags)
+
+
+def add_comment_to_question(question_id,message):
+    submission_time = datetime.datetime.now()
+    edited_count = 0
+    connection.add_comment_to_question(question_id,message, submission_time, edited_count)
+
+def add_comment_to_answer(answer_id,message):
+    submission_time = datetime.datetime.now()
+    edited_count = 0
+    connection.add_comment_to_answer(answer_id,message, submission_time, edited_count)
+
+
+def add_answer_to_file(question_id,message,image):
+    submission_time = datetime.datetime.now()
+    image_path = server.upload_image(image)
+    connection.add_answer_to_db(question_id,message, submission_time, image_path)

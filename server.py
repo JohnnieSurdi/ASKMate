@@ -3,7 +3,7 @@ import connection
 import os
 from werkzeug.utils import secure_filename
 import data_manager
-
+import datetime
 
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -30,11 +30,19 @@ def upload_image(image):
     return image_path
 
 
-
 # load home page
 @app.route("/")
 def home_page():
-    return redirect('/list')
+    headers, data_questions = data_manager.list_prepare_question_to_show()
+    order = 'Submission time'
+    direction = "from highest"
+    data_questions = connection.sort_questions(order, direction)
+    data_five_questions = data_questions[:5]
+    searched_phrase = request.args.get("search-phrase")
+    if searched_phrase:
+        all_searched_questions = connection.search_in_questions_and_answers(searched_phrase)
+        return render_template('index.html', data=all_searched_questions, headers=headers)
+    return render_template('index.html', data=data_five_questions, headers=headers)
 
 
 # load question list page
@@ -81,6 +89,25 @@ def add_answer(question_id):
     return render_template('add_new_answer.html', question_id=question_id, title=title)
 
 
+@app.route("/question/<question_id>/new-comment", methods=['GET', 'POST'])
+def add_comment_to_question(question_id):
+    if request.method == 'POST':
+        message = request.form['new_comment']
+        data_manager.add_comment_to_question(question_id, message)
+        return redirect('/question/' + str(question_id))
+    title = connection.get_title_by_id(question_id)
+    return render_template('add_comment_to_question.html', question_id=question_id, title=title)
+
+
+@app.route("/answer/<answer_id>/new-comment", methods=['GET', 'POST'])
+def add_comment_to_answer(answer_id):
+    if request.method == 'POST':
+        message = request.form['new_comment']
+        data_manager.add_comment_to_answer(answer_id, message)
+        return redirect('/list')
+    return render_template('add_comment_to_answer.html', answer_id=answer_id)
+
+
 # delete question
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
@@ -109,6 +136,17 @@ def edit_question(question_id):
     edited_title = request.form.get('title')
     edited_question = request.form.get('question')
     connection.update_question(question_id, edited_title, edited_question)
+    return redirect('/list')
+
+
+# edit answer
+@app.route("/answer/<answer_id>/edit", methods=['GET', 'POST'])
+def edit_answer(answer_id):
+    if request.method == 'GET':
+        answer_to_edit = connection.get_answer_to_edit(answer_id)
+        return render_template('edit-answer.html', answer_to_edit=answer_to_edit)
+    edited_answer = request.form.get('answer')
+    connection.update_answer(answer_id, edited_answer)
     return redirect('/list')
 
 
@@ -179,6 +217,14 @@ def delete_tags_from_question(question_id,tag):
         tag_id = connection.get_id_by_tag(tag)
         connection.delete_tag_from_question(question_id,tag_id)
         return redirect('/question/' + str(question_id) +'/new-tag')
+
+
+# delete comment
+@app.route("/comments/<comment_id>/delete")
+def delete_comment(comment_id):
+    question_id = connection.get_from_db("question_id", "comment", "comment_id", comment_id)
+    connection.delete_from_db('comment', 'comment_id', comment_id)
+    return redirect('/question/' + str(question_id))
 
 
 if __name__ == "__main__":
