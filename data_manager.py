@@ -33,10 +33,6 @@ def add_question_to_file(title, question, image):
     return question_id
 
 
-<<<<<<< HEAD
-def add_comment_to_question(question_id, message):
-=======
-
 def add_answer_to_file(question_id, message, image):
     submission_time = datetime.datetime.now()
     image_path = server.upload_image(image)
@@ -51,7 +47,7 @@ def get_tags_for_question(question_id):
     return tags
 
 
-def add_new_defined_tags(new_defined_tags,question_id):
+def add_new_defined_tags(new_defined_tags, question_id):
     is_not_duplicate = True
     existing_tags = connection.get_all_existing_tags()
     existing_tags_list = []
@@ -73,8 +69,8 @@ def add_new_defined_tags(new_defined_tags,question_id):
             tag_id = connection.get_id_by_tag(new_defined_tags)
             connection.apply_tag_to_question(question_id, tag_id)
 
-def add_comment_to_question(question_id,message):
->>>>>>> 5378f357885e693e44b3f25383a457fd62bb8ba5
+
+def add_comment_to_question(question_id, message):
     submission_time = datetime.datetime.now()
     edited_count = 0
     connection.add_comment_to_question(question_id, message, submission_time, edited_count)
