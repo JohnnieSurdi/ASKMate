@@ -91,6 +91,9 @@
                 <td>
                     <p><a href="/answer/{{ answer['id'] }}/edit"><img src="/static/edit.png"></a></p>
                 </td>
+            <td>
+                    <p><a href="/answer/{{ answer['id'] }}/new-comment"><img src="/static/delete.png"></a></p>
+                </td>
             </tr>
             {% endfor %}
         </table>
@@ -99,6 +102,7 @@
         <p>
             <a href="/question/{{ question['id'] }}/new-answer"><button class="btn btn-primary">Add a new answer</button></a>
             <a href="/question/{{ question['id'] }}/edit"><button class="btn btn-primary">Edit question</button></a>
+             <a href="/question/{{ question['id'] }}/new-comment"><button class="btn btn-primary">Add a new comment</button></a>
         </p>
         <p>
             <a href="/list"><button class="btn btn-primary">Back</button></a>

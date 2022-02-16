@@ -100,7 +100,7 @@ def add_comment_to_answer(answer_id):
         message = request.form['new_comment']
         data_manager.add_comment_to_answer(answer_id, message)
         return redirect('/list')
-    return render_template('add_comment_to_answer.html', answer_id=int(answer_id) + 1)
+    return render_template('add_comment_to_answer.html', answer_id=answer_id)
 
 
 # delete question
