@@ -15,40 +15,27 @@
             crossorigin="anonymous"
     />
     <link rel="stylesheet" href="/static/style.css">
-    <title>Add tag to question</title>
+    <style>
+        h2.error{
+            color:red;
+        }
+    </style>
+    <title>Edit Comment</title>
 </head>
 <body></body>
 <div class="container">
     <div align="center">
 <a href="/"><img id="logo" src="/static/logo3.png"></a>
         </div>
-<form method="POST" enctype="multipart/form-data">
-    <h1 align="center">Add tag to question {{ question_id }}</h1>
-    <div class="form-group">
-        <label>Choose from existing tags</label>
-        <div class="tags-container">
-        {% for tag in tags %}
-        <div class="tags">
-                <a class="tags" href="/question/{{ question_id }}/new-tag/{{ tag['name'] }}">{{ tag['name'] }}</a>
-            </div>
-        {% endfor %}
-            </div>
-    </div>
+<form method="POST">
+    <h1 align="center">Edit Comment</h1>
         <div class="form-group">
-        <label for="new-tags">Define new tags</label>
-        <textarea class="form-control" id="new-tags" rows="3" class="form-control" name="new-tags" placeholder="tag 1,tag 2,..."></textarea>
+        <label for="comment">Comment</label>
+        <textarea class="form-control" id="comment" rows="3" class="form-control" name="comment">{{ comment_to_edit['message'] }}</textarea>
     </div>
-    <button type="submit" class="btn btn-primary">Define new tags</button></form>
-    <label>Applied tags for question {{ question_id }}</label>
-    <div class="tags-container">
-    {% for applied_tag in applied_tags %}
-        <div class="tags">
-                {{ applied_tag }}<a class="tags" href="/question/{{ question_id }}/new-tag/{{ applied_tag }}/delete">x</a>
-            </div>
-        {% endfor %}
-        </div>
-    <a href="/question/{{ question_id }}"><button class="btn btn-primary">Back to question</button></a>
-
+    <br/>
+    <button type="submit" class="btn btn-primary">Edit Comment</button>
+</form>
 </div>
 <script
         src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -64,6 +51,6 @@
         src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"
-></scrip
+></script>
 </body>
 </html>

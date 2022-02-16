@@ -3,7 +3,6 @@ import connection
 import os
 from werkzeug.utils import secure_filename
 import data_manager
-import datetime
 
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -25,7 +24,7 @@ def upload_image(image):
         image_path = 'no_image'
     if image and allowed_file(image.filename):
         filename = secure_filename(image.filename)
-        image.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         image_path = filename
     return image_path
 
@@ -114,8 +113,7 @@ def add_comment_to_answer(answer_id):
 # delete question
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
-    images_to_delete = []
-    images_to_delete.append(connection.get_from_db('image', 'question', 'id', question_id))
+    images_to_delete = [connection.get_from_db('image', 'question', 'id', question_id)]
     answers_id = connection.get_answer_id_connected_to_question(question_id)
     for id in answers_id:
         images_to_delete.append(connection.get_from_db('image', 'answer', 'id', id))
@@ -150,6 +148,17 @@ def edit_answer(answer_id):
         return render_template('edit-answer.html', answer_to_edit=answer_to_edit)
     edited_answer = request.form.get('answer')
     connection.update_answer(answer_id, edited_answer)
+    return redirect('/list')
+
+
+# edit comment
+@app.route("/comment/<comment_id>/edit", methods=['GET', 'POST'])
+def edit_comment(comment_id):
+    if request.method == 'GET':
+        comment_to_edit = connection.get_comment_to_edit(comment_id)
+        return render_template('edit-comment.html', comment_to_edit=comment_to_edit)
+    edited_comment = request.form.get('comment')
+    connection.update_comment(comment_id, edited_comment)
     return redirect('/list')
 
 
@@ -199,27 +208,38 @@ def vote_down_answer(answer_id):
 def show_image(image, question_id):
     return render_template('show_image.html', image=image, question_id=question_id)
 
+
 @app.route("/question/<question_id>/new-tag", methods=['GET', 'POST'])
 def add_new_tag(question_id):
     if request.method == 'GET':
         tags = connection.get_all_existing_tags()
         applied_tags = data_manager.get_tags_for_question(question_id)
-        return render_template('add-tag.html', tags=tags, question_id=question_id,applied_tags=applied_tags)
+        return render_template('add-tag.html', tags=tags, question_id=question_id, applied_tags=applied_tags)
     new_defined_tags = request.form.get('new-tags')
-    data_manager.add_new_defined_tags(new_defined_tags)
+    data_manager.add_new_defined_tags(new_defined_tags, question_id)
     return redirect('/question/' + str(question_id) + '/new-tag')
 
+
 @app.route("/question/<question_id>/new-tag/<tag>")
-def add_tags_to_question(question_id,tag):
+def add_tags_to_question(question_id, tag):
         tag_id = connection.get_id_by_tag(tag)
         connection.apply_tag_to_question(question_id,tag_id)
-        return redirect('/question/' + str(question_id) +'/new-tag')
+        return redirect('/question/' + str(question_id) + '/new-tag')
+
 
 @app.route("/question/<question_id>/new-tag/<tag>/delete")
-def delete_tags_from_question(question_id,tag):
+def delete_tags_from_question(question_id, tag):
         tag_id = connection.get_id_by_tag(tag)
         connection.delete_tag_from_question(question_id,tag_id)
-        return redirect('/question/' + str(question_id) +'/new-tag')
+        return redirect('/question/' + str(question_id) + '/new-tag')
+
+
+@app.route("/question/<question_id>/<tag>/delete")
+def delete_tags_from_question2(question_id, tag):
+        tag_id = connection.get_id_by_tag(tag)
+        connection.delete_tag_from_question(question_id, tag_id)
+        connection.change_value_db('question', 'view_number', '-', 'id', question_id)
+        return redirect('/question/' + str(question_id))
 
 
 # delete comment

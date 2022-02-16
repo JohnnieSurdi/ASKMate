@@ -1,7 +1,3 @@
-import csv
-import server
-import os
-from datetime import datetime
 import database_common
 
 
@@ -45,7 +41,7 @@ def get_data_question_with_id(cursor, question_id):
 
 
 @database_common.connection_handler
-def get_data_answers_sort_by_vote_number(cursor,question_id):
+def get_data_answers_sort_by_vote_number(cursor, question_id):
     query = """
         SELECT *
         FROM answer
@@ -70,6 +66,7 @@ def add_answer_to_db(cursor, question_id,message, submission_time, image_path):
         VALUES ('%s','%s','%s','%s','%s')""" % (submission_time, 0, question_id, message, image_path)
     cursor.execute(query)
 
+
 @database_common.connection_handler
 def add_comment_to_question(cursor, question_id, message, submission_time, edited_count):
     query = """
@@ -77,12 +74,14 @@ def add_comment_to_question(cursor, question_id, message, submission_time, edite
         VALUES ('%s','%s','%s','%s')""" % (question_id, message, submission_time, 0)
     cursor.execute(query)
 
+
 @database_common.connection_handler
 def add_comment_to_answer(cursor, answer_id, message, submission_time, edited_count) :
     query = """
         INSERT INTO comment (answer_id, message, submission_time, edited_count)
         VALUES ('%s','%s','%s','%s')""" % (answer_id, message, submission_time, 0)
     cursor.execute(query)
+
 
 @database_common.connection_handler
 def change_value_db(cursor, db_name, db_col, mark, db_where, db_where_equal):
@@ -159,6 +158,26 @@ def update_answer(cursor, answer_id, edited_answer):
 
 
 @database_common.connection_handler
+def get_comment_to_edit(cursor, comment_id):
+    query = """
+        SELECT * FROM comment
+        WHERE id = '%s'""" % (comment_id)
+    cursor.execute(query)
+    comment = cursor.fetchall
+    comment = comment[0]
+    return comment
+
+
+@database_common.connection_handler
+def update_comment(cursor, comment_id, edited_comment):
+    query = """
+        UPDATE comment
+        SET message = '%s'
+        WHERE id = '%s'""" % (edited_comment, comment_id)
+    cursor.execute(query)
+
+
+@database_common.connection_handler
 def get_from_db(cursor, db_select, db_name, db_where, db_var):
     query = """
         SELECT %s
@@ -166,7 +185,7 @@ def get_from_db(cursor, db_select, db_name, db_where, db_var):
         WHERE %s = '%s'""" % (db_select, db_name, db_where, db_var)
     cursor.execute(query)
     var = cursor.fetchall()
-    var = list_of_dicts_to_str(str(db_select),var)
+    var = list_of_dicts_to_str(str(db_select), var)
     return var
 
 
@@ -177,7 +196,7 @@ def get_title_by_id(cursor, question_id):
         WHERE id = '%s'""" % (question_id)
     cursor.execute(query)
     title = cursor.fetchall()
-    title = list_of_dicts_to_str('title',title)
+    title = list_of_dicts_to_str('title', title)
     return title
 
 @database_common.connection_handler
@@ -189,7 +208,7 @@ def get_all_existing_tags(cursor):
     cursor.execute(query)
     return cursor.fetchall()
 
-def list_of_dicts_to_str(key,list):
+def list_of_dicts_to_str(key, list):
     list = list[0]
     string = list[key]
     return string
