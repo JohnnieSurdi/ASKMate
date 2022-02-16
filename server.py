@@ -218,6 +218,13 @@ def delete_tags_from_question(question_id,tag):
         connection.delete_tag_from_question(question_id,tag_id)
         return redirect('/question/' + str(question_id) +'/new-tag')
 
+@app.route("/question/<question_id>/<tag>/delete")
+def delete_tags_from_question2(question_id,tag):
+        tag_id = connection.get_id_by_tag(tag)
+        connection.delete_tag_from_question(question_id,tag_id)
+        connection.change_value_db('question', 'view_number', '-', 'id', question_id)
+        return redirect('/question/' + str(question_id))
+
 
 # delete comment
 @app.route("/comments/<comment_id>/delete")

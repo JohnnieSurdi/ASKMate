@@ -63,7 +63,7 @@
             </div>
             {% for applied_tag in applied_tags %}
         <div class="tags">
-                {{ applied_tag }}
+                {{ applied_tag }}<a class="tags" href="/question/{{ question['id'] }}/{{ applied_tag }}/delete">x</a>
             </div>
         {% endfor %}
                 </div>
