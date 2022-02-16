@@ -41,7 +41,8 @@ def home_page():
     searched_phrase = request.args.get("search-phrase")
     if searched_phrase:
         all_searched_questions = connection.search_in_questions_and_answers(searched_phrase)
-        return render_template('index.html', data=all_searched_questions, headers=headers)
+        return render_template('search.html',
+                               searched_phrase=searched_phrase, data=all_searched_questions, headers=headers)
     return render_template('index.html', data=data_five_questions, headers=headers)
 
 
