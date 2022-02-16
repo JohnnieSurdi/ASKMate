@@ -57,6 +57,16 @@
                 {% endif %}
             </tr>
         </table>
+            <div class="tags-container">
+            <div class="tags">
+                <a class="tags-link" href="/question/{{ question['id'] }}/new-tag">Add tags</a>
+            </div>
+            {% for applied_tag in applied_tags %}
+        <div class="tags">
+                {{ applied_tag }}<a class="tags" href="/question/{{ question['id'] }}/{{ applied_tag }}/delete">x</a>
+            </div>
+        {% endfor %}
+                </div>
             {% if answers %}
         <h1>Answers:</h1>
         <table id="customers">
@@ -91,6 +101,9 @@
                 <td>
                     <p><a href="/answer/{{ answer['id'] }}/edit"><img src="/static/edit.png"></a></p>
                 </td>
+            <td>
+                    <p><a href="/answer/{{ answer['id'] }}/new-comment"><img src="/static/delete.png"></a></p>
+                </td>
             </tr>
             {% endfor %}
         </table>
@@ -99,6 +112,7 @@
         <p>
             <a href="/question/{{ question['id'] }}/new-answer"><button class="btn btn-primary">Add a new answer</button></a>
             <a href="/question/{{ question['id'] }}/edit"><button class="btn btn-primary">Edit question</button></a>
+             <a href="/question/{{ question['id'] }}/new-comment"><button class="btn btn-primary">Add a new comment</button></a>
         </p>
         <p>
             <a href="/list"><button class="btn btn-primary">Back</button></a>

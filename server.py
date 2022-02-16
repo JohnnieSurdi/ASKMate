@@ -37,6 +37,11 @@ def home_page():
     direction = "from highest"
     data_questions = connection.sort_questions(order, direction)
     data_five_questions = data_questions[:5]
+    searched_phrase = request.args.get("search-phrase")
+    if searched_phrase:
+        all_searched_questions = connection.search_in_questions_and_answers(searched_phrase)
+        return render_template('search.html',
+                               searched_phrase=searched_phrase, data=all_searched_questions, headers=headers)
     return render_template('index.html', data=data_five_questions, headers=headers)
 
 
@@ -56,7 +61,8 @@ def list_questions():
 def question_display(question_id):
     connection.change_value_db('question', 'view_number', '+', 'id', question_id)
     question, answers = data_manager.question_display_by_id_with_answers(question_id)
-    return render_template('display_question_and_answers.html', question=question[0], answers=answers)
+    applied_tags = data_manager.get_tags_for_question(question_id)
+    return render_template('display_question_and_answers.html', question=question[0], answers=answers, applied_tags=applied_tags)
 
 
 # load add question page
@@ -99,7 +105,7 @@ def add_comment_to_answer(answer_id):
         message = request.form['new_comment']
         data_manager.add_comment_to_answer(answer_id, message)
         return redirect('/list')
-    return render_template('add_comment_to_answer.html', answer_id=int(answer_id) + 1)
+    return render_template('add_comment_to_answer.html', answer_id=answer_id)
 
 
 # delete question
@@ -199,6 +205,35 @@ def vote_down_answer(answer_id):
 @app.route("/show_image/<image>/<question_id>")
 def show_image(image, question_id):
     return render_template('show_image.html', image=image, question_id=question_id)
+
+@app.route("/question/<question_id>/new-tag", methods=['GET', 'POST'])
+def add_new_tag(question_id):
+    if request.method == 'GET':
+        tags = connection.get_all_existing_tags()
+        applied_tags = data_manager.get_tags_for_question(question_id)
+        return render_template('add-tag.html', tags=tags, question_id=question_id,applied_tags=applied_tags)
+    new_defined_tags = request.form.get('new-tags')
+    data_manager.add_new_defined_tags(new_defined_tags,question_id)
+    return redirect('/question/' + str(question_id) + '/new-tag')
+
+@app.route("/question/<question_id>/new-tag/<tag>")
+def add_tags_to_question(question_id,tag):
+        tag_id = connection.get_id_by_tag(tag)
+        connection.apply_tag_to_question(question_id,tag_id)
+        return redirect('/question/' + str(question_id) +'/new-tag')
+
+@app.route("/question/<question_id>/new-tag/<tag>/delete")
+def delete_tags_from_question(question_id,tag):
+        tag_id = connection.get_id_by_tag(tag)
+        connection.delete_tag_from_question(question_id,tag_id)
+        return redirect('/question/' + str(question_id) +'/new-tag')
+
+@app.route("/question/<question_id>/<tag>/delete")
+def delete_tags_from_question2(question_id,tag):
+        tag_id = connection.get_id_by_tag(tag)
+        connection.delete_tag_from_question(question_id,tag_id)
+        connection.change_value_db('question', 'view_number', '-', 'id', question_id)
+        return redirect('/question/' + str(question_id))
 
 
 # delete comment
