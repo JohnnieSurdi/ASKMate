@@ -60,7 +60,7 @@ def add_question_to_db(cursor, title, question, submission_time, image_path):
 
 
 @database_common.connection_handler
-def add_answer_to_db(cursor, question_id,message, submission_time, image_path):
+def add_answer_to_db(cursor, question_id, message, submission_time, image_path):
     query = """
         INSERT INTO answer (submission_time, vote_number, question_id, message, image)
         VALUES ('%s','%s','%s','%s','%s')""" % (submission_time, 0, question_id, message, image_path)
@@ -76,7 +76,7 @@ def add_comment_to_question(cursor, question_id, message, submission_time, edite
 
 
 @database_common.connection_handler
-def add_comment_to_answer(cursor, answer_id, message, submission_time, edited_count) :
+def add_comment_to_answer(cursor, answer_id, message, submission_time, edited_count):
     query = """
         INSERT INTO comment (answer_id, message, submission_time, edited_count)
         VALUES ('%s','%s','%s','%s')""" % (answer_id, message, submission_time, 0)
@@ -199,6 +199,7 @@ def get_title_by_id(cursor, question_id):
     title = list_of_dicts_to_str('title', title)
     return title
 
+
 @database_common.connection_handler
 def get_all_existing_tags(cursor):
     query = """
@@ -207,6 +208,7 @@ def get_all_existing_tags(cursor):
         ORDER BY name"""
     cursor.execute(query)
     return cursor.fetchall()
+
 
 def list_of_dicts_to_str(key, list):
     list = list[0]
@@ -263,9 +265,9 @@ def get_tags_ids_for_question(cursor, question_id):
 @database_common.connection_handler
 def get_tag_by_id(cursor, id):
     query = """
-            SELECT name
-            FROM tag
-            WHERE id = '%s'""" % (id)
+        SELECT name
+        FROM tag
+        WHERE id = '%s'""" % (id)
     cursor.execute(query)
     tag = cursor.fetchall()
     tag = tag[0]
@@ -276,9 +278,9 @@ def get_tag_by_id(cursor, id):
 @database_common.connection_handler
 def get_id_by_tag(cursor, tag):
     query = """
-            SELECT id
-            FROM tag
-            WHERE name = '%s'""" % (tag)
+        SELECT id
+        FROM tag
+        WHERE name = '%s'""" % (tag)
     cursor.execute(query)
     id = cursor.fetchall()
     id = id[0]
@@ -287,28 +289,27 @@ def get_id_by_tag(cursor, tag):
 
 
 @database_common.connection_handler
-def apply_tag_to_question(cursor, question_id,tag_id):
+def apply_tag_to_question(cursor, question_id, tag_id):
     query = """
-            INSERT INTO question_tag (question_id,tag_id)
-            VALUES (%s,%s)
-            ON CONFLICT DO NOTHING""" % (question_id,tag_id)
+        INSERT INTO question_tag (question_id,tag_id)
+        VALUES (%s,%s)
+        ON CONFLICT DO NOTHING""" % (question_id, tag_id)
     cursor.execute(query)
 
 
 @database_common.connection_handler
-def delete_tag_from_question(cursor, question_id,tag_id):
+def delete_tag_from_question(cursor, question_id, tag_id):
     query = """
-            DELETE FROM question_tag
-            WHERE question_id= '%s' AND tag_id = '%s'""" % (question_id, tag_id)
+        DELETE FROM question_tag
+        WHERE question_id = '%s' AND tag_id = '%s'""" % (question_id, tag_id)
     cursor.execute(query)
 
 
 @database_common.connection_handler
 def add_new_defined_tags_to_db(cursor, new_defined_tags):
     query = """
-            INSERT INTO tag (name)
-            VALUES ('%s')
-            """ % (new_defined_tags)
+        INSERT INTO tag (name)
+        VALUES ('%s')""" % (new_defined_tags)
     cursor.execute(query)
 
 
@@ -316,9 +317,9 @@ def add_new_defined_tags_to_db(cursor, new_defined_tags):
 def search_in_question_message(cursor, searched_phrase):
     searched_phrase_in_any_position = "%" + searched_phrase + "%"
     query_message = """
-                SELECT *
-                FROM question
-                WHERE LOWER(message) LIKE LOWER('%s')""" % (searched_phrase_in_any_position, )
+        SELECT *
+        FROM question
+        WHERE LOWER(message) LIKE LOWER('%s')""" % (searched_phrase_in_any_position, )
     cursor.execute(query_message)
     return cursor.fetchall()
 
@@ -327,9 +328,9 @@ def search_in_question_message(cursor, searched_phrase):
 def search_in_question_title(cursor, searched_phrase):
     searched_phrase_in_any_position = "%" + searched_phrase + "%"
     query_title = """
-                SELECT *
-                FROM question
-                WHERE LOWER(title) LIKE LOWER('%s')""" % (searched_phrase_in_any_position, )
+        SELECT *
+        FROM question
+        WHERE LOWER(title) LIKE LOWER('%s')""" % (searched_phrase_in_any_position, )
     cursor.execute(query_title)
     return cursor.fetchall()
 
@@ -347,9 +348,9 @@ def search_in_question(searched_phrase):
 def search_in_answer(cursor, searched_phrase):
     searched_phrase_in_any_position = "%" + searched_phrase + "%"
     query = """
-                SELECT question_id
-                FROM answer
-                WHERE LOWER(message) LIKE LOWER('%s')""" % (searched_phrase_in_any_position, )
+        SELECT question_id
+        FROM answer
+        WHERE LOWER(message) LIKE LOWER('%s')""" % (searched_phrase_in_any_position, )
     cursor.execute(query)
     id_of_questions = cursor.fetchall()
     list_of_id = [question_id['question_id'] for question_id in id_of_questions]
@@ -362,9 +363,9 @@ def get_all_questions_of_specific_id(cursor, searched_phrase):
     questions = []
     for question_id in list_of_id:
         query = """
-                    SELECT *
-                    FROM question
-                    WHERE id = '%s'""" % (question_id, )
+            SELECT *
+            FROM question
+            WHERE id = '%s'""" % (question_id, )
         cursor.execute(query)
         question = cursor.fetchall()
         question = question[0]

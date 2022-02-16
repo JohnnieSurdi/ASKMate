@@ -223,14 +223,14 @@ def add_new_tag(question_id):
 @app.route("/question/<question_id>/new-tag/<tag>")
 def add_tags_to_question(question_id, tag):
         tag_id = connection.get_id_by_tag(tag)
-        connection.apply_tag_to_question(question_id,tag_id)
+        connection.apply_tag_to_question(question_id, tag_id)
         return redirect('/question/' + str(question_id) + '/new-tag')
 
 
 @app.route("/question/<question_id>/new-tag/<tag>/delete")
 def delete_tags_from_question(question_id, tag):
         tag_id = connection.get_id_by_tag(tag)
-        connection.delete_tag_from_question(question_id,tag_id)
+        connection.delete_tag_from_question(question_id, tag_id)
         return redirect('/question/' + str(question_id) + '/new-tag')
 
 
