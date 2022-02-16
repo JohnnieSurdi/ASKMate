@@ -204,7 +204,7 @@ def add_new_tag(question_id):
         applied_tags = data_manager.get_tags_for_question(question_id)
         return render_template('add-tag.html', tags=tags, question_id=question_id,applied_tags=applied_tags)
     new_defined_tags = request.form.get('new-tags')
-    data_manager.add_new_defined_tags(new_defined_tags)
+    data_manager.add_new_defined_tags(new_defined_tags,question_id)
     return redirect('/question/' + str(question_id) + '/new-tag')
 
 @app.route("/question/<question_id>/new-tag/<tag>")

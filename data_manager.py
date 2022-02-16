@@ -49,7 +49,7 @@ def get_tags_for_question(question_id):
     return tags
 
 
-def add_new_defined_tags(new_defined_tags):
+def add_new_defined_tags(new_defined_tags,question_id):
     is_not_duplicate = True
     existing_tags = connection.get_all_existing_tags()
     existing_tags_list = []
@@ -62,10 +62,14 @@ def add_new_defined_tags(new_defined_tags):
             tag = tag.strip()
             if tag != '' and tag not in existing_tags_list:
                 connection.add_new_defined_tags_to_db(tag)
+                tag_id = connection.get_id_by_tag(tag)
+                connection.apply_tag_to_question(question_id, tag_id)
     else:
         new_defined_tags = new_defined_tags.strip()
         if new_defined_tags != '' and new_defined_tags not in existing_tags_list:
             connection.add_new_defined_tags_to_db(new_defined_tags)
+            tag_id = connection.get_id_by_tag(new_defined_tags)
+            connection.apply_tag_to_question(question_id, tag_id)
 
 def add_comment_to_question(question_id,message):
     submission_time = datetime.datetime.now()
