@@ -14,7 +14,7 @@
             crossorigin="anonymous"
     />
     <link rel="stylesheet" href="/static/style.css">
-    <title>New Answer</title>
+    <title>New Comment</title>
 </head>
 <body>
 <div align="center" class="container">
@@ -22,18 +22,12 @@
 <a href="/"><img id="logo" src="/static/logo3.png"></a>
         </div>
     <div class="form-group">
-    <h1>Add new answer to question</br> {{ title }}</h1>
-    <form action="/question/{{ question_id }}/new-answer" method="post" enctype="multipart/form-data">
-        <label for="post_new_answer"><h2>Your answer:</h2></label></br>
-        <textarea class="form-control" id="post_new_answer" name="new_answer" rows="3"></textarea><br>
-        <div class="form-group">
-        <label for="image">Add image</label>
-        <input type="file"
-       id="image" name="image"
-       accept="image/png, image/jpeg">
-            </div>
+    <h1>Add new comment to question</br> {{ title }}</h1>
+    <form action="/question/{{ question_id }}/new-comment" method="post" enctype="multipart/form-data">
+        <label for="post_new_comment_to_question"><h2>Your comment:</h2></label></br>
+        <textarea class="form-control" id="post_new_comment_to_question" name="new_comment" rows="3"></textarea><br>
     </div>
-        <button type="submit" class="btn btn-primary">Post your answer</button>
+        <button type="submit" class="btn btn-primary">Add your comment</button>
     </form>
     </div>
 <script
@@ -50,6 +44,6 @@
         src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"
-></scrip>
+></scrip
 </body>
 </html>

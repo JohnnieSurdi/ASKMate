@@ -28,7 +28,7 @@ def get_data_questions_sort_by_id(cursor):
     query = """
         SELECT *
         FROM question
-        ORDER BY id"""
+        ORDER BY id DESC"""
     cursor.execute(query)
     return cursor.fetchall()
 
@@ -70,6 +70,19 @@ def add_answer_to_db(cursor, question_id,message, submission_time, image_path):
         VALUES ('%s','%s','%s','%s','%s')""" % (submission_time, 0, question_id, message, image_path)
     cursor.execute(query)
 
+@database_common.connection_handler
+def add_comment_to_question(cursor, question_id, message, submission_time, edited_count):
+    query = """
+        INSERT INTO comment (question_id, message, submission_time, edited_count)
+        VALUES ('%s','%s','%s','%s')""" % (question_id, message, submission_time, 0)
+    cursor.execute(query)
+
+@database_common.connection_handler
+def add_comment_to_answer(cursor, answer_id, message, submission_time, edited_count) :
+    query = """
+        INSERT INTO comment (answer_id, message, submission_time, edited_count)
+        VALUES ('%s','%s','%s','%s')""" % (answer_id, message, submission_time, 0)
+    cursor.execute(query)
 
 @database_common.connection_handler
 def change_value_db(cursor, db_name, db_col, mark, db_where, db_where_equal):
@@ -99,7 +112,9 @@ def get_id(cursor, submission_time):
         WHERE submission_time = '%s'""" % (submission_time)
     cursor.execute(query)
     id = cursor.fetchall()
+    print(id)
     id = list_of_dicts_to_str('id', id)
+    print(id)
     return id
 
 
@@ -120,6 +135,26 @@ def update_question(cursor, question_id, edited_title, edited_question):
         UPDATE question
         SET title = '%s', message = '%s'
         WHERE id = '%s'""" % (edited_title, edited_question, question_id)
+    cursor.execute(query)
+
+
+@database_common.connection_handler
+def get_answer_to_edit(cursor, answer_id):
+    query = """
+        SELECT * FROM answer
+        WHERE id = '%s'""" % (answer_id)
+    cursor.execute(query)
+    answer = cursor.fetchall()
+    answer = answer[0]
+    return answer
+
+
+@database_common.connection_handler
+def update_answer(cursor, answer_id, edited_answer):
+    query = """
+        UPDATE answer
+        SET message = '%s'
+        WHERE id = '%s'""" % (edited_answer, answer_id)
     cursor.execute(query)
 
 
@@ -151,11 +186,13 @@ def list_of_dicts_to_str(key,list):
     string = list[key]
     return string
 
+
 def convert_order(order):
     if order == "from lowest":
         return 'ASC'
     elif order == "from highest":
         return 'DESC'
+
 
 def convert_direction(direction):
     if direction == "Number of votes":
@@ -175,9 +212,9 @@ def sort_questions(cursor, direction, order):
     order = convert_order(order)
     direction = convert_direction(direction)
     query = """
-            SELECT *
-            FROM question
-            ORDER BY %s %s""" % (direction, order)
+        SELECT *
+        FROM question
+        ORDER BY %s %s""" % (direction, order)
     cursor.execute(query)
     return cursor.fetchall()
 
