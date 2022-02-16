@@ -3,7 +3,6 @@ import connection
 import os
 from werkzeug.utils import secure_filename
 import data_manager
-import datetime
 
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -25,7 +24,7 @@ def upload_image(image):
         image_path = 'no_image'
     if image and allowed_file(image.filename):
         filename = secure_filename(image.filename)
-        image.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         image_path = filename
     return image_path
 
@@ -106,8 +105,7 @@ def add_comment_to_answer(answer_id):
 # delete question
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
-    images_to_delete = []
-    images_to_delete.append(connection.get_from_db('image', 'question', 'id', question_id))
+    images_to_delete = [connection.get_from_db('image', 'question', 'id', question_id)]
     answers_id = connection.get_answer_id_connected_to_question(question_id)
     for id in answers_id:
         images_to_delete.append(connection.get_from_db('image', 'answer', 'id', id))
@@ -142,6 +140,17 @@ def edit_answer(answer_id):
         return render_template('edit-answer.html', answer_to_edit=answer_to_edit)
     edited_answer = request.form.get('answer')
     connection.update_answer(answer_id, edited_answer)
+    return redirect('/list')
+
+
+# edit comment
+@app.route("/comment/<comment_id>/edit", methods=['GET', 'POST'])
+def edit_comment(comment_id):
+    if request.method == 'GET':
+        comment_to_edit = connection.get_comment_to_edit(comment_id)
+        return render_template('edit-comment.html', comment_to_edit=comment_to_edit)
+    edited_comment = request.form.get('comment')
+    connection.update_comment(comment_id, edited_comment)
     return redirect('/list')
 
 

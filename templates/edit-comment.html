@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-        <link
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link
             rel="stylesheet"
             href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
@@ -14,28 +15,28 @@
             crossorigin="anonymous"
     />
     <link rel="stylesheet" href="/static/style.css">
-    <title>New Answer</title>
+    <style>
+        h2.error{
+            color:red;
+        }
+    </style>
+    <title>Edit Comment</title>
 </head>
-<body>
-<div align="center" class="container">
+<body></body>
+<div class="container">
     <div align="center">
 <a href="/"><img id="logo" src="/static/logo3.png"></a>
         </div>
-    <div class="form-group">
-    <h1>Add new answer to question</br> {{ title }}</h1>
-    <form action="/question/{{ question_id }}/new-answer" method="post" enctype="multipart/form-data">
-        <label for="post_new_answer"><h2>Your answer:</h2></label></br>
-        <textarea class="form-control" id="post_new_answer" name="new_answer" rows="3"></textarea><br>
+<form method="POST">
+    <h1 align="center">Edit Comment</h1>
         <div class="form-group">
-        <label for="image">Add image</label>
-        <input type="file"
-       id="image" name="image"
-       accept="image/png, image/jpeg">
-            </div>
+        <label for="comment">Comment</label>
+        <textarea class="form-control" id="comment" rows="3" class="form-control" name="comment">{{ comment_to_edit['message'] }}</textarea>
     </div>
-        <button type="submit" class="btn btn-primary">Post your answer</button>
-    </form>
-    </div>
+    <br/>
+    <button type="submit" class="btn btn-primary">Edit Comment</button>
+</form>
+</div>
 <script
         src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
