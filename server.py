@@ -158,5 +158,13 @@ def show_image(image, question_id):
     return render_template('show_image.html', image=image, question_id=question_id)
 
 
+# delete comment
+@app.route("/comments/<comment_id>/delete")
+def delete_comment(comment_id):
+    question_id = connection.get_from_db("question_id", "comment", "comment_id", comment_id)
+    connection.delete_from_db('comment', 'comment_id', comment_id)
+    return redirect('/question/' + str(question_id))
+
+
 if __name__ == "__main__":
     app.run()
