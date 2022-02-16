@@ -34,7 +34,12 @@ def upload_image(image):
 # load home page
 @app.route("/")
 def home_page():
-    return redirect('/list')
+    headers, data_questions = data_manager.list_prepare_question_to_show()
+    order = 'Submission time'
+    direction = "from highest"
+    data_questions = connection.sort_questions(order, direction)
+    data_five_questions = data_questions[:5]
+    return render_template('index.html', data=data_five_questions, headers=headers)
 
 
 # load question list page
@@ -156,6 +161,14 @@ def vote_down_answer(answer_id):
 @app.route("/show_image/<image>/<question_id>")
 def show_image(image, question_id):
     return render_template('show_image.html', image=image, question_id=question_id)
+
+
+# delete comment
+@app.route("/comments/<comment_id>/delete")
+def delete_comment(comment_id):
+    question_id = connection.get_from_db("question_id", "comment", "comment_id", comment_id)
+    connection.delete_from_db('comment', 'comment_id', comment_id)
+    return redirect('/question/' + str(question_id))
 
 
 if __name__ == "__main__":
