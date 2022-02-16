@@ -3,6 +3,7 @@ import connection
 import os
 from werkzeug.utils import secure_filename
 import data_manager
+import datetime
 
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -81,6 +82,25 @@ def add_answer(question_id):
         return redirect('/question/' + str(question_id))
     title = connection.get_title_by_id(question_id)
     return render_template('add_new_answer.html', question_id=question_id, title=title)
+
+
+@app.route("/question/<question_id>/new-comment", methods=['GET', 'POST'])
+def add_comment_to_question(question_id):
+    if request.method == 'POST':
+        message = request.form['new_comment']
+        data_manager.add_comment_to_question(question_id, message)
+        return redirect('/question/' + str(question_id))
+    title = connection.get_title_by_id(question_id)
+    return render_template('add_comment_to_question.html', question_id=question_id, title=title)
+
+
+@app.route("/answer/<answer_id>/new-comment", methods=['GET', 'POST'])
+def add_comment_to_answer(answer_id):
+    if request.method == 'POST':
+        message = request.form['new_comment']
+        data_manager.add_comment_to_answer(answer_id, message)
+        return redirect('/list')
+    return render_template('add_comment_to_answer.html', answer_id=int(answer_id) + 1)
 
 
 # delete question
