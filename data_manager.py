@@ -13,10 +13,10 @@ def list_prepare_question_to_show():
 def slice_message(data):
     for element in data:
         if len(str(element['message'])) > 100:
-            element['message'] = element['message'][:97]+'...'
+            element['message'] = element['message'][:97] + '...'
 
 
-def list_sort_question(data,order,direction):
+def list_sort_question(data, order, direction):
     connection.sort_data(data, order, direction)
 
 
@@ -26,13 +26,46 @@ def question_display_by_id_with_answers(question_id):
     return question, answers
 
 
-def add_question_to_file(title,question,image):
+def add_question_to_file(title, question, image):
     submission_time = datetime.datetime.now()
     image_path = server.upload_image(image)
     connection.add_question_to_db(title, question, submission_time, image_path)
     question_id = connection.get_id(submission_time)
     return question_id
 
+
+
+def add_answer_to_file(question_id, message, image):
+    submission_time = datetime.datetime.now()
+    image_path = server.upload_image(image)
+    connection.add_answer_to_db(question_id, message, submission_time, image_path)
+
+
+def get_tags_for_question(question_id):
+    tags_id_for_question = connection.get_tags_ids_for_question(question_id)
+    tags = []
+    for id in tags_id_for_question:
+        tags.append(connection.get_tag_by_id(id))
+    return tags
+
+
+def add_new_defined_tags(new_defined_tags):
+    is_not_duplicate = True
+    existing_tags = connection.get_all_existing_tags()
+    existing_tags_list = []
+    for tags in existing_tags:
+        existing_tags_list.append(tags['name'])
+    print(existing_tags_list)
+    if ',' in new_defined_tags:
+        new_defined_tags = new_defined_tags.split(',')
+        for tag in new_defined_tags:
+            tag = tag.strip()
+            if tag != '' and tag not in existing_tags_list:
+                connection.add_new_defined_tags_to_db(tag)
+    else:
+        new_defined_tags = new_defined_tags.strip()
+        if new_defined_tags != '' and new_defined_tags not in existing_tags_list:
+            connection.add_new_defined_tags_to_db(new_defined_tags)
 
 def add_comment_to_question(question_id,message):
     submission_time = datetime.datetime.now()

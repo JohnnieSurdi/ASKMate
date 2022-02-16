@@ -180,6 +180,14 @@ def get_title_by_id(cursor, question_id):
     title = list_of_dicts_to_str('title',title)
     return title
 
+@database_common.connection_handler
+def get_all_existing_tags(cursor):
+    query = """
+        SELECT name 
+        FROM tag
+        ORDER BY name"""
+    cursor.execute(query)
+    return cursor.fetchall()
 
 def list_of_dicts_to_str(key,list):
     list = list[0]
@@ -220,6 +228,69 @@ def sort_questions(cursor, direction, order):
 
 
 @database_common.connection_handler
+def get_tags_ids_for_question(cursor, question_id):
+    query = """
+            SELECT tag_id
+            FROM question_tag
+            WHERE question_id = %s""" % (question_id)
+    cursor.execute(query)
+    ids = cursor.fetchall()
+    list_id = []
+    for id in ids:
+        list_id.append(id['tag_id'])
+    return list_id
+
+
+@database_common.connection_handler
+def get_tag_by_id(cursor, id):
+    query = """
+            SELECT name
+            FROM tag
+            WHERE id = '%s'""" % (id)
+    cursor.execute(query)
+    tag = cursor.fetchall()
+    tag = tag[0]
+    tag_to_return = tag['name']
+    return tag_to_return
+
+@database_common.connection_handler
+def get_id_by_tag(cursor, tag):
+    query = """
+            SELECT id
+            FROM tag
+            WHERE name = '%s'""" % (tag)
+    cursor.execute(query)
+    id = cursor.fetchall()
+    id = id[0]
+    id_to_return = id['id']
+    return id_to_return
+
+
+@database_common.connection_handler
+def apply_tag_to_question(cursor, question_id,tag_id):
+    query = """
+            INSERT INTO question_tag (question_id,tag_id)
+            VALUES (%s,%s)
+            ON CONFLICT DO NOTHING""" % (question_id,tag_id)
+    cursor.execute(query)
+
+@database_common.connection_handler
+def delete_tag_from_question(cursor, question_id,tag_id):
+    query = """
+            DELETE FROM question_tag
+            WHERE question_id= '%s' AND tag_id = '%s'""" % (question_id, tag_id)
+    cursor.execute(query)
+
+
+@database_common.connection_handler
+def add_new_defined_tags_to_db(cursor, new_defined_tags):
+    query = """
+            INSERT INTO tag (name)
+            VALUES ('%s')
+            """ % (new_defined_tags)
+    cursor.execute(query)
+
+
 def search_in_question_message(cursor, searched_phrase):
     searched_phrase_in_any_position = "%" + searched_phrase + "%"
     query_message = """
