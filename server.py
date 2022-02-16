@@ -34,7 +34,12 @@ def upload_image(image):
 # load home page
 @app.route("/")
 def home_page():
-    return redirect('/list')
+    headers, data_questions = data_manager.list_prepare_question_to_show()
+    order = 'Submission time'
+    direction = "from highest"
+    data_questions = connection.sort_questions(order, direction)
+    data_five_questions = data_questions[:5]
+    return render_template('index.html', data=data_five_questions, headers=headers)
 
 
 # load question list page
