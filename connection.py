@@ -180,3 +180,72 @@ def sort_questions(cursor, direction, order):
             ORDER BY %s %s""" % (direction, order)
     cursor.execute(query)
     return cursor.fetchall()
+
+
+@database_common.connection_handler
+def search_in_question_message(cursor, searched_phrase):
+    searched_phrase_in_any_position = "%" + searched_phrase + "%"
+    query_message = """
+                SELECT *
+                FROM question
+                WHERE LOWER(message) LIKE LOWER('%s')""" % (searched_phrase_in_any_position, )
+    cursor.execute(query_message)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def search_in_question_title(cursor, searched_phrase):
+    searched_phrase_in_any_position = "%" + searched_phrase + "%"
+    query_title = """
+                SELECT *
+                FROM question
+                WHERE LOWER(title) LIKE LOWER('%s')""" % (searched_phrase_in_any_position, )
+    cursor.execute(query_title)
+    return cursor.fetchall()
+
+
+def search_in_question(searched_phrase):
+    searched_in_message = search_in_question_message(searched_phrase)
+    searched_in_title = search_in_question_title(searched_phrase)
+    searched_in_questions = [data for data in searched_in_message if data not in searched_in_title]
+    for data in searched_in_title:
+        searched_in_questions.append(data)
+    return searched_in_questions
+
+
+@database_common.connection_handler
+def search_in_answer(cursor, searched_phrase):
+    searched_phrase_in_any_position = "%" + searched_phrase + "%"
+    query = """
+                SELECT question_id
+                FROM answer
+                WHERE LOWER(message) LIKE LOWER('%s')""" % (searched_phrase_in_any_position, )
+    cursor.execute(query)
+    id_of_questions = cursor.fetchall()
+    list_of_id = [question_id['question_id'] for question_id in id_of_questions]
+    return list_of_id
+
+
+@database_common.connection_handler
+def get_all_questions_of_specific_id(cursor, searched_phrase):
+    list_of_id = search_in_answer(searched_phrase)
+    questions = []
+    for question_id in list_of_id:
+        query = """
+                    SELECT *
+                    FROM question
+                    WHERE id = '%s'""" % (question_id, )
+        cursor.execute(query)
+        question = cursor.fetchall()
+        question = question[0]
+        questions.append(question)
+    return questions
+
+
+def search_in_questions_and_answers(searched_phrase):
+    searched_in_question = search_in_question(searched_phrase)
+    searched_in_answer = get_all_questions_of_specific_id(searched_phrase)
+    searched_questions = [question for question in searched_in_question if question not in searched_in_answer]
+    for question in searched_in_answer:
+        searched_questions.append(question)
+    return searched_questions

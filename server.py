@@ -30,7 +30,6 @@ def upload_image(image):
     return image_path
 
 
-
 # load home page
 @app.route("/")
 def home_page():
@@ -39,6 +38,11 @@ def home_page():
     direction = "from highest"
     data_questions = connection.sort_questions(order, direction)
     data_five_questions = data_questions[:5]
+    searched_phrase = request.args.get("search-phrase")
+    if searched_phrase:
+        all_searched_questions = connection.search_in_questions_and_answers(searched_phrase)
+        print(all_searched_questions)
+        return render_template('index.html', data=all_searched_questions, headers=headers)
     return render_template('index.html', data=data_five_questions, headers=headers)
 
 
