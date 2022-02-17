@@ -21,7 +21,7 @@
 <a href="/"><img id="logo" src="/static/logo3.png"></a>
         <div class="form-group">
         <h1>Searched phrase: {{ searched_phrase }}<br>List of searched question:</h1>
-
+        {% for dict in data %}
         <table id="customers">
             <thead>
             <form method="POST">
@@ -43,23 +43,39 @@
             </form>
             </thead>
             <tbody>
-                {% for dict in data %}
+
                     <tr>
                         {% for header in headers %}
                             <td>
                             {% if header == 'title' %}
-                                <a href="/question/{{ dict["id"] }}">{{ dict["title"] }}</a>
+                                <a href="/question/{{ dict["id"] }}">{{ dict["title"]|safe }}</a>
                             {% else %}
-                            {{ dict[header] }}
+                            {{ dict[header]|safe }}
                             {% endif %}
                             </td>
                         {% endfor %}
                     </tr>
-                {% endfor %}
+
             </tbody>
         </table>
+            {% if searched_answers %}
+            <table id="customers">
+                <tr>
+                <th>Answer</th>
+                <th>Link to question</th>
+                    </tr>
+                {% for answer in searched_answers%}
+                {% if answer['question_id'] == dict["id"] %}
+                <tr>
+                    <td>{{ answer['message']|safe }}</td>
+                    <td><a href="/question/{{ dict["id"] }}">{{ dict["title"]|safe }}</a></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                </table>
+            {% endif %}
             <br>
-
+            {% endfor %}
             <br>
             <br>
 
