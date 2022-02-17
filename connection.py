@@ -422,18 +422,14 @@ def mark_searched_phrase(all_searched_questions, searched_phrase):
         question_dict['image'] = question['image']
         if searched_phrase.lower() in question['message'].lower():
             message = str(question['message'])
-            index = message.find(searched_phrase)
-            if index < 0:
-                index = 0
+            index = message.lower().find(searched_phrase)
             message = message.lower().replace(searched_phrase.lower(), "<mark>" + message[index:index+len(searched_phrase)] + "</mark>")
             question_dict['message'] = message
         else:
             question_dict['message'] = question['message']
         if searched_phrase.lower() in question['title'].lower():
             title = str(question['title'])
-            index = title.find(searched_phrase)
-            if index < 0:
-                index = 0
+            index = title.lower().find(searched_phrase)
             title = title.lower().replace(searched_phrase.lower(), "<mark>" + title[index:index+len(searched_phrase)] + "</mark>")
             question_dict['title'] = title
         else:
@@ -455,7 +451,8 @@ def mark_searched_phrase_in_answers(searched_answers, searched_phrase):
             message = str(question['message'])
             index = message.find(searched_phrase)
             if index < 0:
-                index = 0
+                #index = 0
+                pass
             message = message.lower().replace(searched_phrase.lower(), "<mark>" + message[index:index+len(searched_phrase)] + "</mark>")
             question_dict['message'] = message
         else:
