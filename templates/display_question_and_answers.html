@@ -56,6 +56,19 @@
                     </td>
                 {% endif %}
             </tr>
+                    <tr>
+                <th rowspan="3" colspan="2">Comments</th>
+                <th>Submission Time</th>
+                <th>Message</th>
+                <th>Edited count</th>
+            </tr>
+        {% for comment in comments_to_questions %}
+            <tr>
+            <td>{{ comment['submission_time'] }}</td>
+            <td>{{ comment['message'] }}</td>
+            <td>{{ comment['edited_count'] }}</td>
+            </tr>
+        {% endfor %}
         </table>
             <div class="tags-container">
             <div class="tags">
@@ -78,6 +91,8 @@
                 <th> </th>
             </tr>
             {% for answer in answers %}
+            {% for comment_dict in comments_for_answers %}
+                {%  for comment in comment_dict  %}
             <tr>
                 <td>
                     <p><a href="/answer/{{ answer['id'] }}/vote_up"><img src="/static/up.png"></a></p>
@@ -105,6 +120,18 @@
                     <p><a href="/answer/{{ answer['id'] }}/new-comment"><img src="/static/delete.png"></a></p>
                 </td>
             </tr>
+
+                    {% if comment['answer_id'] == answer['id'] %}
+                    <tr>
+                    <td></td>
+                    <td></td>
+                    <td>{{ comment['submission_time'] }}</td>
+                    <td>{{ comment['message'] }}</td>
+                    <td>{{ comment['edited_count'] }}</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                {% endfor %}
             {% endfor %}
         </table>
             {% endif %}
@@ -119,6 +146,47 @@
             <a href="/question/{{ question['id'] }}/delete"><button class="btn btn-primary">Delete question</button></a>
         </p>
         </div>
+
+        <table>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Submission Time</th>
+                <th>Message</th>
+                <th>Edited count</th>
+            </tr>
+        {% for comment in comments_to_answers %}
+            <tr>
+             <th></th><th></th>
+            <th>{{ comment['submission_time'] }}</th>
+            <th>{{ comment['message'] }}</th>
+            <th>{{ comment['edited_count'] }}</th>
+            </tr>
+
+
+        {% endfor %}
+        </table>
+
+    <table>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Submission Time</th>
+                <th>Message</th>
+                <th>Edited count</th>
+            </tr>
+        {% for element in comments_for_answers %}
+            {% for comment in element %}
+            <tr>
+             <th></th><th></th>
+            <th>{{ comment['submission_time'] }}</th>
+            <th>{{ comment['message'] }}</th>
+            <th>{{ comment['edited_count'] }}</th>
+            </tr>
+
+            {% endfor %}
+        {% endfor %}
+        </table>
     </div>
     <script
         src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

@@ -62,9 +62,15 @@ def list_questions():
 @app.route('/question/<question_id>')
 def question_display(question_id):
     connection.change_value_db('question', 'view_number', '+', 'id', question_id)
-    question, answers = data_manager.question_display_by_id_with_answers(question_id)
+    question, answers, comments_to_questions = data_manager.question_display_by_id_with_answers(question_id)
+    list_with_answer_id = []
+    for answer in answers:
+        list_with_answer_id.append(answer['id'])
+    comments_for_answers = data_manager.get_comments_for_answers(list_with_answer_id)
+    print(comments_for_answers)
     applied_tags = data_manager.get_tags_for_question(question_id)
-    return render_template('display_question_and_answers.html', question=question[0], answers=answers, applied_tags=applied_tags)
+    return render_template('display_question_and_answers.html', question=question[0], answers=answers, applied_tags=applied_tags,
+                           comments_to_questions=comments_to_questions, comments_for_answers=comments_for_answers)
 
 
 # load add question page
@@ -106,7 +112,8 @@ def add_comment_to_answer(answer_id):
     if request.method == 'POST':
         message = request.form['new_comment']
         data_manager.add_comment_to_answer(answer_id, message)
-        return redirect('/list')
+        question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
+        return redirect('/question/' + str(question_id))
     return render_template('add_comment_to_answer.html', answer_id=answer_id)
 
 

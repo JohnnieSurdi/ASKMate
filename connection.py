@@ -52,6 +52,16 @@ def get_data_answers_sort_by_vote_number(cursor, question_id):
 
 
 @database_common.connection_handler
+def get_data_comments(cursor, id):
+    query = """
+        SELECT *
+        FROM comment
+        WHERE question_id = '%s'""" % (id)
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
 def add_question_to_db(cursor, title, question, submission_time, image_path):
     query = """
         INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
@@ -187,6 +197,18 @@ def get_from_db(cursor, db_select, db_name, db_where, db_var):
     var = cursor.fetchall()
     var = list_of_dicts_to_str(str(db_select), var)
     return var
+
+
+@database_common.connection_handler
+def get_comments_for_answers(cursor, answer_id):
+
+    query = """
+        SELECT *
+        FROM comment
+        WHERE answer_id = %s""" % (answer_id)
+    cursor.execute(query)
+    return cursor.fetchall()
+
 
 
 @database_common.connection_handler

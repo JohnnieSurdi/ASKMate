@@ -22,7 +22,15 @@ def list_sort_question(data, order, direction):
 def question_display_by_id_with_answers(question_id):
     question = connection.get_data_question_with_id(question_id)
     answers = connection.get_data_answers_sort_by_vote_number(question_id)
-    return question, answers
+    comments_to_questions = connection.get_data_comments(question_id)
+    return question, answers, comments_to_questions
+
+def get_comments_for_answers(list_with_answer_id):
+    list_with_comments = []
+    for answer_id in list_with_answer_id:
+        comments_to_answers = connection.get_comments_for_answers(answer_id)
+        list_with_comments.append(comments_to_answers)
+    return list_with_comments
 
 
 def add_question_to_file(title, question, image):
@@ -45,6 +53,9 @@ def get_tags_for_question(question_id):
     for id in tags_id_for_question:
         tags.append(connection.get_tag_by_id(id))
     return tags
+
+
+
 
 
 def add_new_defined_tags(new_defined_tags, question_id):
