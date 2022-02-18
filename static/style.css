@@ -83,3 +83,8 @@
         .tags-container {
             display:flex;
         }
+
+        mark {
+          background-color: yellow;
+          color: black;
+        }

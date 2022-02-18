@@ -39,11 +39,13 @@ def home_page():
     data_five_questions = data_questions[:5]
     searched_phrase = request.args.get("search-phrase")
     if searched_phrase:
-        all_searched_questions = connection.search_in_questions_and_answers(searched_phrase)
+        all_searched_questions, searched_answers = connection.search_in_questions_and_answers(searched_phrase)
         all_searched_questions = connection.mark_searched_phrase(all_searched_questions, searched_phrase)
-        print(all_searched_questions)
+        if len(searched_answers) > 0:
+            searched_answers = connection.mark_searched_phrase_in_answers(searched_answers, searched_phrase)
         return render_template('search.html',
-                               searched_phrase=searched_phrase, data=all_searched_questions, headers=headers)
+                               searched_phrase=searched_phrase, data=all_searched_questions, headers=headers,
+                               searched_answers=searched_answers)
     return render_template('index.html', data=data_five_questions, headers=headers)
 
 
@@ -62,9 +64,16 @@ def list_questions():
 @app.route('/question/<question_id>')
 def question_display(question_id):
     connection.change_value_db('question', 'view_number', '+', 'id', question_id)
-    question, answers = data_manager.question_display_by_id_with_answers(question_id)
+    question, answers, comments_to_questions = data_manager.question_display_by_id_with_answers(question_id)
+    list_with_answer_id = []
+    for answer in answers:
+        list_with_answer_id.append(answer['id'])
+    comments_for_answers = data_manager.get_comments_for_answers(list_with_answer_id)
     applied_tags = data_manager.get_tags_for_question(question_id)
-    return render_template('display_question_and_answers.html', question=question[0], answers=answers, applied_tags=applied_tags)
+    comments_q_len = len(comments_to_questions)+2
+    print(comments_for_answers)
+    return render_template('display_question_and_answers.html', question=question[0], answers=answers, applied_tags=applied_tags,
+                           comments_to_questions=comments_to_questions, comments_for_answers=comments_for_answers, comments_q_len=comments_q_len)
 
 
 # load add question page
@@ -106,7 +115,8 @@ def add_comment_to_answer(answer_id):
     if request.method == 'POST':
         message = request.form['new_comment']
         data_manager.add_comment_to_answer(answer_id, message)
-        return redirect('/list')
+        question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
+        return redirect('/question/' + str(question_id))
     return render_template('add_comment_to_answer.html', answer_id=answer_id)
 
 
@@ -159,7 +169,12 @@ def edit_comment(comment_id):
         return render_template('edit-comment.html', comment_to_edit=comment_to_edit)
     edited_comment = request.form.get('comment')
     connection.update_comment(comment_id, edited_comment)
-    return redirect('/list')
+    connection.change_value_db('comment', 'edited_count', '+', 'id', comment_id)
+    question_id = connection.get_from_db("question_id", "comment", "id", comment_id)
+    if not question_id:
+        answer_id = connection.get_from_db("answer_id", "comment", "id", comment_id)
+        question_id = connection.get_from_db("question_id", "answer", "id", answer_id)
+    return redirect('/question/' + str(question_id))
 
 
 # delete answer
@@ -245,8 +260,11 @@ def delete_tags_from_question2(question_id, tag):
 # delete comment
 @app.route("/comments/<comment_id>/delete")
 def delete_comment(comment_id):
-    question_id = connection.get_from_db("question_id", "comment", "comment_id", comment_id)
-    connection.delete_from_db('comment', 'comment_id', comment_id)
+    question_id = connection.get_from_db("question_id", "comment", "id", comment_id)
+    if not question_id:
+        answer_id = connection.get_from_db("answer_id", "comment", "id", comment_id)
+        question_id = connection.get_from_db("question_id", "answer", "id", answer_id)
+    connection.delete_from_db('comment', 'id', comment_id)
     return redirect('/question/' + str(question_id))
 
 
