@@ -5,8 +5,8 @@ import database_common
 def delete_from_db(cursor, db_name, db_where, db_var):
     query = """
         DELETE FROM %s
-        WHERE %s = '%s'""" % (db_name, db_where, db_var)
-    cursor.execute(query)
+        WHERE %s = '%s'"""
+    cursor.execute(query, (db_name, db_where, db_var))
 
 
 @database_common.connection_handler
@@ -240,11 +240,15 @@ def convert_direction(direction):
 def sort_questions(cursor, direction, order):
     order = convert_order(order)
     direction = convert_direction(direction)
-    query = """
-        SELECT *
-        FROM question
-        ORDER BY %s %s""" % (direction, order)
-    cursor.execute(query)
+    # query = """
+    #     SELECT *
+    #     FROM question
+    #     ORDER BY %s %s"""
+    # query = f"""
+    #     SELECT *
+    #     FROM question
+    #     ORDER BY {direction} {order}"""
+    cursor.execute("SELECT * FROM question ORDER BY {} {}".format(direction, order))
     return cursor.fetchall()
 
 
