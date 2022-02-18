@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>List of all questions</title>
-        <link
+    <link
             rel="stylesheet"
             href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
@@ -17,9 +17,9 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="container" align="center">
-<a href="/"><img id="logo" src="/static/logo3.png"></a>
-        <div class="form-group">
+<div class="container" align="center">
+    <a href="/"><img id="logo" src="/static/logo3.png"></a>
+    <div class="form-group">
         <h1>List of all questions:</h1>
 
         <table id="customers">
@@ -27,64 +27,64 @@
             <form method="POST">
                 <tr>
                     {% for header in headers %}
-                       <th>
-                       {% if header =="submission_time" %}
-                           Submission time
-                           {% elif header =="view_number" %}
-                           Number of views
+                        <th>
+                            {% if header =="submission_time" %}
+                                Submission time
+                            {% elif header =="view_number" %}
+                                Number of views
                             {% elif header =="vote_number" %}
-                           Number of votes
-                        {% else %}
-                           {{ header }}
-                       {% endif %}
-                       </th>
+                                Number of votes
+                            {% else %}
+                                {{ header }}
+                            {% endif %}
+                        </th>
                     {% endfor %}
                 </tr>
             </form>
             </thead>
             <tbody>
-                {% for dict in data %}
-                    <tr>
-                        {% for header in headers %}
-                            <td>
+            {% for dict in data %}
+                <tr>
+                    {% for header in headers %}
+                        <td>
                             {% if header == 'title' %}
                                 <a href="/question/{{ dict["id"] }}">{{ dict["title"] }}</a>
                             {% else %}
-                            {{ dict[header] }}
+                                {{ dict[header] }}
                             {% endif %}
-                            </td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
-            <br>
+        <br>
         <form method="GET">
-        <label for="sort">Sort questions by:
-            <select name="order_by" id="order">
-                <option id="title">Title</option>
-                <option id="submission_time">Submission time</option>
-                <option id="message">Message</option>
-                <option id="view_number">Number of views</option>
-                <option id="vote_number">Number of votes</option>
-            </select>
-            <select name="order_direction" id="direction">
-                <option id="asc">from lowest</option>
-                <option id="dsc">from highest</option>
-            </select>
-            <button type="submit" class="btn btn-primary"><strong>Sort</button>
-        </label>
+            <label for="sort">Sort questions by:
+                <select name="order_by" id="order">
+                    <option id="title">Title</option>
+                    <option id="submission_time">Submission time</option>
+                    <option id="message">Message</option>
+                    <option id="view_number">Number of views</option>
+                    <option id="vote_number">Number of votes</option>
+                </select>
+                <select name="order_direction" id="direction">
+                    <option id="asc">from lowest</option>
+                    <option id="dsc">from highest</option>
+                </select>
+                <button type="submit" class="btn btn-primary"><strong>Sort</button>
+            </label>
         </form>
-            <br>
-            <br>
+        <br>
+        <br>
 
         <button class="btn btn-primary">
             <a id="add_question" href="/add-question">
-        Add question
+                Add question
             </a>
         </button>
     </div>
-    </div>
+</div>
 <script
         src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

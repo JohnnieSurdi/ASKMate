@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect
-import connection
 import os
-from werkzeug.utils import secure_filename
-import data_manager
 
+from flask import Flask, render_template, request, redirect
+from werkzeug.utils import secure_filename
+
+import connection
+import data_manager
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 UPLOAD_FOLDER = 'static/uploads/'
@@ -70,10 +71,12 @@ def question_display(question_id):
         list_with_answer_id.append(answer['id'])
     comments_for_answers = data_manager.get_comments_for_answers(list_with_answer_id)
     applied_tags = data_manager.get_tags_for_question(question_id)
-    comments_q_len = len(comments_to_questions)+2
+    comments_q_len = len(comments_to_questions) + 2
     print(comments_for_answers)
-    return render_template('display_question_and_answers.html', question=question[0], answers=answers, applied_tags=applied_tags,
-                           comments_to_questions=comments_to_questions, comments_for_answers=comments_for_answers, comments_q_len=comments_q_len)
+    return render_template('display_question_and_answers.html', question=question[0], answers=answers,
+                           applied_tags=applied_tags,
+                           comments_to_questions=comments_to_questions, comments_for_answers=comments_for_answers,
+                           comments_q_len=comments_q_len)
 
 
 # load add question page
@@ -224,12 +227,15 @@ def show_image(image, question_id):
     return render_template('show_image.html', image=image, question_id=question_id)
 
 
-@app.route("/question/<question_id>/new-tag", methods=['GET', 'POST'])
+@app.route("/question/<question_id>/new-tag", methods=['GET'])
 def add_new_tag(question_id):
-    if request.method == 'GET':
-        tags = connection.get_all_existing_tags()
-        applied_tags = data_manager.get_tags_for_question(question_id)
-        return render_template('add-tag.html', tags=tags, question_id=question_id, applied_tags=applied_tags)
+    tags = connection.get_all_existing_tags()
+    applied_tags = data_manager.get_tags_for_question(question_id)
+    return render_template('add-tag.html', tags=tags, question_id=question_id, applied_tags=applied_tags)
+
+
+@app.route("/question/<question_id>/new-tag", methods=['POST'])
+def handle_new_tag(question_id):
     new_defined_tags = request.form.get('new-tags')
     data_manager.add_new_defined_tags(new_defined_tags, question_id)
     return redirect('/question/' + str(question_id) + '/new-tag')
@@ -237,24 +243,24 @@ def add_new_tag(question_id):
 
 @app.route("/question/<question_id>/new-tag/<tag>")
 def add_tags_to_question(question_id, tag):
-        tag_id = connection.get_id_by_tag(tag)
-        connection.apply_tag_to_question(question_id, tag_id)
-        return redirect('/question/' + str(question_id) + '/new-tag')
+    tag_id = connection.get_id_by_tag(tag)
+    connection.apply_tag_to_question(question_id, tag_id)
+    return redirect('/question/' + str(question_id) + '/new-tag')
 
 
 @app.route("/question/<question_id>/new-tag/<tag>/delete")
 def delete_tags_from_question(question_id, tag):
-        tag_id = connection.get_id_by_tag(tag)
-        connection.delete_tag_from_question(question_id, tag_id)
-        return redirect('/question/' + str(question_id) + '/new-tag')
+    tag_id = connection.get_id_by_tag(tag)
+    connection.delete_tag_from_question(question_id, tag_id)
+    return redirect('/question/' + str(question_id) + '/new-tag')
 
 
 @app.route("/question/<question_id>/<tag>/delete")
 def delete_tags_from_question2(question_id, tag):
-        tag_id = connection.get_id_by_tag(tag)
-        connection.delete_tag_from_question(question_id, tag_id)
-        connection.change_value_db('question', 'view_number', '-', 'id', question_id)
-        return redirect('/question/' + str(question_id))
+    tag_id = connection.get_id_by_tag(tag)
+    connection.delete_tag_from_question(question_id, tag_id)
+    connection.change_value_db('question', 'view_number', '-', 'id', question_id)
+    return redirect('/question/' + str(question_id))
 
 
 # delete comment

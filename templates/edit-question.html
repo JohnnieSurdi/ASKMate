@@ -16,8 +16,8 @@
     />
     <link rel="stylesheet" href="/static/style.css">
     <style>
-        h2.error{
-            color:red;
+        h2.error {
+            color: red;
         }
     </style>
     <title>Edit Question</title>
@@ -25,21 +25,22 @@
 <body></body>
 <div class="container">
     <div align="center">
-<a href="/"><img id="logo" src="/static/logo3.png"></a>
-        </div>
-<form method="POST">
-    <h1 align="center">Edit Question</h1>
-    <div class="form-group">
-        <label for="title">Title</label>
-        <input type="text" class="form-control" id="title" name="title" value="{{ question_to_edit['title'] }}"/>
+        <a href="/"><img id="logo" src="/static/logo3.png"></a>
     </div>
+    <form method="POST">
+        <h1 align="center">Edit Question</h1>
         <div class="form-group">
-        <label for="question">Question</label>
-        <textarea class="form-control" id="question" rows="3" class="form-control" name="question">{{ question_to_edit['message'] }}</textarea>
-    </div>
-    <br/>
-    <button type="submit" class="btn btn-primary">Edit Question</button>
-</form>
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ question_to_edit['title'] }}"/>
+        </div>
+        <div class="form-group">
+            <label for="question">Question</label>
+            <textarea class="form-control" id="question" rows="3" class="form-control"
+                      name="question">{{ question_to_edit['message'] }}</textarea>
+        </div>
+        <br/>
+        <button type="submit" class="btn btn-primary">Edit Question</button>
+    </form>
 </div>
 <script
         src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

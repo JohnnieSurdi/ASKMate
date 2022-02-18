@@ -1,13 +1,21 @@
 <<<<<<< HEAD
+
 # AskMate (sprint 2)
 
 ## Story
 
-Last week you created a pretty good site from scratch. It already has some features but it's a bit difficult to maintain due to the fact that the data is stored in CSV files. Some new features are also needed, to make the site more usable and more appealing to users.
+Last week you created a pretty good site from scratch. It already has some features but it's a bit difficult to maintain
+due to the fact that the data is stored in CSV files. Some new features are also needed, to make the site more usable
+and more appealing to users.
 
-The management decided to move further as users requested new features, such as the ability to comment on answers and tag questions (and of course the issue with CSV files). There are several other feature requests which you can find in the user stories.
+The management decided to move further as users requested new features, such as the ability to comment on answers and
+tag questions (and of course the issue with CSV files). There are several other feature requests which you can find in
+the user stories.
 
-Just like last week, management is handing out a **prioritized list** of new user stories that you must add to the unfinished stories from last week on your product backlog. Try to estimate these new stories as well, and, based on the estimations, decide how many of them your team can finish until the demo. As the order is important, you must choose from the beginning of the list as much as you can.
+Just like last week, management is handing out a **prioritized list** of new user stories that you must add to the
+unfinished stories from last week on your product backlog. Try to estimate these new stories as well, and, based on the
+estimations, decide how many of them your team can finish until the demo. As the order is important, you must choose
+from the beginning of the list as much as you can.
 
 ## What are you going to learn?
 
@@ -19,30 +27,37 @@ Just like last week, management is handing out a **prioritized list** of new use
 
 ## Tasks
 
-1. Since you work in a new repository, but also need the code from the previous sprint, add the `ask-mate-2` repository as a new remote to the repository of the previous sprint, then pull (merge) and push your changes into it.
+1. Since you work in a new repository, but also need the code from the previous sprint, add the `ask-mate-2` repository
+   as a new remote to the repository of the previous sprint, then pull (merge) and push your changes into it.
     - There is a merge commit in the project repository that contains code from the previous sprint.
 
 2. Make the application use a database instead of CSV files.
     - The application uses a PostgreSQL database instead of CSV files.
-    - The application respects the `PSQL_USER_NAME`, `PSQL_PASSWORD`, `PSQL_HOST` and `PSQL_DB_NAME` environment variables.
-    - The database structure (tables) is the same as in the provided SQL file (`sample_data/askmatepart2-sample-data.sql`).
+    - The application respects the `PSQL_USER_NAME`, `PSQL_PASSWORD`, `PSQL_HOST` and `PSQL_DB_NAME` environment
+      variables.
+    - The database structure (tables) is the same as in the provided SQL
+      file (`sample_data/askmatepart2-sample-data.sql`).
 
 3. Allow the user to add comments to a question.
     - There is a `/question/<question_id>/new-comment` page.
     - The page is linked from the question page.
     - There is a form with a `message` field, and it issues `POST` requests.
-    - After submitting, the page redirects to the question detail page, and the new comment appears together with its submission time.
+    - After submitting, the page redirects to the question detail page, and the new comment appears together with its
+      submission time.
 
 4. Allow the user to add comments to an answer.
     - There is a `/answer/<answer_id>/new-comment` page.
     - The page is linked from the question page, next to or below the answer.
     - There is a form with a `message` field, and it issues `POST` requests.
-    - After submitting, the page redirects to the question detail page, and the new comment appears together with its submission time.
+    - After submitting, the page redirects to the question detail page, and the new comment appears together with its
+      submission time.
 
-5. Implement searching in questions and answers. (Hint: [Passing data from browser](https://learn.code.cool/web-python/#/../pages/web/passing-data-from-browser))
+5. Implement searching in questions and answers. (
+   Hint: [Passing data from browser](https://learn.code.cool/web-python/#/../pages/web/passing-data-from-browser))
 
     - There is a search box and "Search" button on the main page.
-    - When writing something and pressing the button, a results list of questions is displayed (with the same data as in the list page).
+    - When writing something and pressing the button, a results list of questions is displayed (with the same data as in
+      the list page).
     - The results list contains questions for which the title or description contain the searched phrase.
     - The results list also contains questions which have answers for which the message contains the searched phrase.
     - The results list URL is `/search?q=<search phrase>`.
@@ -66,14 +81,16 @@ Just like last week, management is handing out a **prioritized list** of new use
 8. Allow the user to delete comments.
     - There is a recycle bin icon next to the comment.
     - Clicking the icon asks the user to confirm the deletion.
-    - The deletion itself is implemented by the `/comments/<comment_id>/delete` endpoint (which does not ask for confirmation anymore).
+    - The deletion itself is implemented by the `/comments/<comment_id>/delete` endpoint (which does not ask for
+      confirmation anymore).
     - After deleting, the page redirects to the question detail page, and the comment is not shown anymore.
 
 9. Display five latest questions on the main page (`/`).
     - The main page (`/`) displays the five latest submitted questions.
     - The main page contains a link to all of the questions (`/list`).
 
-10. Implement sorting for the question list. [If you did this user story in the previous sprint, now you only have to rewrite it to use SQL.]
+10. Implement sorting for the question
+    list. [If you did this user story in the previous sprint, now you only have to rewrite it to use SQL.]
     - The question list can be sorted by title, submission time, message, number of views, and number of votes.
     - The list can be sorted in ascending and descending order.
     - The order is passed as query string parameters, for example `/list?order_by=title&order_direction=desc`.
@@ -100,16 +117,24 @@ None
 
 ## Hints
 
-- It's important that if the database table has a timestamp column then you cannot insert a UNIX timestamp value directly into that table, you should use:
+- It's important that if the database table has a timestamp column then you cannot insert a UNIX timestamp value
+  directly into that table, you should use:
     - either strings in the following format '1999-01-08 04&colon;05&colon;06',
-    - or if you use psycopg2 and the datetime module, you can pass a datetime object to the SQL query as parameter (details in the background materials: [Date/Time handling in psycopg2](https://www.psycopg.org/docs/usage.html?highlight=gunpoint#date-time-objects-adaptation))
-- Pay attention on the order of inserting data into the tables, because you may violate foreign key constraints (that means e.g. if you insert data into the question_tag before you insert into the tag table the corresponding tag id you want to refer to then it won't exist yet)!
+    - or if you use psycopg2 and the datetime module, you can pass a datetime object to the SQL query as parameter (
+      details in the background
+      materials: [Date/Time handling in psycopg2](https://www.psycopg.org/docs/usage.html?highlight=gunpoint#date-time-objects-adaptation))
+- Pay attention on the order of inserting data into the tables, because you may violate foreign key constraints (that
+  means e.g. if you insert data into the question_tag before you insert into the tag table the corresponding tag id you
+  want to refer to then it won't exist yet)!
 - You can import the sample data file into `psql` with the `\i` command or run it via the Database tool in PyCharm.
-- Some user stories may require to deal with CSS as well, but do not deal with CSS too much. It's more important that you write proper queries, have a working connection with psycopg2, have a clean Python code than create an amazingly beautiful web application (although if you have time, of course it's not forbidden to do so :smiley:).
+- Some user stories may require to deal with CSS as well, but do not deal with CSS too much. It's more important that
+  you write proper queries, have a working connection with psycopg2, have a clean Python code than create an amazingly
+  beautiful web application (although if you have time, of course it's not forbidden to do so :smiley:).
 
 ### Data models
 
-All data should be persisted in a PostgreSQL database in the following tables (you can ignore data in the not implemented fields):
+All data should be persisted in a PostgreSQL database in the following tables (you can ignore data in the not
+implemented fields):
 
 ![AskMate data model part 2](media/web-python/askmate-data-model-part-2.png)
 
@@ -140,8 +165,10 @@ All data should be persisted in a PostgreSQL database in the following tables (y
 
 **comment table**<br>
 *id:* A unique identifier for the comment<br>
-*question\_id:* The id of the question this comment belongs to (if the comment belongs to an answer, the value of this field should be NULL)<br>
-*answer\_id:* The id of the answer this comment belongs to (if the comment belongs to a question, the value of this field should be NULL)<br>
+*question\_id:* The id of the question this comment belongs to (if the comment belongs to an answer, the value of this
+field should be NULL)<br>
+*answer\_id:* The id of the answer this comment belongs to (if the comment belongs to a question, the value of this
+field should be NULL)<br>
 *message:* The comment text<br>
 *submission\_time:* The date and time the comment was posted or updated<br>
 *edited\_number::* How many times this comment was edited<br>
@@ -180,20 +207,25 @@ To init the database use the `sample_data/askmatepart2-sample-data.sql` file in 
 - [Collection of web resources](project/curriculum/materials/pages/web/resources.md)
 - <i class="far fa-book-open"></i> [Pip and VirtualEnv](project/curriculum/materials/pages/python/pip-and-virtualenv.md)
 - <i class="far fa-book-open"></i> [A web-framework for Python: Flask](project/curriculum/materials/pages/python/python-flask.md)
-- <i class="far fa-book-open"></i> [Flask documentation](http://flask.palletsprojects.com/) (the Quickstart gives a good overview)
+- <i class="far fa-book-open"></i> [Flask documentation](http://flask.palletsprojects.com/) (the Quickstart gives a good
+  overview)
 - <i class="far fa-book-open"></i> [Jinja2 documentation](https://jinja.palletsprojects.com/en/2.10.x/templates/)
-=======
+  =======
+
 # AskMate (sprint 1)
 
 ## Story
 
-It is time to put your newly acquired Flask skills to use.
-Your next big task is to implement a crowdsourced Q&A site, similar to Stack Overflow.
+It is time to put your newly acquired Flask skills to use. Your next big task is to implement a crowdsourced Q&A site,
+similar to Stack Overflow.
 
-The initial version of the site must be able to handle questions and answers.
-There is no need for additional functionality, such as user management or comments for questions and answers.
+The initial version of the site must be able to handle questions and answers. There is no need for additional
+functionality, such as user management or comments for questions and answers.
 
-The management is very interested in the agile development methodologies that they recently heard about, so they are handing out a **prioritized list** of user stories, called a product backlog. Try to estimate how many of these stories your team can finish until the demo. As the order is important, choose from the beginning of the list as much as you can. **The first four stories are the most important**.
+The management is very interested in the agile development methodologies that they recently heard about, so they are
+handing out a **prioritized list** of user stories, called a product backlog. Try to estimate how many of these stories
+your team can finish until the demo. As the order is important, choose from the beginning of the list as much as you
+can. **The first four stories are the most important**.
 
 ## What are you going to learn?
 
@@ -248,7 +280,8 @@ The management is very interested in the agile development methodologies that th
     - The page is linked from the question page.
     - There is a POST form with at least `title` and `message` fields.
     - The fields are pre-filled with existing question data.
-    - After submitting, the page redirects to the "Display a question" page. The changed data is visible on the "Display a question" page.
+    - After submitting, the page redirects to the "Display a question" page. The changed data is visible on the "Display
+      a question" page.
 
 9. Implement deleting an answer.
     - Deleting is implemented by `/answer/<answer_id>/delete` endpoint.
@@ -271,22 +304,24 @@ The management is very interested in the agile development methodologies that th
 
 ## General requirements
 
-- All data is persisted to `.csv` files. You need a `questions.csv` for storing all questions and an `answers.csv` for storing all answers.
+- All data is persisted to `.csv` files. You need a `questions.csv` for storing all questions and an `answers.csv` for
+  storing all answers.
 
 ## Hints
 
- ### Project structure
+### Project structure
 
 - Split the code into modules according to clean code principles.
 - Do not put more than 100-150 lines of code into a single file.
-- Make sure that files logically contain the same things. For example,
-you can split the code into the following 3+1 parts.
+- Make sure that files logically contain the same things. For example, you can split the code into the following 3+1
+  parts.
 
 **Layer** | **Example filename** | **What should it do/contain?**
 ---|---|---
 Routing layer | `server.py` | This layer contains logic related to Flask, such as server, routes, request handling, session, and so on. This is the only file to be imported from Flask.
 Persistence layer | `data_manager.py` | This is the layer between the server and the data. Functions here are called from `server.py` and use generic functions from `connection.py`.
-CSV _(later SQL)_ connection layer |  `connection.py` | This layer contains common functions to read, write, or append CSV files without feature-specific knowledge. Only this layer can access long term data storage. In this case, CSV files are used as storage, later this will switch to SQL databases.
+CSV _(later
+SQL)_ connection layer |  `connection.py` | This layer contains common functions to read, write, or append CSV files without feature-specific knowledge. Only this layer can access long term data storage. In this case, CSV files are used as storage, later this will switch to SQL databases.
 - Utility "layer" | `util.py` | Helper functions that can be called from any other layer, but mainly from the business logic layer.
 
 This is just one way to structure code, you do not have to follow it _strictly_.
@@ -320,9 +355,11 @@ The content of the files is the following (you can ignore data in the unimplemen
 - <i class="far fa-exclamation"></i> [Introduction to HTML](project/curriculum/materials/tutorials/introduction-to-html.md)
 - <i class="far fa-exclamation"></i> [Pip and VirtualEnv](project/curriculum/materials/pages/python/pip-and-virtualenv.md)
 - <i class="far fa-exclamation"></i> [A web-framework for Python: Flask](project/curriculum/materials/pages/python/python-flask.md)
-- <i class="far fa-book-open"></i> [Flask documentation](http://flask.palletsprojects.com/) (the Quickstart gives a good overview)
+- <i class="far fa-book-open"></i> [Flask documentation](http://flask.palletsprojects.com/) (the Quickstart gives a good
+  overview)
 - <i class="far fa-book-open"></i> [Jinja2 documentation](https://jinja.palletsprojects.com/en/2.10.x/templates/)
 - <i class="far fa-book-open"></i> [HTML tutorials and references on MDN](https://developer.mozilla.org/en-US/docs/Web/HTML)
 - [Tips & Tricks](project/curriculum/materials/pages/web/web-with-python-tips.md)
 - [About unique identifiers](project/curriculum/materials/pages/general/unique-id.md)
->>>>>>> ask-mate-1-python-MichalProsniak/development
+
+> > > > > > > ask-mate-1-python-MichalProsniak/development

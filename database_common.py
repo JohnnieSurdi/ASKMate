@@ -1,6 +1,7 @@
+import os
+
 import psycopg2
 import psycopg2.extras
-import os
 
 
 def get_connection_string():
@@ -45,4 +46,5 @@ def connection_handler(function):
         dict_cur.close()
         connection.close()
         return ret_value
+
     return wrapper

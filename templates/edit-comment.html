@@ -16,8 +16,8 @@
     />
     <link rel="stylesheet" href="/static/style.css">
     <style>
-        h2.error{
-            color:red;
+        h2.error {
+            color: red;
         }
     </style>
     <title>Edit Comment</title>
@@ -25,17 +25,18 @@
 <body></body>
 <div class="container">
     <div align="center">
-<a href="/"><img id="logo" src="/static/logo3.png"></a>
-        </div>
-<form method="POST">
-    <h1 align="center">Edit Comment</h1>
-        <div class="form-group">
-        <label for="comment">Comment</label>
-        <textarea class="form-control" id="comment" rows="3" class="form-control" name="comment">{{ comment_to_edit['message'] }}</textarea>
+        <a href="/"><img id="logo" src="/static/logo3.png"></a>
     </div>
-    <br/>
-    <button type="submit" class="btn btn-primary">Edit Comment</button>
-</form>
+    <form method="POST">
+        <h1 align="center">Edit Comment</h1>
+        <div class="form-group">
+            <label for="comment">Comment</label>
+            <textarea class="form-control" id="comment" rows="3" class="form-control"
+                      name="comment">{{ comment_to_edit['message'] }}</textarea>
+        </div>
+        <br/>
+        <button type="submit" class="btn btn-primary">Edit Comment</button>
+    </form>
 </div>
 <script
         src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

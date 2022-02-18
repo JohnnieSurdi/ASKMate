@@ -201,14 +201,12 @@ def get_from_db(cursor, db_select, db_name, db_where, db_var):
 
 @database_common.connection_handler
 def get_comments_for_answers(cursor, answer_id):
-
     query = """
         SELECT *
         FROM comment
         WHERE answer_id = %s""" % (answer_id)
     cursor.execute(query)
     return cursor.fetchall()
-
 
 
 @database_common.connection_handler
@@ -345,7 +343,7 @@ def search_in_question_message(cursor, searched_phrase):
     query_message = """
         SELECT *
         FROM question
-        WHERE LOWER(message) LIKE LOWER('%s')""" % (searched_phrase_in_any_position, )
+        WHERE LOWER(message) LIKE LOWER('%s')""" % (searched_phrase_in_any_position,)
     cursor.execute(query_message)
     return cursor.fetchall()
 
@@ -356,7 +354,7 @@ def search_in_question_title(cursor, searched_phrase):
     query_title = """
         SELECT *
         FROM question
-        WHERE LOWER(title) LIKE LOWER('%s')""" % (searched_phrase_in_any_position, )
+        WHERE LOWER(title) LIKE LOWER('%s')""" % (searched_phrase_in_any_position,)
     cursor.execute(query_title)
     return cursor.fetchall()
 
@@ -376,11 +374,12 @@ def search_in_answer(cursor, searched_phrase):
     query = """
         SELECT *
         FROM answer
-        WHERE LOWER(message) LIKE LOWER('%s')""" % (searched_phrase_in_any_position, )
+        WHERE LOWER(message) LIKE LOWER('%s')""" % (searched_phrase_in_any_position,)
     cursor.execute(query)
     searched_answers = cursor.fetchall()
     list_of_id = [question_id['question_id'] for question_id in searched_answers]
     return list_of_id, searched_answers
+
 
 def check_for_duplicated(questions):
     list = []
@@ -388,6 +387,7 @@ def check_for_duplicated(questions):
         if question not in list:
             list.append(question)
     return list
+
 
 @database_common.connection_handler
 def get_all_questions_of_specific_id(cursor, searched_phrase):
@@ -397,7 +397,7 @@ def get_all_questions_of_specific_id(cursor, searched_phrase):
         query = """
             SELECT *
             FROM question
-            WHERE id = '%s'""" % (question_id, )
+            WHERE id = '%s'""" % (question_id,)
         cursor.execute(query)
         question = cursor.fetchall()
         question = question[0]
@@ -415,7 +415,7 @@ def search_in_questions_and_answers(searched_phrase):
     return searched_questions, searched_answers
 
 
-def mark_searched_phrase(all_searched_questions, searched_phrase):
+def mark_searched_phrase(all_searched_questions, searched_phrase):  # W js
     all_searched_questions_to_return = []
     for question in all_searched_questions:
         question_dict = {}
@@ -427,20 +427,23 @@ def mark_searched_phrase(all_searched_questions, searched_phrase):
         if searched_phrase.lower() in question['message'].lower():
             message = str(question['message'])
             index = message.lower().find(searched_phrase.lower())
-            message = message.lower().replace(searched_phrase.lower(), "<mark>" + message[index:index+len(searched_phrase)] + "</mark>")
+            message = message.lower().replace(searched_phrase.lower(),
+                                              "<mark>" + message[index:index + len(searched_phrase)] + "</mark>")
             question_dict['message'] = message
         else:
             question_dict['message'] = question['message']
         if searched_phrase.lower() in question['title'].lower():
             title = str(question['title'])
             index = title.lower().find(searched_phrase.lower())
-            title = title.lower().replace(searched_phrase.lower(), "<mark>" + title[index:index+len(searched_phrase)] + "</mark>")
+            title = title.lower().replace(searched_phrase.lower(),
+                                          "<mark>" + title[index:index + len(searched_phrase)] + "</mark>")
             question_dict['title'] = title
         else:
             question_dict['title'] = question['title']
         all_searched_questions_to_return.append(question_dict)
 
     return all_searched_questions_to_return
+
 
 def mark_searched_phrase_in_answers(searched_answers, searched_phrase):
     searched_answers_to_return = []
@@ -454,7 +457,8 @@ def mark_searched_phrase_in_answers(searched_answers, searched_phrase):
         if searched_phrase.lower() in question['message'].lower():
             message = str(question['message'])
             index = message.lower().find(searched_phrase.lower())
-            message = message.lower().replace(searched_phrase.lower(), "<mark>" + message[index:index+len(searched_phrase)] + "</mark>")
+            message = message.lower().replace(searched_phrase.lower(),
+                                              "<mark>" + message[index:index + len(searched_phrase)] + "</mark>")
             question_dict['message'] = message
         else:
             question_dict['message'] = question['message']
