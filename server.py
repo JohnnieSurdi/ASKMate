@@ -273,6 +273,11 @@ def delete_comment(comment_id):
     connection.delete_from_db('comment', 'id', comment_id)
     return redirect('/question/' + str(question_id))
 
+# registration endpoint
+@app.route("/registration ")
+def registration():
+    pass
+
 
 if __name__ == "__main__":
     app.run()
