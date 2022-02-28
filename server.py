@@ -1,18 +1,3 @@
-<<<<<<< HEAD
-from flask import Flask, render_template
-from bonus_questions import SAMPLE_QUESTIONS
-
-app = Flask(__name__)
-
-
-@app.route("/bonus-questions")
-def main():
-    return render_template('bonus_questions.html', questions=SAMPLE_QUESTIONS)
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
-=======
 import os
 
 from flask import Flask, render_template, request, redirect
@@ -291,4 +276,3 @@ def delete_comment(comment_id):
 
 if __name__ == "__main__":
     app.run()
->>>>>>> ask-mate-2-python-MichalProsniak/development
