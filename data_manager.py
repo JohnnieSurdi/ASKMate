@@ -2,6 +2,7 @@ import datetime
 
 import connection
 import server
+import bcrypt
 
 
 def list_prepare_question_to_show():
@@ -96,3 +97,12 @@ def add_answer_to_file(question_id, message, image):
     submission_time = datetime.datetime.now()
     image_path = server.upload_image(image)
     connection.add_answer_to_db(question_id, message, submission_time, image_path)
+
+def hash_password(plain_text_password):
+    # By using bcrypt, the salt is saved into the hash itself
+    hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
+    return hashed_bytes.decode('utf-8')
+
+def verify_password(plain_text_password, hashed_password):
+    hashed_bytes_password = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)

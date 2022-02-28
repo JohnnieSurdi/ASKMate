@@ -274,10 +274,13 @@ def delete_comment(comment_id):
     return redirect('/question/' + str(question_id))
 
 # registration endpoint
-@app.route("/registration ")
+@app.route("/registration", methods=['GET','POST'])
 def registration():
-    pass
-
+    if request.method == 'GET':
+        return render_template('registration.html')
+    username = request.form['username']
+    password = request.form['password']
+    password = data_manager.hash_password(password)
 
 if __name__ == "__main__":
     app.run()
