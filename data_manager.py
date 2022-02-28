@@ -106,3 +106,13 @@ def hash_password(plain_text_password):
 def verify_password(plain_text_password, hashed_password):
     hashed_bytes_password = hashed_password.encode('utf-8')
     return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+
+def user_registration(username, password):
+    password = hash_password(password)
+    is_username_taken = connection.check_if_user_exist(username)
+    registration_date = datetime.datetime.now()
+    if not is_username_taken:
+        connection.add_new_user_to_db(username, password, registration_date)
+        return is_username_taken
+    else:
+        return is_username_taken

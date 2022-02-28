@@ -157,6 +157,27 @@ def get_answer_to_edit(cursor, answer_id):
     answer = answer[0]
     return answer
 
+@database_common.connection_handler
+def check_if_user_exist(cursor, username):
+    query = """
+        SELECT name FROM users WHERE name=%s
+        """
+    cursor.execute(query, (username,))
+    is_exist = cursor.fetchall()
+    if len(is_exist) > 0:
+        is_exist = True
+    else:
+        is_exist = False
+    return is_exist
+
+@database_common.connection_handler
+def add_new_user_to_db(cursor, username, password, registration_date):
+    query = """
+        INSERT INTO users (name, password,registration_date)
+        VALUES (%s,%s,%s)
+        """
+    cursor.execute(query,(username, password,registration_date))
+
 
 @database_common.connection_handler
 def update_answer(cursor, answer_id, edited_answer):

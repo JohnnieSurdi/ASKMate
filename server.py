@@ -280,7 +280,11 @@ def registration():
         return render_template('registration.html')
     username = request.form['username']
     password = request.form['password']
-    password = data_manager.hash_password(password)
+    is_username_taken = data_manager.user_registration(username, password)
+    if not is_username_taken:
+        return redirect('/')
+    else:
+        return render_template('registration.html',error='Username already exists')
 
 if __name__ == "__main__":
     app.run()

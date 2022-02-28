@@ -24,6 +24,9 @@
     </div>
     <form method="POST" enctype="multipart/form-data">
         <h1 align="center">Registration </h1>
+        {% if error %}
+        <h2>{{ error }}</h2>
+        {% endif %}
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" class="form-control" id="username" name="username"/>
