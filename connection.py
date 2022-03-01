@@ -34,10 +34,11 @@ def get_data_questions_sort_by_id(cursor):
 @database_common.connection_handler
 def get_data_question_with_id(cursor, question_id):
     query = """
-        SELECT *
+        SELECT question.*, u.name
         FROM question
-        WHERE id = %s
-        ORDER BY id""" % (question_id)
+        INNER JOIN users u on question.user_id = u.id
+        WHERE question.id = %s
+        ORDER BY question.id""" % (question_id)
     cursor.execute(query)
     return cursor.fetchall()
 
@@ -45,8 +46,9 @@ def get_data_question_with_id(cursor, question_id):
 @database_common.connection_handler
 def get_data_answers_sort_by_vote_number(cursor, question_id):
     query = """
-        SELECT *
+        SELECT answer.*, u.name
         FROM answer
+        INNER JOIN users u on answer.user_id = u.id
         WHERE question_id = '%s'
         ORDER BY vote_number DESC""" % (question_id)
     cursor.execute(query)
@@ -56,8 +58,9 @@ def get_data_answers_sort_by_vote_number(cursor, question_id):
 @database_common.connection_handler
 def get_data_comments(cursor, id):
     query = """
-        SELECT *
+        SELECT comment.*, u.name
         FROM comment
+        INNER JOIN users u on u.id = comment.user_id
         WHERE question_id = '%s'""" % (id)
     cursor.execute(query)
     return cursor.fetchall()
@@ -225,8 +228,9 @@ def get_from_db(cursor, db_select, db_name, db_where, db_var):
 @database_common.connection_handler
 def get_comments_for_answers(cursor, answer_id):
     query = """
-        SELECT *
+        SELECT comment.*, u.name
         FROM comment
+        INNER JOIN users u on u.id = comment.user_id
         WHERE answer_id = %s""" % (answer_id)
     cursor.execute(query)
     return cursor.fetchall()
