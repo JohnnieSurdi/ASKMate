@@ -126,3 +126,9 @@ def user_registration(username, password):
         return is_username_taken
     else:
         return is_username_taken
+
+
+
+def user_profile_page(user_id):
+    user_data = connection.get_user_data_by_id(user_id)
+    return user_data

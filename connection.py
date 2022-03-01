@@ -503,3 +503,13 @@ def get_all_users_data(cursor):
         GROUP BY name, registration_date, reputation"""
     cursor.execute(query)
     return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_user_data_by_id(cursor, user_id):
+    query = """
+        SELECT * FROM users WHERE id=%s
+        """
+    cursor.execute(query, (user_id,))
+    return cursor.fetchone()
+

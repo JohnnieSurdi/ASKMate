@@ -292,5 +292,11 @@ def display_all_users():
     return render_template('list_of_users.html', headers=headers, data=users_data)
 
 
+# user profile page
+@app.route("/users/<user_id>")
+def user_profile_page(user_id):
+    user_data = data_manager.user_profile_page(user_id)
+
+
 if __name__ == "__main__":
     app.run()
