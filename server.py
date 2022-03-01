@@ -333,7 +333,7 @@ def login():
 
 # logout from user account
 @app.route('/logout')
-def route_logout():
+def logout():
     session.pop('username', None)
     return redirect('/')
 
