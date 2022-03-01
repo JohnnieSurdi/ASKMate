@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, flash
 from werkzeug.utils import secure_filename
 import connection
 import data_manager
@@ -115,11 +115,17 @@ def add_answer(question_id):
 @app.route("/question/<question_id>/new-comment", methods=['GET', 'POST'])
 def add_comment_to_question(question_id):
     if request.method == 'POST':
-        message = request.form['new_comment']
-        data_manager.add_comment_to_question(question_id, message)
+        if 'username' in session:
+            message = request.form['new_comment']
+            data_manager.add_comment_to_question(question_id, message)
+            return redirect('/question/' + str(question_id))
+    if 'username' in session:
+        title = connection.get_title_by_id(question_id)
+        return render_template('add_comment_to_question.html', question_id=question_id, title=title)
+    else:
+        flash('You must be logged in to add comments')
         return redirect('/question/' + str(question_id))
-    title = connection.get_title_by_id(question_id)
-    return render_template('add_comment_to_question.html', question_id=question_id, title=title)
+
 
 
 @app.route("/answer/<answer_id>/new-comment", methods=['GET', 'POST'])
