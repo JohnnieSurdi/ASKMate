@@ -512,8 +512,42 @@ def get_all_users_data(cursor):
 @database_common.connection_handler
 def get_user_data_by_id(cursor, user_id):
     query = """
-        SELECT id,name,registration_date,reputation FROM users WHERE id=%s
+        SELECT users.id, users.name, registration_date, reputation
+        FROM users    
+        WHERE users.id=%s
         """
     cursor.execute(query, (user_id,))
     return cursor.fetchone()
 
+@database_common.connection_handler
+def get_number_of_questions_by_user_id(cursor, user_id):
+    query = """
+        SELECT COUNT(id)
+        FROM question    
+        WHERE user_id=%s
+        """
+    cursor.execute(query, (user_id,))
+    count = cursor.fetchone()
+    return count['count']
+
+@database_common.connection_handler
+def get_number_of_answers_by_user_id(cursor, user_id):
+    query = """
+        SELECT COUNT(id)
+        FROM answer    
+        WHERE user_id=%s
+        """
+    cursor.execute(query, (user_id,))
+    count = cursor.fetchone()
+    return count['count']
+
+@database_common.connection_handler
+def get_number_of_comments_by_user_id(cursor, user_id):
+    query = """
+        SELECT COUNT(id)
+        FROM comment    
+        WHERE user_id=%s
+        """
+    cursor.execute(query, (user_id,))
+    count = cursor.fetchone()
+    return count['count']

@@ -131,4 +131,10 @@ def user_registration(username, password):
 
 def user_profile_page(user_id):
     user_data = connection.get_user_data_by_id(user_id)
+    num_questions = connection.get_number_of_questions_by_user_id(user_id)
+    num_answers = connection.get_number_of_answers_by_user_id(user_id)
+    num_comments = connection.get_number_of_comments_by_user_id(user_id)
+    user_data['num_questions'] = num_questions
+    user_data['num_answers'] = num_answers
+    user_data['num_comments'] = num_comments
     return user_data
