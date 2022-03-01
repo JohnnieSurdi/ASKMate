@@ -2,6 +2,7 @@ import datetime
 
 import connection
 import server
+import bcrypt
 
 
 def list_prepare_question_to_show():
@@ -103,3 +104,25 @@ def list_prepare_users_to_show():
                "reputation"]
     users_data = connection.get_all_users_data()
     return headers, users_data
+
+
+def hash_password(plain_text_password):
+    # By using bcrypt, the salt is saved into the hash itself
+    hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
+    return hashed_bytes.decode('utf-8')
+
+
+def verify_password(plain_text_password, hashed_password):
+    hashed_bytes_password = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+
+
+def user_registration(username, password):
+    password = hash_password(password)
+    is_username_taken = connection.check_if_user_exist(username)
+    registration_date = datetime.datetime.now()
+    if not is_username_taken:
+        connection.add_new_user_to_db(username, password, registration_date)
+        return is_username_taken
+    else:
+        return is_username_taken

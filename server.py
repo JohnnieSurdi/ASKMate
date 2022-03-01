@@ -273,6 +273,18 @@ def delete_comment(comment_id):
     connection.delete_from_db('comment', 'id', comment_id)
     return redirect('/question/' + str(question_id))
 
+# registration endpoint
+@app.route("/registration", methods=['GET','POST'])
+def registration():
+    if request.method == 'GET':
+        return render_template('registration.html')
+    username = request.form['username']
+    password = request.form['password']
+    is_username_taken = data_manager.user_registration(username, password)
+    if not is_username_taken:
+        return redirect('/')
+    else:
+        return render_template('registration.html',error='Username already exists')
 
 @app.route("/users")
 def display_all_users():
