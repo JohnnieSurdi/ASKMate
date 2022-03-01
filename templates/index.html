@@ -70,11 +70,17 @@
         </button>
         <br>
         <br>
+    {% if alert %}
+    <br>
+    {% else %}
     <button class="btn btn-primary">
             <a id="add_question" href="/users">
                 All users
             </a>
-        </button>
+    </button>
+    {% endif %}
+
+
         <br>
         <br>
         <br>

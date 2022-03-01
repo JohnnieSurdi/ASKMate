@@ -6,7 +6,7 @@ import database_common
 
 
 def list_prepare_question_to_show():
-    headers = ["submission_time", "view_number", "vote_number", "title", "message"]
+    headers = ["name", "submission_time", "view_number", "vote_number", "title", "message"]
     data = connection.get_data_questions_sort_by_id()
     return headers, data
 
@@ -125,3 +125,17 @@ def user_registration(username, password):
         return is_username_taken
     else:
         return is_username_taken
+
+
+def user_profile_page(user_id):
+    user_data = connection.get_user_data_by_id(user_id)
+    num_questions = connection.get_number_of_questions_by_user_id(user_id)
+    num_answers = connection.get_number_of_answers_by_user_id(user_id)
+    num_comments = connection.get_number_of_comments_by_user_id(user_id)
+    user_data['num_questions'] = num_questions
+    user_data['num_answers'] = num_answers
+    user_data['num_comments'] = num_comments
+    user_questions = connection.get_user_questions(user_id)
+    user_answers = connection.get_user_answers(user_id)
+    user_comments = connection.get_user_comments(user_id)
+    return user_data, user_questions, user_answers, user_comments
