@@ -300,7 +300,6 @@ def registration():
         return render_template('registration.html', error='Username already exists')
 
 
-
 @app.route("/users")
 def display_all_users():
     alert = data_manager.is_logged(session)
