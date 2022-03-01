@@ -228,7 +228,7 @@
                                                 <td>{{ question['submission_time'] }}</td>
                                                 <td>{{ question['view_number'] }}</td>
                                                 <td>{{ question['vote_number'] }}</td>
-                                                <td>{{ question['title'] }}</td>
+                                                <td><a href="/question/{{ question['id'] }}">{{ question['title'] }}</a></td>
                                                 <td>{{ question['message'] }}</td>
                                             </tr>
                                             {% endfor %}
@@ -238,34 +238,79 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="answers" role="tabpanel" aria-labelledby="answers-tab">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>Label</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p>to implement</p>
-                                            </div>
-                                        </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label>Label wide</label><br/>
-                                        <p>to implement</p>
+                                        <div class="profile-table">
+                                        <table class="table table-sm" style="width: 100%">
+                                            <colgroup>
+                                               <col span="1" style="width: 15%;">
+                                               <col span="1" style="width: 15%;">
+                                               <col span="1" style="width: 50%;">
+                                               <col span="1" style="width: 20%;">
+                                            </colgroup>
+                                            <tr>
+                                                <th scope="col">Published</th>
+                                                <th scope="col">Votes</th>
+                                                <th scope="col">Message</th>
+                                                <th scope="col">Question link</th>
+                                            </tr>
+                                            {% for answer in answers %}
+                                            <tr>
+                                                <td>{{ answer['submission_time'] }}</td>
+                                                <td>{{ answer['vote_number'] }}</td>
+                                                <td>{{ answer['message'] }}</td>
+                                                {% for question in questions%}
+                                                {% if question['id']==answer['question_id'] %}
+                                                <td><a href="/question/{{ question['id'] }}">{{ question['title'] }}</a></td>
+                                                {% endif %}
+                                                {% endfor %}
+                                            </tr>
+                                            {% endfor %}
+                                        </table>
+                                            </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>Label</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p>to implement</p>
-                                            </div>
-                                        </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label>Label wide</label><br/>
-                                        <p>to implement</p>
+                                        <div class="profile-table">
+                                        <table class="table table-sm" style="width: 100%">
+                                            <colgroup>
+                                               <col span="1" style="width: 15%;">
+                                               <col span="1" style="width: 55%;">
+                                               <col span="1" style="width: 15%;">
+                                               <col span="1" style="width: 20%;">
+                                            </colgroup>
+                                            <tr>
+                                                <th scope="col">Published</th>
+                                                <th scope="col">Message</th>
+                                                <th scope="col">Edited</th>
+                                                <th scope="col">Question link</th>
+                                            </tr>
+                                            {% for comment in comments %}
+                                            <tr>
+                                                <td>{{ comment['submission_time'] }}</td>
+                                                <td>{{ comment['message'] }}</td>
+                                                <td>{{ comment['edited_count'] }}</td>
+                                                {% for question in questions%}
+                                                    {% if question['id']==comment['question_id'] %}
+                                                <td><a href="/question/{{ question['id'] }}">{{ question['title'] }}</a></td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% for answer in answers %}
+                                                    {% if answer['id']==comment['answer_id'] %}
+                                                        {% for question in questions %}
+                                                            {% if question['id']==answer['question_id'] %}
+                                                <td><a href="/question/{{ question['id'] }}">{{ question['title'] }}</a></td>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </tr>
+                                            {% endfor %}
+                                        </table>
+                                            </div>
                                     </div>
                                 </div>
                             </div>

@@ -559,8 +559,30 @@ def get_number_of_comments_by_user_id(cursor, user_id):
 @database_common.connection_handler
 def get_user_questions(cursor, user_id):
     query = """
-        SELECT submission_time, view_number, vote_number, title, message
+        SELECT id, submission_time, view_number, vote_number, title, message
         FROM question    
+        WHERE user_id=%s
+        """
+    cursor.execute(query, (user_id,))
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_user_answers(cursor, user_id):
+    query = """
+        SELECT id, submission_time, vote_number, question_id, message, accepted
+        FROM answer    
+        WHERE user_id=%s
+        """
+    cursor.execute(query, (user_id,))
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_user_comments(cursor, user_id):
+    query = """
+        SELECT question_id, answer_id, message, submission_time, edited_count
+        FROM comment    
         WHERE user_id=%s
         """
     cursor.execute(query, (user_id,))
