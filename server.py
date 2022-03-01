@@ -1,10 +1,10 @@
 import os
-
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session, flash
 from werkzeug.utils import secure_filename
-
 import connection
 import data_manager
+
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 UPLOAD_FOLDER = 'static/uploads/'
@@ -110,11 +110,17 @@ def add_answer(question_id):
 @app.route("/question/<question_id>/new-comment", methods=['GET', 'POST'])
 def add_comment_to_question(question_id):
     if request.method == 'POST':
-        message = request.form['new_comment']
-        data_manager.add_comment_to_question(question_id, message)
+        if 'username' in session:
+            message = request.form['new_comment']
+            data_manager.add_comment_to_question(question_id, message)
+            return redirect('/question/' + str(question_id))
+    if 'username' in session:
+        title = connection.get_title_by_id(question_id)
+        return render_template('add_comment_to_question.html', question_id=question_id, title=title)
+    else:
+        flash('You must be logged in to add comments')
         return redirect('/question/' + str(question_id))
-    title = connection.get_title_by_id(question_id)
-    return render_template('add_comment_to_question.html', question_id=question_id, title=title)
+
 
 
 @app.route("/answer/<answer_id>/new-comment", methods=['GET', 'POST'])
@@ -277,8 +283,9 @@ def delete_comment(comment_id):
     connection.delete_from_db('comment', 'id', comment_id)
     return redirect('/question/' + str(question_id))
 
+
 # registration endpoint
-@app.route("/registration", methods=['GET','POST'])
+@app.route("/registration", methods=['GET', 'POST'])
 def registration():
     if request.method == 'GET':
         return render_template('registration.html')
@@ -288,7 +295,8 @@ def registration():
     if not is_username_taken:
         return redirect('/')
     else:
-        return render_template('registration.html',error='Username already exists')
+        return render_template('registration.html', error='Username already exists')
+
 
 
 @app.route("/users")
@@ -306,6 +314,29 @@ def user_profile_page(user_id):
     # alert = data_manager.is_logged(session)(zaimplementuje gdy bedzie gotowe logowanie
     user_data = data_manager.user_profile_page(user_id)
     return render_template('profile_page.html', data=user_data)
+
+
+# user login function
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    username = request.form['username']
+    plain_text_password = request.form['password']
+    if connection.username_exists(username):
+        hashed_password = connection.get_password(username)
+        if data_manager.verify_password(plain_text_password, hashed_password):
+            session['username'] = username
+            return redirect('/')
+    error_message = 'Invalid username or password'
+    return render_template('login.html', error_message=error_message)
+
+
+# logout from user account
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect('/')
 
 
 if __name__ == "__main__":

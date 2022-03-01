@@ -511,10 +511,98 @@ def get_all_users_data(cursor):
 
 
 @database_common.connection_handler
+def username_exists(cursor, username):
+    query = """
+        SELECT name FROM users """
+    cursor.execute(query)
+    list_of_all_user_names = [user['name'] for user in cursor.fetchall()]
+    return username in list_of_all_user_names
+
+
+@database_common.connection_handler
+def get_password(cursor, username):
+    query = """
+        SELECT password FROM users
+        WHERE name = '%s'""" % (username)
+    cursor.execute(query)
+    password = cursor.fetchone()
+    return password['password']
+
+
 def get_user_data_by_id(cursor, user_id):
     query = """
-        SELECT id,name,registration_date,reputation FROM users WHERE id=%s
+        SELECT users.id, users.name, registration_date, reputation
+        FROM users    
+        WHERE users.id=%s
         """
     cursor.execute(query, (user_id,))
     return cursor.fetchone()
 
+
+@database_common.connection_handler
+def get_number_of_questions_by_user_id(cursor, user_id):
+    query = """
+        SELECT COUNT(id)
+        FROM question    
+        WHERE user_id=%s
+        """
+    cursor.execute(query, (user_id,))
+    count = cursor.fetchone()
+    return count['count']
+
+
+@database_common.connection_handler
+def get_number_of_answers_by_user_id(cursor, user_id):
+    query = """
+        SELECT COUNT(id)
+        FROM answer    
+        WHERE user_id=%s
+        """
+    cursor.execute(query, (user_id,))
+    count = cursor.fetchone()
+    return count['count']
+
+
+@database_common.connection_handler
+def get_number_of_comments_by_user_id(cursor, user_id):
+    query = """
+        SELECT COUNT(id)
+        FROM comment    
+        WHERE user_id=%s
+        """
+    cursor.execute(query, (user_id,))
+    count = cursor.fetchone()
+    return count['count']
+
+
+@database_common.connection_handler
+def get_user_questions(cursor, user_id):
+    query = """
+        SELECT id, submission_time, view_number, vote_number, title, message
+        FROM question    
+        WHERE user_id=%s
+        """
+    cursor.execute(query, (user_id,))
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_user_answers(cursor, user_id):
+    query = """
+        SELECT id, submission_time, vote_number, question_id, message, accepted
+        FROM answer    
+        WHERE user_id=%s
+        """
+    cursor.execute(query, (user_id,))
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_user_comments(cursor, user_id):
+    query = """
+        SELECT question_id, answer_id, message, submission_time, edited_count
+        FROM comment    
+        WHERE user_id=%s
+        """
+    cursor.execute(query, (user_id,))
+    return cursor.fetchall()

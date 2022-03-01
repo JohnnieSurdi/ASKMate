@@ -29,6 +29,15 @@
     <div align="center">
         <a href="/"><img id="logo" src="/static/logo3.png"></a>
     </div>
+    {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
     <div class="form-group" align="center">
         <h1>{{ question['title'] }}</h1>
         <table id="customers">
