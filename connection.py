@@ -495,8 +495,8 @@ def mark_searched_phrase_in_answers(searched_answers, searched_phrase):
 @database_common.connection_handler
 def get_all_users_data(cursor):
     query = """
-        SELECT name, registration_date, reputation, COUNT(answer.id) AS number_of_answers, 
-        COUNT(question.id) AS number_of_asked_questions, COUNT(comment.id) AS number_of_comments
+        SELECT name, registration_date, reputation, COUNT(answer.*) AS number_of_answers, 
+        COUNT(question.*) AS number_of_asked_questions, COUNT(comment.*) AS number_of_comments
         FROM users
         INNER JOIN answer
         ON users.id = answer.user_id
@@ -506,7 +506,8 @@ def get_all_users_data(cursor):
         ON users.id = comment.user_id
         GROUP BY name, registration_date, reputation"""
     cursor.execute(query)
-    return cursor.fetchall()
+    data = cursor.fetchall()
+    return data
 
 
 @database_common.connection_handler
