@@ -508,7 +508,7 @@ def get_all_users_data(cursor):
 @database_common.connection_handler
 def get_user_data_by_id(cursor, user_id):
     query = """
-        SELECT * FROM users WHERE id=%s
+        SELECT id,name,registration_date,reputation FROM users WHERE id=%s
         """
     cursor.execute(query, (user_id,))
     return cursor.fetchone()

@@ -293,9 +293,11 @@ def display_all_users():
 
 
 # user profile page
-@app.route("/users/<user_id>")
+@app.route("/user/<user_id>")
 def user_profile_page(user_id):
+    #if session['user_id']: (zaimplementuje gdy bedzie gotowe logowanie
     user_data = data_manager.user_profile_page(user_id)
+    return render_template('profile_page.html', data=user_data)
 
 
 if __name__ == "__main__":
