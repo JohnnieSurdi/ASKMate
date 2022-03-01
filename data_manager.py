@@ -6,7 +6,7 @@ import bcrypt
 
 
 def list_prepare_question_to_show():
-    headers = ["submission_time", "view_number", "vote_number", "title", "message"]
+    headers = ["name", "submission_time", "view_number", "vote_number", "title", "message"]
     data = connection.get_data_questions_sort_by_id()
     return headers, data
 

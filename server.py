@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 from werkzeug.utils import secure_filename
 
 import connection
@@ -39,6 +39,9 @@ def home_page():
     data_questions = connection.sort_questions(order, direction)
     data_five_questions = data_questions[:5]
     searched_phrase = request.args.get("search-phrase")
+    alert = True
+    if len(session) > 0:
+        alert = False
     if searched_phrase:
         all_searched_questions, searched_answers = connection.search_in_questions_and_answers(searched_phrase)
         all_searched_questions = connection.mark_searched_phrase(all_searched_questions, searched_phrase)
@@ -47,23 +50,29 @@ def home_page():
         return render_template('search.html',
                                searched_phrase=searched_phrase, data=all_searched_questions, headers=headers,
                                searched_answers=searched_answers)
-    return render_template('index.html', data=data_five_questions, headers=headers)
+    return render_template('index.html', data=data_five_questions, headers=headers, alert=alert)
 
 
 # load question list page
 @app.route("/list")
 def list_questions():
+    alert = True
+    if len(session) > 0:
+        alert = False
     headers, data_questions = data_manager.list_prepare_question_to_show()
     order = request.args.get('order_by')
     direction = request.args.get('order_direction')
     if order or direction:
         data_questions = connection.sort_questions(order, direction)
-    return render_template('list.html', data=data_questions, headers=headers)
+    return render_template('list.html', data=data_questions, headers=headers, alert=alert)
 
 
 # load question detail page
 @app.route('/question/<question_id>')
 def question_display(question_id):
+    alert = True
+    if len(session) > 0:
+        alert = False
     connection.change_value_db('question', 'view_number', '+', 'id', question_id)
     question, answers, comments_to_questions = data_manager.question_display_by_id_with_answers(question_id)
     list_with_answer_id = []
@@ -288,8 +297,12 @@ def registration():
 
 @app.route("/users")
 def display_all_users():
-    headers, users_data = data_manager.list_prepare_users_to_show
-    return render_template('list_of_users.html', headers=headers, data=users_data)
+    if len(session) > 0:
+        alert = False
+        headers, users_data = data_manager.list_prepare_users_to_show
+    else:
+        alert = True
+    return render_template('list_of_users.html', headers=headers, data=users_data, alert=alert)
 
 
 if __name__ == "__main__":

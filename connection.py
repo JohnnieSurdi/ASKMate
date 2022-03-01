@@ -22,9 +22,11 @@ def get_images_by_id(cursor, db_name, id):
 @database_common.connection_handler
 def get_data_questions_sort_by_id(cursor):
     query = """
-        SELECT *
+        SELECT question.id, submission_time, view_number, vote_number, title, message, image, users.name
         FROM question
-        ORDER BY id DESC"""
+        INNER JOIN users
+        ON question.user_id = users.id
+        ORDER BY question.id DESC"""
     cursor.execute(query)
     return cursor.fetchall()
 
@@ -281,15 +283,17 @@ def convert_direction(direction):
 def sort_questions(cursor, direction, order):
     order = convert_order(order)
     direction = convert_direction(direction)
-    # query = """
-    #     SELECT *
-    #     FROM question
-    #     ORDER BY %s %s"""
+    query = """
+            SELECT question.id, submission_time, view_number, vote_number, title, message, image, users.name
+            FROM question
+            INNER JOIN users
+            ON question.user_id = users.id
+            ORDER BY %s %s""" % (direction, order)
     # query = f"""
     #     SELECT *
     #     FROM question
     #     ORDER BY {direction} {order}"""
-    cursor.execute("SELECT * FROM question ORDER BY {} {}".format(direction, order))
+    cursor.execute(query)
     return cursor.fetchall()
 
 
