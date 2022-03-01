@@ -28,7 +28,7 @@
                 <tr>
                     {% for header in headers %}
                         <th>
-                            {% if header =="user_name" %}
+                            {% if header =="name" %}
                                 User name
                             {% elif header =="registration_date" %}
                                 Registration date
@@ -58,9 +58,6 @@
         </table>
         <br>
         <br>
-    {% if alert %}
-    <script>alert('Please, login/register first!')</script>
-    {% endif %}
 
 
     </div>

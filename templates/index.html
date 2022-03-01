@@ -70,15 +70,13 @@
         </button>
         <br>
         <br>
-    {% if alert %}
-    <br>
-    {% else %}
+{% if alert == False %}
     <button class="btn btn-primary">
             <a id="add_question" href="/users">
                 All users
             </a>
     </button>
-    {% endif %}
+{% endif %}
 
 
         <br>

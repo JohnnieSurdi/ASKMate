@@ -100,7 +100,7 @@ def add_answer_to_file(question_id, message, image):
 
 
 def list_prepare_users_to_show():
-    headers = ["user_name", "registration_date", "number_of_asked_questions", "number_of_answers", "number_of_comments",
+    headers = ["name", "registration_date", "number_of_asked_questions", "number_of_answers", "number_of_comments",
                "reputation"]
     users_data = connection.get_all_users_data()
     return headers, users_data
@@ -132,3 +132,10 @@ def user_registration(username, password):
 def user_profile_page(user_id):
     user_data = connection.get_user_data_by_id(user_id)
     return user_data
+
+
+def is_logged(ses):
+    alert = True
+    if len(ses) > 0:
+        alert = False
+    return alert

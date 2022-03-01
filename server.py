@@ -39,9 +39,7 @@ def home_page():
     data_questions = connection.sort_questions(order, direction)
     data_five_questions = data_questions[:5]
     searched_phrase = request.args.get("search-phrase")
-    alert = True
-    if len(session) > 0:
-        alert = False
+    alert = data_manager.is_logged(session)
     if searched_phrase:
         all_searched_questions, searched_answers = connection.search_in_questions_and_answers(searched_phrase)
         all_searched_questions = connection.mark_searched_phrase(all_searched_questions, searched_phrase)
@@ -56,9 +54,7 @@ def home_page():
 # load question list page
 @app.route("/list")
 def list_questions():
-    alert = True
-    if len(session) > 0:
-        alert = False
+    alert = data_manager.is_logged(session)
     headers, data_questions = data_manager.list_prepare_question_to_show()
     order = request.args.get('order_by')
     direction = request.args.get('order_direction')
@@ -70,9 +66,9 @@ def list_questions():
 # load question detail page
 @app.route('/question/<question_id>')
 def question_display(question_id):
-    alert = True
-    if len(session) > 0:
-        alert = False
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/')
     connection.change_value_db('question', 'view_number', '+', 'id', question_id)
     question, answers, comments_to_questions = data_manager.question_display_by_id_with_answers(question_id)
     list_with_answer_id = []
@@ -81,7 +77,6 @@ def question_display(question_id):
     comments_for_answers = data_manager.get_comments_for_answers(list_with_answer_id)
     applied_tags = data_manager.get_tags_for_question(question_id)
     comments_q_len = len(comments_to_questions) + 2
-    print(comments_for_answers)
     return render_template('display_question_and_answers.html', question=question[0], answers=answers,
                            applied_tags=applied_tags,
                            comments_to_questions=comments_to_questions, comments_for_answers=comments_for_answers,
@@ -295,20 +290,20 @@ def registration():
     else:
         return render_template('registration.html',error='Username already exists')
 
+
 @app.route("/users")
 def display_all_users():
-    if len(session) > 0:
-        alert = False
-        headers, users_data = data_manager.list_prepare_users_to_show
-    else:
-        alert = True
-    return render_template('list_of_users.html', headers=headers, data=users_data, alert=alert)
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/')
+    headers, users_data = data_manager.list_prepare_users_to_show()
+    return render_template('list_of_users.html', headers=headers, data=users_data)
 
 
 # user profile page
 @app.route("/user/<user_id>")
 def user_profile_page(user_id):
-    #if session['user_id']: (zaimplementuje gdy bedzie gotowe logowanie
+    # alert = data_manager.is_logged(session)(zaimplementuje gdy bedzie gotowe logowanie
     user_data = data_manager.user_profile_page(user_id)
     return render_template('profile_page.html', data=user_data)
 
