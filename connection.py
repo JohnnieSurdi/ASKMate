@@ -510,6 +510,24 @@ def get_all_users_data(cursor):
 
 
 @database_common.connection_handler
+def username_exists(cursor, username):
+    query = """
+        SELECT name FROM users """
+    cursor.execute(query)
+    list_of_all_user_names = [user['name'] for user in cursor.fetchall()]
+    return username in list_of_all_user_names
+
+
+@database_common.connection_handler
+def get_password(cursor, username):
+    query = """
+        SELECT password FROM users
+        WHERE name = '%s'""" % (username)
+    cursor.execute(query)
+    password = cursor.fetchone()
+    return password['password']
+
+
 def get_user_data_by_id(cursor, user_id):
     query = """
         SELECT users.id, users.name, registration_date, reputation

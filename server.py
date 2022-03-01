@@ -1,10 +1,10 @@
 import os
-
+from flask import Flask, render_template, request, redirect
 from flask import Flask, render_template, request, redirect, session
 from werkzeug.utils import secure_filename
-
 import connection
 import data_manager
+
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 UPLOAD_FOLDER = 'static/uploads/'
@@ -282,8 +282,9 @@ def delete_comment(comment_id):
     connection.delete_from_db('comment', 'id', comment_id)
     return redirect('/question/' + str(question_id))
 
+
 # registration endpoint
-@app.route("/registration", methods=['GET','POST'])
+@app.route("/registration", methods=['GET', 'POST'])
 def registration():
     if request.method == 'GET':
         return render_template('registration.html')
@@ -293,7 +294,8 @@ def registration():
     if not is_username_taken:
         return redirect('/')
     else:
-        return render_template('registration.html',error='Username already exists')
+        return render_template('registration.html', error='Username already exists')
+
 
 @app.route("/users")
 def display_all_users():
@@ -311,6 +313,29 @@ def user_profile_page(user_id):
     #if session['user_id']: (zaimplementuje gdy bedzie gotowe logowanie
     user_data, user_questions, user_answers, user_comments = data_manager.user_profile_page(user_id)
     return render_template('profile_page.html', data=user_data, questions=user_questions, answers=user_answers, comments=user_comments)
+
+
+# user login function
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    username = request.form['username']
+    plain_text_password = request.form['password']
+    if connection.username_exists(username):
+        hashed_password = connection.get_password(username)
+        if data_manager.verify_password(plain_text_password, hashed_password):
+            session['username'] = username
+            return redirect('/')
+    error_message = 'Invalid username or password'
+    return render_template('login.html', error_message=error_message)
+
+
+# logout from user account
+@app.route('/logout')
+def route_logout():
+    session.pop('username', None)
+    return redirect('/')
 
 
 if __name__ == "__main__":
