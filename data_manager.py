@@ -137,4 +137,5 @@ def user_profile_page(user_id):
     user_data['num_questions'] = num_questions
     user_data['num_answers'] = num_answers
     user_data['num_comments'] = num_comments
-    return user_data
+    user_questions = connection.get_user_questions(user_id)
+    return user_data, user_questions

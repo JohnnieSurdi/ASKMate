@@ -519,6 +519,7 @@ def get_user_data_by_id(cursor, user_id):
     cursor.execute(query, (user_id,))
     return cursor.fetchone()
 
+
 @database_common.connection_handler
 def get_number_of_questions_by_user_id(cursor, user_id):
     query = """
@@ -529,6 +530,7 @@ def get_number_of_questions_by_user_id(cursor, user_id):
     cursor.execute(query, (user_id,))
     count = cursor.fetchone()
     return count['count']
+
 
 @database_common.connection_handler
 def get_number_of_answers_by_user_id(cursor, user_id):
@@ -541,6 +543,7 @@ def get_number_of_answers_by_user_id(cursor, user_id):
     count = cursor.fetchone()
     return count['count']
 
+
 @database_common.connection_handler
 def get_number_of_comments_by_user_id(cursor, user_id):
     query = """
@@ -551,3 +554,14 @@ def get_number_of_comments_by_user_id(cursor, user_id):
     cursor.execute(query, (user_id,))
     count = cursor.fetchone()
     return count['count']
+
+
+@database_common.connection_handler
+def get_user_questions(cursor, user_id):
+    query = """
+        SELECT submission_time, view_number, vote_number, title, message
+        FROM question    
+        WHERE user_id=%s
+        """
+    cursor.execute(query, (user_id,))
+    return cursor.fetchall()
