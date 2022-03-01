@@ -15,9 +15,25 @@
             crossorigin="anonymous"
     />
     <link rel="stylesheet" href="/static/style.css">
-    <title>Login to account</title>
+    <title>Log In - Ask Mate</title>
 </head>
 <body>
+<<<<<<< HEAD
+<div class="container">
+    <div align="center">
+        <a href="/"><img id="logo" src="/static/logo3.png"></a>
+    </div>
+    <div class="form-group" align="center">
+        <h1 class="form-group">Log In</h1><br>
+        <form action="{{ url_for('login') }}" method="POST">
+            <p>
+                <label align="center" for="username">Username:</label><br>
+                <input align="center" name="username" type="text" required>
+            </p>
+            <p>
+                <label align="center" for="plain_text_password">Password:</label><br>
+                <input align="center" name="plain_text_password" type="password" required>
+=======
     <div class="input_form">
         <h1>Login</h1><br>
         <form action="{{ url_for('login') }}" method="POST">
@@ -28,8 +44,9 @@
             <p>
                 <label for="password">Password:</label><br>
                 <input name="password" id="password" type="password" required>
+>>>>>>> 82edc70089105640643038ab55fe5044904afddc
             </p>
-            <button type="submit">Login</button>
+            <button class="btn btn-primary" type="submit">Log In</button>
         </form>
         <div class="error_message">
             {% if error_message %}
