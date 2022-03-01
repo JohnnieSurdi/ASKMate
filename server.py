@@ -274,5 +274,11 @@ def delete_comment(comment_id):
     return redirect('/question/' + str(question_id))
 
 
+@app.route("/users")
+def display_all_users():
+    headers, users_data = data_manager.list_prepare_users_to_show
+    return render_template('list_of_users.html', headers=headers, data=users_data)
+
+
 if __name__ == "__main__":
     app.run()

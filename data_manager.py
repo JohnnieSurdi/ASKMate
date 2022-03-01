@@ -96,3 +96,10 @@ def add_answer_to_file(question_id, message, image):
     submission_time = datetime.datetime.now()
     image_path = server.upload_image(image)
     connection.add_answer_to_db(question_id, message, submission_time, image_path)
+
+
+def list_prepare_users_to_show():
+    headers = ["user_name", "registration_date", "number_of_asked_questions", "number_of_answers", "number_of_comments",
+               "reputation"]
+    users_data = connection.get_all_users_data()
+    return headers, users_data

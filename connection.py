@@ -465,3 +465,20 @@ def mark_searched_phrase_in_answers(searched_answers, searched_phrase):
         searched_answers_to_return.append(question_dict)
 
     return searched_answers_to_return
+
+
+@database_common.connection_handler
+def get_all_users_data(cursor):
+    query = """
+        SELECT name, registration_date, reputation, COUNT(answer.id) AS number_of_answers, 
+        COUNT(question.id) AS number_of_asked_questions, COUNT(comment.id) AS number_of_comments
+        FROM users
+        INNER JOIN answer
+        ON users.id = answer.user_id
+        INNER JOIN question
+        ON users.id = question.user_id
+        INNER JOIN comment
+        ON users.id = comment.user_id
+        GROUP BY name, registration_date, reputation"""
+    cursor.execute(query)
+    return cursor.fetchall()
