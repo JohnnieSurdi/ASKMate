@@ -1,10 +1,9 @@
 import os
-
 from flask import Flask, render_template, request, redirect
 from werkzeug.utils import secure_filename
-
 import connection
 import data_manager
+
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 UPLOAD_FOLDER = 'static/uploads/'
@@ -273,8 +272,9 @@ def delete_comment(comment_id):
     connection.delete_from_db('comment', 'id', comment_id)
     return redirect('/question/' + str(question_id))
 
+
 # registration endpoint
-@app.route("/registration", methods=['GET','POST'])
+@app.route("/registration", methods=['GET', 'POST'])
 def registration():
     if request.method == 'GET':
         return render_template('registration.html')
@@ -284,12 +284,36 @@ def registration():
     if not is_username_taken:
         return redirect('/')
     else:
-        return render_template('registration.html',error='Username already exists')
+        return render_template('registration.html', error='Username already exists')
+
 
 @app.route("/users")
 def display_all_users():
     headers, users_data = data_manager.list_prepare_users_to_show
     return render_template('list_of_users.html', headers=headers, data=users_data)
+
+
+# user login function
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    username = request.form['username']
+    plain_text_password = request.form['password']
+    if connection.username_exists(username):
+        hashed_password = connection.get_password(username)
+        if data_manager.verify_password(plain_text_password, hashed_password):
+            session['username'] = username
+            return redirect('/')
+    error_message = 'Invalid username or password'
+    return render_template('login.html', error_message=error_message)
+
+
+# logout from user account
+@app.route('/logout')
+def route_logout():
+    session.pop('username', None)
+    return redirect('/')
 
 
 if __name__ == "__main__":

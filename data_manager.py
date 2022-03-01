@@ -1,8 +1,8 @@
 import datetime
-
 import connection
 import server
 import bcrypt
+import database_common
 
 
 def list_prepare_question_to_show():
@@ -59,7 +59,6 @@ def get_tags_for_question(question_id):
 
 
 def add_new_defined_tags(new_defined_tags, question_id):
-    is_not_duplicate = True
     existing_tags = connection.get_all_existing_tags()
     existing_tags_list = []
     for tags in existing_tags:
