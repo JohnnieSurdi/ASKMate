@@ -357,5 +357,11 @@ def logout():
     return redirect('/')
 
 
+# accepting answers
+@app.route('//<question_id>/<answer_id>/accept_answer')
+def accept_answer():
+    pass
+
+
 if __name__ == "__main__":
     app.run()
