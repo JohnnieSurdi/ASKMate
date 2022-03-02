@@ -533,6 +533,7 @@ def get_password(cursor, username):
     return password['password']
 
 
+@database_common.connection_handler
 def get_user_data_by_id(cursor, user_id):
     query = """
         SELECT users.id, users.name, registration_date, reputation
