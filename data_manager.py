@@ -36,10 +36,10 @@ def get_comments_for_answers(list_with_answer_id):
     return list_with_comments
 
 
-def add_question_to_file(title, question, image):
+def add_question_to_file(title, question, image, user_id):
     submission_time = datetime.datetime.now()
     image_path = server.upload_image(image)
-    connection.add_question_to_db(title, question, submission_time, image_path)
+    connection.add_question_to_db(title, question, submission_time, image_path, user_id)
     question_id = connection.get_id(submission_time)
     return question_id
 

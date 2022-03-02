@@ -67,10 +67,10 @@ def get_data_comments(cursor, id):
 
 
 @database_common.connection_handler
-def add_question_to_db(cursor, title, question, submission_time, image_path):
+def add_question_to_db(cursor, title, question, submission_time, image_path, user_id):
     query = """
-        INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
-        VALUES ('%s','%s','%s','%s','%s','%s')""" % (submission_time, 0, 0, title, question, image_path)
+        INSERT INTO question (submission_time, view_number, vote_number, title, message, image, user_id)
+        VALUES ('%s','%s','%s','%s','%s','%s', '%s')""" % (submission_time, 0, 0, title, question, image_path, user_id)
     cursor.execute(query)
 
 
@@ -610,4 +610,15 @@ def get_user_comments(cursor, user_id):
         WHERE user_id=%s
         """
     cursor.execute(query, (user_id,))
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def increment_specific_number(cursor, number, user_id):
+    query = """
+            UPDATE users
+            SET %s = %s + 1
+            WHERE id=%s
+            """ % (number, number, user_id)
+    cursor.execute(query)
     return cursor.fetchall()

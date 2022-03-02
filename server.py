@@ -68,7 +68,7 @@ def list_questions():
 def question_display(question_id):
     alert = data_manager.is_logged(session)
     if alert is True:
-        return redirect('/')
+        return redirect('/login')
     connection.change_value_db('question', 'view_number', '+', 'id', question_id)
     question, answers, comments_to_questions = data_manager.question_display_by_id_with_answers(question_id)
     list_with_answer_id = []
@@ -89,11 +89,16 @@ def question_display(question_id):
 @app.route("/add-question", methods=['GET', 'POST'])
 def add_question():
     if request.method == 'GET':
+        alert = data_manager.is_logged(session)
+        if alert is True:
+            return redirect('/login')
         return render_template('add-question.html')
     title = request.form.get('title')
     question = request.form.get('question')
     image = request.files['image']
-    question_id = data_manager.add_question_to_file(title, question, image)
+    user_id = session['user_id']
+    question_id = data_manager.add_question_to_file(title, question, image, user_id)
+    connection.increment_specific_number('number_of_questions', user_id)
     return redirect('/question/' + str(question_id))
 
 
