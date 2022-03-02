@@ -15,8 +15,24 @@
             crossorigin="anonymous"
     />
     <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/navbar.css">
 </head>
 <body>
+<header>
+    <nav>
+        {% if alert %}
+        <ul class="nav-links">
+            <li><a href="/registration">Registration</a></li>
+            <li><a href="/login">Login</a></li>
+        </ul>
+        {% else %}
+        <ul class="nav-links">
+            <li style="color: white">You are logged! Now, you can share your knowledge with other users!</li>
+        </ul>
+        {% endif %}
+    </nav>
+    <a class="cta" href="/contact">Contact</a>
+</header>
 <div class="container" align="center">
     <a href="/"><img id="logo" src="/static/logo3.png"></a>
     <div class="form-group">
