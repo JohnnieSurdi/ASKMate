@@ -51,7 +51,7 @@ def home_page():
             searched_answers = connection.mark_searched_phrase_in_answers(searched_answers, searched_phrase)
         return render_template('search.html',
                                searched_phrase=searched_phrase, data=all_searched_questions, headers=headers,
-                               searched_answers=searched_answers)
+                               searched_answers=searched_answers, alert=alert)
     return render_template('index.html', data=data_five_questions, headers=headers, alert=alert, user_id=user_id)
 
 
@@ -73,6 +73,7 @@ def question_display(question_id):
     alert = data_manager.is_logged(session)
     if alert is True:
         return redirect('/login')
+    user_id = session['user_id']
     connection.change_value_db('question', 'view_number', '+', 'id', question_id)
     question, answers, comments_to_questions = data_manager.question_display_by_id_with_answers(question_id)
     list_with_answer_id = []
@@ -85,8 +86,7 @@ def question_display(question_id):
     return render_template('display_question_and_answers.html', question=question[0], answers=answers,
                            applied_tags=applied_tags,
                            comments_to_questions=comments_to_questions, comments_for_answers=comments_for_answers,
-                           comments_q_len=comments_q_len, alert=alert,
-                           number_of_comments_for_answers=number_of_comments_for_answers)
+                           comments_q_len=comments_q_len, alert=alert, user_id=user_id)
 
 
 # load add question page
@@ -96,13 +96,12 @@ def add_question():
         alert = data_manager.is_logged(session)
         if alert is True:
             return redirect('/login')
-        return render_template('add-question.html')
+        return render_template('add-question.html', alert=alert)
     title = request.form.get('title')
     question = request.form.get('question')
     image = request.files['image']
     user_id = session['user_id']
     question_id = data_manager.add_question_to_file(title, question, image, user_id)
-
     return redirect('/question/' + str(question_id))
 
 
@@ -119,7 +118,7 @@ def add_answer(question_id):
         data_manager.add_answer_to_file(question_id, message, image, user_id)
         return redirect('/question/' + str(question_id))
     title = connection.get_title_by_id(question_id)
-    return render_template('add_new_answer.html', question_id=question_id, title=title)
+    return render_template('add_new_answer.html', question_id=question_id, title=title, alert=alert)
 
 
 @app.route("/question/<question_id>/new-comment", methods=['GET', 'POST'])
@@ -133,7 +132,7 @@ def add_comment_to_question(question_id):
         data_manager.add_comment_to_question(question_id, message, user_id)
         return redirect('/question/' + str(question_id))
     title = connection.get_title_by_id(question_id)
-    return render_template('add_comment_to_question.html', question_id=question_id, title=title)
+    return render_template('add_comment_to_question.html', question_id=question_id, title=title, alert=alert)
 
 
 @app.route("/answer/<answer_id>/new-comment", methods=['GET', 'POST'])
@@ -147,33 +146,45 @@ def add_comment_to_answer(answer_id):
         data_manager.add_comment_to_answer(answer_id, message, user_id)
         question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
         return redirect('/question/' + str(question_id))
-    return render_template('add_comment_to_answer.html', answer_id=answer_id)
+    return render_template('add_comment_to_answer.html', answer_id=answer_id, alert=alert)
 
 
 # delete question
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
-    images_to_delete = [connection.get_from_db('image', 'question', 'id', question_id)]
-    answers_id = connection.get_answer_id_connected_to_question(question_id)
-    for id in answers_id:
-        images_to_delete.append(connection.get_from_db('image', 'answer', 'id', id))
-        connection.delete_from_db('comment', 'answer_id', id)
-    for image in images_to_delete:
-        if os.path.isfile(f"static/uploads/{image}"):
-            os.remove(f"static/uploads/{image}")
-    connection.delete_from_db('comment', 'question_id', question_id)
-    connection.delete_from_db('question_tag', 'question_id', question_id)
-    connection.delete_from_db('answer', 'question_id', question_id)
-    connection.delete_from_db('question', 'id', question_id)
-    return redirect('/list')
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
+    user_id = session['user_id']
+    creator_id = connection.get_user_id_by_other_id(question_id, 'question')
+    if creator_id == user_id:
+        images_to_delete = [connection.get_from_db('image', 'question', 'id', question_id)]
+        answers_id = connection.get_answer_id_connected_to_question(question_id)
+        for id in answers_id:
+            images_to_delete.append(connection.get_from_db('image', 'answer', 'id', id))
+            connection.delete_from_db('comment', 'answer_id', id)
+        for image in images_to_delete:
+            if os.path.isfile(f"static/uploads/{image}"):
+                os.remove(f"static/uploads/{image}")
+        data_manager.delete_by_id(question_id)
+        return redirect('/list')
+    return redirect('/question/' + str(question_id))
 
 
 # edit question
 @app.route("/question/<question_id>/edit", methods=['GET', 'POST'])
 def edit_question(question_id):
     if request.method == 'GET':
-        question_to_edit = connection.get_question_to_edit(question_id)
-        return render_template('edit-question.html', question_to_edit=question_to_edit)
+        alert = data_manager.is_logged(session)
+        if alert is True:
+            return redirect('/login')
+        user_id = session['user_id']
+        creator_id = connection.get_user_id_by_other_id(question_id, 'question')
+        if user_id == creator_id:
+            question_to_edit = connection.get_question_to_edit(question_id)
+            return render_template('edit-question.html', question_to_edit=question_to_edit, alert=alert)
+        else:
+            return redirect('/question/' + str(question_id))
     edited_title = request.form.get('title')
     edited_question = request.form.get('question')
     connection.update_question(question_id, edited_title, edited_question)
@@ -184,8 +195,16 @@ def edit_question(question_id):
 @app.route("/answer/<answer_id>/edit", methods=['GET', 'POST'])
 def edit_answer(answer_id):
     if request.method == 'GET':
-        answer_to_edit = connection.get_answer_to_edit(answer_id)
-        return render_template('edit-answer.html', answer_to_edit=answer_to_edit)
+        alert = data_manager.is_logged(session)
+        if alert is True:
+            return redirect('/login')
+        user_id = session['user_id']
+        creator_id = connection.get_user_id_by_other_id(answer_id, 'answer')
+        if user_id == creator_id:
+            answer_to_edit = connection.get_answer_to_edit(answer_id)
+            return render_template('edit-answer.html', answer_to_edit=answer_to_edit, alert=alert)
+        else:
+            return redirect('/answer/' + str(answer_id))
     edited_answer = request.form.get('answer')
     connection.update_answer(answer_id, edited_answer)
     return redirect('/list')
@@ -195,8 +214,16 @@ def edit_answer(answer_id):
 @app.route("/comment/<comment_id>/edit", methods=['GET', 'POST'])
 def edit_comment(comment_id):
     if request.method == 'GET':
-        comment_to_edit = connection.get_comment_to_edit(comment_id)
-        return render_template('edit-comment.html', comment_to_edit=comment_to_edit)
+        alert = data_manager.is_logged(session)
+        if alert is True:
+            return redirect('/login')
+        user_id = session['user_id']
+        creator_id = connection.get_user_id_by_other_id(comment_id, 'comment')
+        if user_id == creator_id:
+            comment_to_edit = connection.get_comment_to_edit(comment_id)
+            return render_template('edit-comment.html', comment_to_edit=comment_to_edit, alert=alert)
+        else:
+            return redirect('/comment/' + str(comment_id))
     edited_comment = request.form.get('comment')
     connection.update_comment(comment_id, edited_comment)
     connection.change_value_db('comment', 'edited_count', '+', 'id', comment_id)
@@ -210,17 +237,29 @@ def edit_comment(comment_id):
 # delete answer
 @app.route("/answer/<answer_id>/delete")
 def delete_answer(answer_id):
-    image_to_delete = connection.get_from_db('image', 'answer', 'id', answer_id)
-    if os.path.isfile(f"static/uploads/{image_to_delete}"):
-        os.remove(f"static/uploads/{image_to_delete}")
-    question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
-    connection.delete_from_db('answer', 'id', answer_id)
-    connection.delete_from_db('comment', 'answer_id', answer_id)
-    return redirect('/question/' + str(question_id))
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
+    user_id = session['user_id']
+    creator_id = connection.get_user_id_by_other_id(answer_id, 'answer')
+    if user_id == creator_id:
+        image_to_delete = connection.get_from_db('image', 'answer', 'id', answer_id)
+        if os.path.isfile(f"static/uploads/{image_to_delete}"):
+            os.remove(f"static/uploads/{image_to_delete}")
+        question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
+        connection.delete_from_db('comment', 'answer_id', answer_id)
+        connection.delete_from_db('answer', 'id', answer_id)
+        return redirect('/question/' + str(question_id))
+    else:
+        question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
+        return redirect('/question/' + str(question_id))
 
 
 @app.route("/question/<question_id>/vote_up")
 def vote_up_question(question_id):
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
     connection.change_value_db('question', 'vote_number', '+', 'id', question_id)
     connection.change_value_db('question', 'view_number', '-', 'id', question_id)
     return redirect('/question/' + str(question_id))
@@ -228,6 +267,9 @@ def vote_up_question(question_id):
 
 @app.route("/question/<question_id>/vote_down")
 def vote_down_question(question_id):
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
     connection.change_value_db('question', 'vote_number', '-', 'id', question_id)
     connection.change_value_db('question', 'view_number', '-', 'id', question_id)
     return redirect('/question/' + str(question_id))
@@ -235,6 +277,9 @@ def vote_down_question(question_id):
 
 @app.route("/answer/<answer_id>/vote_up")
 def vote_up_answer(answer_id):
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
     connection.change_value_db('answer', 'vote_number', '+', 'id', answer_id)
     question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
     connection.change_value_db('question', 'view_number', '-', 'id', question_id)
@@ -243,6 +288,9 @@ def vote_up_answer(answer_id):
 
 @app.route("/answer/<answer_id>/vote_down")
 def vote_down_answer(answer_id):
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
     connection.change_value_db('answer', 'vote_number', '-', 'id', answer_id)
     question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
     connection.change_value_db('question', 'view_number', '-', 'id', question_id)
@@ -251,18 +299,27 @@ def vote_down_answer(answer_id):
 
 @app.route("/show_image/<image>/<question_id>")
 def show_image(image, question_id):
-    return render_template('show_image.html', image=image, question_id=question_id)
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
+    return render_template('show_image.html', image=image, question_id=question_id, alert=alert)
 
 
 @app.route("/question/<question_id>/new-tag", methods=['GET'])
 def add_new_tag(question_id):
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
     tags = connection.get_all_existing_tags()
     applied_tags = data_manager.get_tags_for_question(question_id)
-    return render_template('add-tag.html', tags=tags, question_id=question_id, applied_tags=applied_tags)
+    return render_template('add-tag.html', tags=tags, question_id=question_id, applied_tags=applied_tags, alert=alert)
 
 
 @app.route("/question/<question_id>/new-tag", methods=['POST'])
 def handle_new_tag(question_id):
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
     new_defined_tags = request.form.get('new-tags')
     data_manager.add_new_defined_tags(new_defined_tags, question_id)
     return redirect('/question/' + str(question_id) + '/new-tag')
@@ -270,6 +327,9 @@ def handle_new_tag(question_id):
 
 @app.route("/question/<question_id>/new-tag/<tag>")
 def add_tags_to_question(question_id, tag):
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
     tag_id = connection.get_id_by_tag(tag)
     connection.apply_tag_to_question(question_id, tag_id)
     return redirect('/question/' + str(question_id) + '/new-tag')
@@ -277,6 +337,9 @@ def add_tags_to_question(question_id, tag):
 
 @app.route("/question/<question_id>/new-tag/<tag>/delete")
 def delete_tags_from_question(question_id, tag):
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
     tag_id = connection.get_id_by_tag(tag)
     connection.delete_tag_from_question(question_id, tag_id)
     return redirect('/question/' + str(question_id) + '/new-tag')
@@ -284,6 +347,9 @@ def delete_tags_from_question(question_id, tag):
 
 @app.route("/question/<question_id>/<tag>/delete")
 def delete_tags_from_question2(question_id, tag):
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
     tag_id = connection.get_id_by_tag(tag)
     connection.delete_tag_from_question(question_id, tag_id)
     connection.change_value_db('question', 'view_number', '-', 'id', question_id)
@@ -293,6 +359,9 @@ def delete_tags_from_question2(question_id, tag):
 # delete comment
 @app.route("/comments/<comment_id>/delete")
 def delete_comment(comment_id):
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
     question_id = connection.get_from_db("question_id", "comment", "id", comment_id)
     if not question_id:
         answer_id = connection.get_from_db("answer_id", "comment", "id", comment_id)
@@ -304,15 +373,18 @@ def delete_comment(comment_id):
 # registration endpoint
 @app.route("/registration", methods=['GET', 'POST'])
 def registration():
+    alert = data_manager.is_logged(session)
+    if alert is False:
+        return redirect('/')
     if request.method == 'GET':
-        return render_template('registration.html')
+        return render_template('registration.html', alert=alert)
     username = request.form['username']
     password = request.form['password']
     is_username_taken = data_manager.user_registration(username, password)
     if not is_username_taken:
         return redirect('/')
     else:
-        return render_template('registration.html', error='Username already exists')
+        return render_template('registration.html', error='Username already exists', alert=alert)
 
 
 @app.route("/users")
@@ -321,22 +393,28 @@ def display_all_users():
     if alert is True:
         return redirect('/')
     headers, users_data = data_manager.list_prepare_users_to_show()
-    return render_template('list_of_users.html', headers=headers, data=users_data)
+    return render_template('list_of_users.html', headers=headers, data=users_data, alert=alert)
 
 
 # user profile page
 @app.route("/user/<user_id>")
 def user_profile_page(user_id):
-    #if session['user_id']: (zaimplementuje gdy bedzie gotowe logowanie
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
     user_data, user_questions, user_answers, user_comments = data_manager.user_profile_page(user_id)
-    return render_template('profile_page.html', data=user_data, questions=user_questions, answers=user_answers, comments=user_comments)
+    return render_template('profile_page.html', data=user_data, questions=user_questions, answers=user_answers,
+                           comments=user_comments, alert=alert)
 
 
 # user login function
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    alert = data_manager.is_logged(session)
+    if alert is False:
+        return redirect('/')
     if request.method == 'GET':
-        return render_template('login.html')
+        return render_template('login.html', alert=alert)
     username = request.form['username']
     plain_text_password = request.form['password']
     if connection.username_exists(username):
@@ -346,12 +424,15 @@ def login():
             session['user_id'] = connection.get_user_id_by_name(username)
             return redirect('/')
     error_message = 'Invalid username or password'
-    return render_template('login.html', error_message=error_message)
+    return render_template('login.html', error_message=error_message, alert=alert)
 
 
 # logout from user account
 @app.route('/logout')
 def logout():
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
     session.pop('username', None)
     session.pop('user_id', None)
     return redirect('/')

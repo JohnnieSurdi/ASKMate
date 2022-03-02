@@ -5,8 +5,8 @@ import database_common
 def delete_from_db(cursor, db_name, db_where, db_var):
     query = """
         DELETE FROM %s
-        WHERE %s = '%s'"""
-    cursor.execute(query, (db_name, db_where, db_var))
+        WHERE %s = '%s'""" % (db_name, db_where, db_var)
+    cursor.execute(query)
 
 
 @database_common.connection_handler
@@ -499,16 +499,9 @@ def mark_searched_phrase_in_answers(searched_answers, searched_phrase):
 @database_common.connection_handler
 def get_all_users_data(cursor):
     query = """
-        SELECT name, registration_date, reputation, COUNT(answer.*) AS number_of_answers, 
-        COUNT(question.*) AS number_of_asked_questions, COUNT(comment.*) AS number_of_comments
+        SELECT *
         FROM users
-        INNER JOIN answer
-        ON users.id = answer.user_id
-        INNER JOIN question
-        ON users.id = question.user_id
-        INNER JOIN comment
-        ON users.id = comment.user_id
-        GROUP BY name, registration_date, reputation"""
+        ORDER BY id"""
     cursor.execute(query)
     data = cursor.fetchall()
     return data
@@ -624,10 +617,12 @@ def get_user_comments(cursor, user_id):
 
 
 @database_common.connection_handler
-def increment_specific_number(cursor, number, user_id):
+def get_user_id_by_other_id(cursor, question_id, table):
     query = """
-            UPDATE users
-            SET %s = %s + 1
+            SELECT user_id
+            FROM %s
             WHERE id=%s
-            """ % (number, number, user_id)
+            """ % (table, question_id)
     cursor.execute(query)
+    creator_id = cursor.fetchone()
+    return creator_id['user_id']
