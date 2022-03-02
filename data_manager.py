@@ -115,6 +115,8 @@ def verify_password(plain_text_password, hashed_password):
     hashed_bytes_password = hashed_password.encode('utf-8')
     return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
 
+def check_if_user_id_in_session(user_id):
+    print(222222)
 
 def user_registration(username, password):
     password = hash_password(password)

@@ -27,6 +27,9 @@
         </ul>
         {% else %}
         <ul class="nav-links">
+            {% if user_id %}
+            <li><a href="/user/{{ user_id }}">Profile</a></li>
+            {% endif %}
             <li><a href="/logout">Logout</a></li>
             <li style="color: white">You are logged! Now, you can share your knowledge with other users!</li>
         </ul>

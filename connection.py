@@ -601,6 +601,16 @@ def get_user_answers(cursor, user_id):
     cursor.execute(query, (user_id,))
     return cursor.fetchall()
 
+@database_common.connection_handler
+def get_user_id_by_name(cursor, username):
+    query = """
+        SELECT id
+        FROM users    
+        WHERE name=%s
+        """
+    cursor.execute(query, (username,))
+    user_id = cursor.fetchone()
+    return user_id['id']
 
 @database_common.connection_handler
 def get_user_comments(cursor, user_id):

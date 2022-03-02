@@ -40,6 +40,10 @@ def home_page():
     data_five_questions = data_questions[:5]
     searched_phrase = request.args.get("search-phrase")
     alert = data_manager.is_logged(session)
+    if 'user_id' in session:
+        user_id = session['user_id']
+    else:
+        user_id = False
     if searched_phrase:
         all_searched_questions, searched_answers = connection.search_in_questions_and_answers(searched_phrase)
         all_searched_questions = connection.mark_searched_phrase(all_searched_questions, searched_phrase)
@@ -48,7 +52,7 @@ def home_page():
         return render_template('search.html',
                                searched_phrase=searched_phrase, data=all_searched_questions, headers=headers,
                                searched_answers=searched_answers)
-    return render_template('index.html', data=data_five_questions, headers=headers, alert=alert)
+    return render_template('index.html', data=data_five_questions, headers=headers, alert=alert, user_id=user_id)
 
 
 # load question list page
@@ -328,6 +332,7 @@ def login():
         hashed_password = connection.get_password(username)
         if data_manager.verify_password(plain_text_password, hashed_password):
             session['username'] = username
+            session['user_id'] = connection.get_user_id_by_name(username)
             return redirect('/')
     error_message = 'Invalid username or password'
     return render_template('login.html', error_message=error_message)
@@ -337,6 +342,7 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('username', None)
+    session.pop('user_id', None)
     return redirect('/')
 
 
