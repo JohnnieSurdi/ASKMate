@@ -40,6 +40,7 @@ def add_question_to_file(title, question, image, user_id):
     submission_time = datetime.datetime.now()
     image_path = server.upload_image(image)
     connection.add_question_to_db(title, question, submission_time, image_path, user_id)
+    connection.increment_specific_number('number_of_questions', user_id)
     question_id = connection.get_id(submission_time)
     return question_id
 
@@ -80,22 +81,25 @@ def add_new_defined_tags(new_defined_tags, question_id):
             connection.apply_tag_to_question(question_id, tag_id)
 
 
-def add_comment_to_question(question_id, message):
+def add_comment_to_question(question_id, message, user_id):
     submission_time = datetime.datetime.now()
     edited_count = 0
-    connection.add_comment_to_question(question_id, message, submission_time, edited_count)
+    connection.add_comment_to_question(question_id, message, submission_time, edited_count, user_id)
+    connection.increment_specific_number('number_of_comments', user_id)
 
 
-def add_comment_to_answer(answer_id, message):
+def add_comment_to_answer(answer_id, message, user_id):
     submission_time = datetime.datetime.now()
     edited_count = 0
-    connection.add_comment_to_answer(answer_id, message, submission_time, edited_count)
+    connection.add_comment_to_answer(answer_id, message, submission_time, edited_count, user_id)
+    connection.increment_specific_number('number_of_comments', user_id)
 
 
-def add_answer_to_file(question_id, message, image):
+def add_answer_to_file(question_id, message, image, user_id):
     submission_time = datetime.datetime.now()
     image_path = server.upload_image(image)
-    connection.add_answer_to_db(question_id, message, submission_time, image_path)
+    connection.add_answer_to_db(question_id, message, submission_time, image_path, user_id)
+    connection.increment_specific_number('number_of_answers', user_id)
 
 
 def list_prepare_users_to_show():

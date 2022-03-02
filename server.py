@@ -102,17 +102,21 @@ def add_question():
     image = request.files['image']
     user_id = session['user_id']
     question_id = data_manager.add_question_to_file(title, question, image, user_id)
-    connection.increment_specific_number('number_of_questions', user_id)
+
     return redirect('/question/' + str(question_id))
 
 
 # add new answer to question
 @app.route("/question/<question_id>/new-answer", methods=['GET', 'POST'])
 def add_answer(question_id):
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
     if request.method == 'POST':
         message = request.form['new_answer']
         image = request.files['image']
-        data_manager.add_answer_to_file(question_id, message, image)
+        user_id = session['user_id']
+        data_manager.add_answer_to_file(question_id, message, image, user_id)
         return redirect('/question/' + str(question_id))
     title = connection.get_title_by_id(question_id)
     return render_template('add_new_answer.html', question_id=question_id, title=title)
@@ -120,25 +124,27 @@ def add_answer(question_id):
 
 @app.route("/question/<question_id>/new-comment", methods=['GET', 'POST'])
 def add_comment_to_question(question_id):
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
     if request.method == 'POST':
-        if 'username' in session:
-            message = request.form['new_comment']
-            data_manager.add_comment_to_question(question_id, message)
-            return redirect('/question/' + str(question_id))
-    if 'username' in session:
-        title = connection.get_title_by_id(question_id)
-        return render_template('add_comment_to_question.html', question_id=question_id, title=title)
-    else:
-        flash('You must be logged in to add comments')
+        message = request.form['new_comment']
+        user_id = session['user_id']
+        data_manager.add_comment_to_question(question_id, message, user_id)
         return redirect('/question/' + str(question_id))
-
+    title = connection.get_title_by_id(question_id)
+    return render_template('add_comment_to_question.html', question_id=question_id, title=title)
 
 
 @app.route("/answer/<answer_id>/new-comment", methods=['GET', 'POST'])
 def add_comment_to_answer(answer_id):
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
     if request.method == 'POST':
+        user_id = session['user_id']
         message = request.form['new_comment']
-        data_manager.add_comment_to_answer(answer_id, message)
+        data_manager.add_comment_to_answer(answer_id, message, user_id)
         question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
         return redirect('/question/' + str(question_id))
     return render_template('add_comment_to_answer.html', answer_id=answer_id)

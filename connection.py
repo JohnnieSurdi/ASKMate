@@ -75,26 +75,26 @@ def add_question_to_db(cursor, title, question, submission_time, image_path, use
 
 
 @database_common.connection_handler
-def add_answer_to_db(cursor, question_id, message, submission_time, image_path):
+def add_answer_to_db(cursor, question_id, message, submission_time, image_path, user_id):
     query = """
-        INSERT INTO answer (submission_time, vote_number, question_id, message, image)
-        VALUES ('%s','%s','%s','%s','%s')""" % (submission_time, 0, question_id, message, image_path)
+        INSERT INTO answer (submission_time, vote_number, question_id, message, image, user_id)
+        VALUES ('%s','%s','%s','%s','%s', '%s')""" % (submission_time, 0, question_id, message, image_path, user_id)
     cursor.execute(query)
 
 
 @database_common.connection_handler
-def add_comment_to_question(cursor, question_id, message, submission_time, edited_count):
+def add_comment_to_question(cursor, question_id, message, submission_time, edited_count, user_id):
     query = """
-        INSERT INTO comment (question_id, message, submission_time, edited_count)
-        VALUES ('%s','%s','%s','%s')""" % (question_id, message, submission_time, 0)
+        INSERT INTO comment (question_id, message, submission_time, edited_count, user_id)
+        VALUES ('%s','%s','%s','%s', '%s')""" % (question_id, message, submission_time, 0, user_id)
     cursor.execute(query)
 
 
 @database_common.connection_handler
-def add_comment_to_answer(cursor, answer_id, message, submission_time, edited_count):
+def add_comment_to_answer(cursor, answer_id, message, submission_time, edited_count, user_id):
     query = """
-        INSERT INTO comment (answer_id, message, submission_time, edited_count)
-        VALUES ('%s','%s','%s','%s')""" % (answer_id, message, submission_time, 0)
+        INSERT INTO comment (answer_id, message, submission_time, edited_count, user_id)
+        VALUES ('%s','%s','%s','%s', '%s')""" % (answer_id, message, submission_time, 0, user_id)
     cursor.execute(query)
 
 
@@ -631,4 +631,3 @@ def increment_specific_number(cursor, number, user_id):
             WHERE id=%s
             """ % (number, number, user_id)
     cursor.execute(query)
-    return cursor.fetchall()
