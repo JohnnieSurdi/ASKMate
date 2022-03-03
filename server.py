@@ -400,8 +400,6 @@ def display_all_users():
     if alert is True:
         return redirect('/')
     headers, users_data = data_manager.list_prepare_users_to_show()
-    print(headers)
-    print(users_data)
     return render_template('list_of_users.html', headers=headers, data=users_data, alert=alert)
 
 
@@ -453,12 +451,10 @@ def accept_answer(question_id, answer_id):
     alert = data_manager.is_logged(session)
     if alert is True:
         return redirect('/login')
-
     creator_id = connection.get_user_id_by_other_id(question_id, 'question')
     if creator_id != session['user_id']:
         return redirect('/question/' + str(question_id))
     connection.accept_answer(answer_id)
-
     answer_owner = connection.get_user_id_by_other_id(answer_id, 'answer')
     connection.change_reputation('+', '15', answer_owner)
     return redirect('/question/' + str(question_id))

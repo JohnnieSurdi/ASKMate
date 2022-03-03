@@ -127,9 +127,7 @@ def get_id(cursor, submission_time):
         WHERE submission_time = '%s'""" % (submission_time)
     cursor.execute(query)
     id = cursor.fetchall()
-    print(id)
     id = list_of_dicts_to_str('id', id)
-    print(id)
     return id
 
 
@@ -261,7 +259,6 @@ def get_all_existing_tags(cursor):
 
 
 def list_of_dicts_to_str(key, list):
-    print(list)
     list = list[0]
     string = list[key]
     return string

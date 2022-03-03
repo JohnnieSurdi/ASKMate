@@ -38,7 +38,6 @@ def get_comments_for_answers(list_with_answer_id):
 
 def add_question_to_file(title, question, image, user_id):
     submission_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(submission_time)
     image_path = server.upload_image(image)
     connection.add_question_to_db(title, question, submission_time, image_path, user_id)
     question_id = connection.get_id(submission_time)
@@ -64,7 +63,6 @@ def add_new_defined_tags(new_defined_tags, question_id):
     existing_tags_list = []
     for tags in existing_tags:
         existing_tags_list.append(tags['name'])
-    print(existing_tags_list)
     if ',' in new_defined_tags:
         new_defined_tags = new_defined_tags.split(',')
         for tag in new_defined_tags:
@@ -120,8 +118,6 @@ def verify_password(plain_text_password, hashed_password):
     hashed_bytes_password = hashed_password.encode('utf-8')
     return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
 
-def check_if_user_id_in_session(user_id):
-    print(222222)
 
 def user_registration(username, password):
     password = hash_password(password)
