@@ -182,7 +182,7 @@ def add_new_user_to_db(cursor, username, password, registration_date):
         INSERT INTO users (name, password,registration_date)
         VALUES (%s,%s,%s)
         """
-    cursor.execute(query,(username, password,registration_date))
+    cursor.execute(query, (username, password, registration_date))
 
 
 @database_common.connection_handler

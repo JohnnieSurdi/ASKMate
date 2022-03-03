@@ -79,7 +79,6 @@ def question_display(question_id):
     for answer in answers:
         list_with_answer_id.append(answer['id'])
     comments_for_answers = data_manager.get_comments_for_answers(list_with_answer_id)
-    number_of_comments_for_answers = len(comments_for_answers)
     applied_tags = data_manager.get_tags_for_question(question_id)
     comments_q_len = len(comments_to_questions) + 2
     return render_template('display_question_and_answers.html', question=question[0], answers=answers,
