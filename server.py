@@ -453,14 +453,32 @@ def accept_answer(question_id, answer_id):
     alert = data_manager.is_logged(session)
     if alert is True:
         return redirect('/login')
-
+    answer_owner = connection.get_user_id_by_other_id(answer_id, 'answer')
     creator_id = connection.get_user_id_by_other_id(question_id, 'question')
     if creator_id != session['user_id']:
         return redirect('/question/' + str(question_id))
+    if session['user_id'] == answer_owner:
+        return redirect('/question/' + str(question_id))
     connection.accept_answer(answer_id)
 
-    answer_owner = connection.get_user_id_by_other_id(answer_id, 'answer')
+
     connection.change_reputation('+', '15', answer_owner)
+    return redirect('/question/' + str(question_id))
+
+
+@app.route('/<question_id>/<answer_id>/not_accept_answer')
+def not_accept_answer(question_id, answer_id):
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
+    creator_id = connection.get_user_id_by_other_id(question_id, 'question')
+    answer_owner = connection.get_user_id_by_other_id(answer_id, 'answer')
+    if creator_id != session['user_id']:
+        return redirect('/question/' + str(question_id))
+    if session['user_id'] == answer_owner:
+        return redirect('/question/' + str(question_id))
+    connection.dont_accept_answer(answer_id)
+    connection.change_reputation('-', '15', answer_owner)
     return redirect('/question/' + str(question_id))
 
 

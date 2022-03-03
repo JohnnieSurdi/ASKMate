@@ -667,3 +667,12 @@ def change_reputation(cursor, sign, number, user_id):
             SET reputation = reputation %s %s
             WHERE id = %s""" % (sign, number, user_id)
     cursor.execute(query)
+
+
+@database_common.connection_handler
+def dont_accept_answer(cursor, answer_id):
+    query = """
+        UPDATE answer
+        SET accepted = 0
+        WHERE id = %s""" % (answer_id, )
+    cursor.execute(query)
