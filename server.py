@@ -143,8 +143,12 @@ def add_comment_to_answer(answer_id):
         message = request.form['new_comment']
         data_manager.add_comment_to_answer(answer_id, message, user_id)
         question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
+        title = connection.get_title_by_id(question_id)
         return redirect('/question/' + str(question_id))
-    return render_template('add_comment_to_answer.html', answer_id=answer_id, alert=alert)
+    question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
+    title = connection.get_title_by_id(question_id)
+    return render_template('add_comment_to_answer.html', answer_id=answer_id, alert=alert, title=title,
+                           question_id=question_id)
 
 
 # delete question
@@ -180,7 +184,8 @@ def edit_question(question_id):
         creator_id = connection.get_user_id_by_other_id(question_id, 'question')
         if user_id == creator_id:
             question_to_edit = connection.get_question_to_edit(question_id)
-            return render_template('edit-question.html', question_to_edit=question_to_edit, alert=alert)
+            return render_template('edit-question.html', question_to_edit=question_to_edit, alert=alert,
+                                   question_id=question_id)
         else:
             return redirect('/question/' + str(question_id))
     edited_title = request.form.get('title')
@@ -192,6 +197,7 @@ def edit_question(question_id):
 # edit answer
 @app.route("/answer/<answer_id>/edit", methods=['GET', 'POST'])
 def edit_answer(answer_id):
+
     if request.method == 'GET':
         alert = data_manager.is_logged(session)
         if alert is True:
@@ -200,7 +206,9 @@ def edit_answer(answer_id):
         creator_id = connection.get_user_id_by_other_id(answer_id, 'answer')
         if user_id == creator_id:
             answer_to_edit = connection.get_answer_to_edit(answer_id)
-            return render_template('edit-answer.html', answer_to_edit=answer_to_edit, alert=alert)
+            question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
+            return render_template('edit-answer.html', answer_to_edit=answer_to_edit, alert=alert,
+                                   question_id=question_id)
         else:
             return redirect('/answer/' + str(answer_id))
     edited_answer = request.form.get('answer')
@@ -219,7 +227,12 @@ def edit_comment(comment_id):
         creator_id = connection.get_user_id_by_other_id(comment_id, 'comment')
         if user_id == creator_id:
             comment_to_edit = connection.get_comment_to_edit(comment_id)
-            return render_template('edit-comment.html', comment_to_edit=comment_to_edit, alert=alert)
+            question_id = connection.get_from_db("question_id", "comment", "id", comment_id)
+            if not question_id:
+                answer_id = connection.get_from_db("answer_id", "comment", "id", comment_id)
+                question_id = connection.get_from_db("question_id", "answer", "id", answer_id)
+            return render_template('edit-comment.html', comment_to_edit=comment_to_edit, alert=alert,
+                                   question_id=question_id)
         else:
             return redirect('/comment/' + str(comment_id))
     edited_comment = request.form.get('comment')
