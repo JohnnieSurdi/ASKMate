@@ -456,12 +456,12 @@ def accept_answer(question_id, answer_id):
 
     creator_id = connection.get_user_id_by_other_id(question_id, 'question')
     if creator_id != session['user_id']:
-        return redirect(url_for('question_display', question_id=question_id))
+        return redirect('/question/' + str(question_id))
     connection.accept_answer(answer_id)
 
     answer_owner = connection.get_user_id_by_other_id(answer_id, 'answer')
     connection.change_reputation('+', '15', answer_owner)
-    return redirect(url_for('question_display', question_id=question_id))
+    return redirect('/question/' + str(question_id))
 
 
 @app.route('/tags')
