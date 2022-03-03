@@ -24,7 +24,7 @@
 </head>
 <body>
 <header>
-    <nav>
+   <nav>
         {% if alert %}
         <ul class="nav-links">
             <li><a href="/registration">Registration</a></li>
@@ -32,7 +32,10 @@
         </ul>
         {% else %}
         <ul class="nav-links">
-            <li><a href="/logout">Logout</a></li>
+            {% if user_id %}
+                <li><a href="/user/{{ user_id }}">Profile</a></li>
+            {% endif %}
+                <li><a href="/logout">Logout</a></li>
             {% if session['username'] %}
                 <li style="color: white">You are logged in as {{ session['username'] }}! Now, you can share your knowledge with other users!</li>
             {% else %}
