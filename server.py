@@ -13,7 +13,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 
-
 # allowed file extension for file uploads
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -188,7 +187,7 @@ def edit_question(question_id):
     edited_title = request.form.get('title')
     edited_question = request.form.get('question')
     connection.update_question(question_id, edited_title, edited_question)
-    return redirect('/list')
+    return redirect('/question/' + str(question_id))
 
 
 # edit answer
@@ -442,14 +441,27 @@ def logout():
 
 # accepting answers
 @app.route('/<question_id>/<answer_id>/accept_answer')
-def accept_answer():
-    pass
+def accept_answer(question_id, answer_id):
+    alert = data_manager.is_logged(session)
+    if alert is True:
+        return redirect('/login')
+
+    creator_id = connection.get_user_id_by_other_id(question_id, 'question')
+    if creator_id != session['user_id']:
+        return redirect(url_for('question_display', question_id=question_id))
+    connection.accept_answer(answer_id)
+
+    answer_owner = connection.get_user_id_by_other_id(answer_id, 'answer')
+    connection.change_reputation('+', '15', answer_owner)
+    return redirect(url_for('question_display', question_id=question_id))
+
 
 @app.route('/tags')
 def display_all_tags():
     alert = data_manager.is_logged(session)
     headers, users_data = data_manager.list_prepare_tags_to_show()
     return render_template('display-tags.html', headers=headers, data=users_data, alert=alert)
+
 
 if __name__ == "__main__":
     app.run()

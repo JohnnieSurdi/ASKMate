@@ -1,4 +1,5 @@
-import database_common, server
+import database_common
+import server
 
 
 @database_common.connection_handler
@@ -132,8 +133,6 @@ def get_id(cursor, submission_time):
     return id
 
 
-
-
 @database_common.connection_handler
 def get_question_to_edit(cursor, question_id):
     query = """
@@ -164,6 +163,7 @@ def get_answer_to_edit(cursor, answer_id):
     answer = answer[0]
     return answer
 
+
 @database_common.connection_handler
 def check_if_user_exist(cursor, username):
     query = """
@@ -176,6 +176,7 @@ def check_if_user_exist(cursor, username):
     else:
         is_exist = False
     return is_exist
+
 
 @database_common.connection_handler
 def add_new_user_to_db(cursor, username, password, registration_date):
@@ -296,10 +297,6 @@ def sort_questions(cursor, direction, order):
             INNER JOIN users
             ON question.user_id = users.id
             ORDER BY %s %s""" % (direction, order)
-    # query = f"""
-    #     SELECT *
-    #     FROM question
-    #     ORDER BY {direction} {order}"""
     cursor.execute(query)
     return cursor.fetchall()
 
@@ -450,7 +447,6 @@ def search_in_questions_and_answers(searched_phrase):
 def mark_searched_phrase(all_searched_questions, searched_phrase):  # W js
     all_searched_questions_to_return = []
     for question in all_searched_questions:
-        question_dict = {}
         question_dict['id'] = question['id']
         question_dict['submission_time'] = question['submission_time']
         question_dict['view_number'] = question['view_number']
@@ -480,7 +476,6 @@ def mark_searched_phrase(all_searched_questions, searched_phrase):  # W js
 def mark_searched_phrase_in_answers(searched_answers, searched_phrase):
     searched_answers_to_return = []
     for question in searched_answers:
-        question_dict = {}
         question_dict['id'] = question['id']
         question_dict['submission_time'] = question['submission_time']
         question_dict['question_id'] = question['question_id']
@@ -597,6 +592,7 @@ def get_user_answers(cursor, user_id):
     cursor.execute(query, (user_id,))
     return cursor.fetchall()
 
+
 @database_common.connection_handler
 def get_user_id_by_name(cursor, username):
     query = """
@@ -607,6 +603,7 @@ def get_user_id_by_name(cursor, username):
     cursor.execute(query, (username,))
     user_id = cursor.fetchone()
     return user_id['id']
+
 
 @database_common.connection_handler
 def get_user_comments(cursor, user_id):
@@ -630,6 +627,7 @@ def get_user_id_by_other_id(cursor, question_id, table):
     creator_id = cursor.fetchone()
     return creator_id['user_id']
 
+
 @database_common.connection_handler
 def get_all_tags_data(cursor):
     query = """
@@ -651,3 +649,12 @@ def get_number_of_marked_questions_by_tag_id(cursor, tag_id):
     cursor.execute(query, (tag_id,))
     count = cursor.fetchone()
     return count['count']
+
+
+@database_common.connection_handler
+def accept_answer(cursor, answer_id):
+    query = """
+        UPDATE answer
+        SET accepted = 1
+        WHERE id = %s""" % (answer_id, )
+    cursor.execute(query)
