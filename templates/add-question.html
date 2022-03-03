@@ -28,11 +28,15 @@
         {% else %}
         <ul class="nav-links">
             <li><a href="/logout">Logout</a></li>
-            <li style="color: white">You are logged! Now, you can share your knowledge with other users!</li>
+           {% if session['username'] %}
+                <li style="color: white">You are logged in as {{ session['username'] }}! Now, you can share your knowledge with other users!</li>
+            {% else %}
+                <li style="color: white">You are logged in! Now, you can share your knowledge with other users!</li>
+            {% endif %}
         </ul>
         {% endif %}
     </nav>
-    <a class="cta" href="/contact">Contact</a>
+    <a class="cta" href="/about">About Ask Mate</a>
 </header>
 <div class="container">
     <div align="center">

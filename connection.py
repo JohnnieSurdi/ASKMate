@@ -1,4 +1,4 @@
-import database_common
+import database_common, server
 
 
 @database_common.connection_handler
@@ -132,6 +132,8 @@ def get_id(cursor, submission_time):
     return id
 
 
+
+
 @database_common.connection_handler
 def get_question_to_edit(cursor, question_id):
     query = """
@@ -258,6 +260,7 @@ def get_all_existing_tags(cursor):
 
 
 def list_of_dicts_to_str(key, list):
+    print(list)
     list = list[0]
     string = list[key]
     return string
@@ -626,3 +629,25 @@ def get_user_id_by_other_id(cursor, question_id, table):
     cursor.execute(query)
     creator_id = cursor.fetchone()
     return creator_id['user_id']
+
+@database_common.connection_handler
+def get_all_tags_data(cursor):
+    query = """
+        SELECT *
+        FROM tag
+        ORDER BY id"""
+    cursor.execute(query)
+    data = cursor.fetchall()
+    return data
+
+
+@database_common.connection_handler
+def get_number_of_marked_questions_by_tag_id(cursor, tag_id):
+    query = """
+        SELECT COUNT(tag_id)
+        FROM question_tag    
+        WHERE tag_id=%s
+        """
+    cursor.execute(query, (tag_id,))
+    count = cursor.fetchone()
+    return count['count']

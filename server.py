@@ -1,6 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect
-from flask import Flask, render_template, request, redirect, session, flash
+from flask import Flask, render_template, request, redirect, session
 from werkzeug.utils import secure_filename
 import connection
 import data_manager
@@ -12,6 +11,7 @@ app = Flask(__name__)
 app.secret_key = "grgrewhre"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
 
 
 # allowed file extension for file uploads
@@ -393,6 +393,8 @@ def display_all_users():
     if alert is True:
         return redirect('/')
     headers, users_data = data_manager.list_prepare_users_to_show()
+    print(headers)
+    print(users_data)
     return render_template('list_of_users.html', headers=headers, data=users_data, alert=alert)
 
 
@@ -439,10 +441,15 @@ def logout():
 
 
 # accepting answers
-@app.route('//<question_id>/<answer_id>/accept_answer')
+@app.route('/<question_id>/<answer_id>/accept_answer')
 def accept_answer():
     pass
 
+@app.route('/tags')
+def display_all_tags():
+    alert = data_manager.is_logged(session)
+    headers, users_data = data_manager.list_prepare_tags_to_show()
+    return render_template('display-tags.html', headers=headers, data=users_data, alert=alert)
 
 if __name__ == "__main__":
     app.run()

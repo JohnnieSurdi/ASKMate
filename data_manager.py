@@ -37,7 +37,8 @@ def get_comments_for_answers(list_with_answer_id):
 
 
 def add_question_to_file(title, question, image, user_id):
-    submission_time = datetime.datetime.now()
+    submission_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(submission_time)
     image_path = server.upload_image(image)
     connection.add_question_to_db(title, question, submission_time, image_path, user_id)
     question_id = connection.get_id(submission_time)
@@ -45,7 +46,7 @@ def add_question_to_file(title, question, image, user_id):
 
 
 def add_answer_to_file(question_id, message, image):
-    submission_time = datetime.datetime.now()
+    submission_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     image_path = server.upload_image(image)
     connection.add_answer_to_db(question_id, message, submission_time, image_path)
 
@@ -81,19 +82,19 @@ def add_new_defined_tags(new_defined_tags, question_id):
 
 
 def add_comment_to_question(question_id, message, user_id):
-    submission_time = datetime.datetime.now()
+    submission_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     edited_count = 0
     connection.add_comment_to_question(question_id, message, submission_time, edited_count, user_id)
 
 
 def add_comment_to_answer(answer_id, message, user_id):
-    submission_time = datetime.datetime.now()
+    submission_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     edited_count = 0
     connection.add_comment_to_answer(answer_id, message, submission_time, edited_count, user_id)
 
 
 def add_answer_to_file(question_id, message, image, user_id):
-    submission_time = datetime.datetime.now()
+    submission_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     image_path = server.upload_image(image)
     connection.add_answer_to_db(question_id, message, submission_time, image_path, user_id)
 
@@ -159,3 +160,11 @@ def delete_by_id(question_id):
     connection.delete_from_db('question_tag', 'question_id', question_id)
     connection.delete_from_db('answer', 'question_id', question_id)
     connection.delete_from_db('question', 'id', question_id)
+
+
+def list_prepare_tags_to_show():
+    headers = ["name", "number_of_marked_questions"]
+    users_data = connection.get_all_tags_data()
+    for data in users_data:
+        data['number_of_marked_questions'] = connection.get_number_of_marked_questions_by_tag_id(data['id'])
+    return headers, users_data

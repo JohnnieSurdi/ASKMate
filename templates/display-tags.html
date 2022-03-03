@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>List of all users</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link
             rel="stylesheet"
             href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -15,6 +15,12 @@
             crossorigin="anonymous"
     />
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+        h2.error {
+            color: red;
+        }
+    </style>
+    <title>Edit Question</title>
 </head>
 <body>
 <header>
@@ -38,33 +44,23 @@
     <a class="cta" href="/about">About Ask Mate</a>
 </header>
 <div class="container" align="center">
-    <a href="/"><img id="logo" src="/static/logo3.png"></a>
+<a href="/"><img id="logo" src="/static/logo3.png"></a>
     <div class="form-group">
-        <h1>List of all users:</h1>
+        <h1>List of all tags:</h1>
 
         <table id="customers">
             <thead>
-            <form method="POST">
                 <tr>
                     {% for header in headers %}
                         <th>
                             {% if header =="name" %}
-                                User name
-                            {% elif header =="registration_date" %}
-                                Registration date
-                            {% elif header =="number_of_questions" %}
-                                Number of asked questions
-                            {% elif header =="number_of_answers" %}
-                                Number of answers
-                            {% elif header =="number_of_comments" %}
-                                Number of comments
-                            {% elif header =="reputation" %}
-                                Reputation
+                                Tag name
+                            {% elif header =="number_of_marked_questions" %}
+                                Number of question marked by tag:
                             {% endif %}
                         </th>
                     {% endfor %}
                 </tr>
-            </form>
             </thead>
             <tbody>
             {% for dict in data %}
@@ -78,24 +74,22 @@
         </table>
         <br>
         <br>
-
-
     </div>
 </div>
-<script
-        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"
-></script>
-<script
-        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"
-></script>
-<script
-        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"
-></script>
-</body>
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"
+    ></script>
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"
+    ></script>
+    <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"
+    ></script>
+    </body>
 </html>
