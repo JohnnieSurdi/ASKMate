@@ -260,8 +260,10 @@ def vote_up_question(question_id):
     alert = data_manager.is_logged(session)
     if alert is True:
         return redirect('/login')
+    creator_id = connection.get_user_id_by_other_id(question_id, 'question')
     connection.change_value_db('question', 'vote_number', '+', 'id', question_id)
     connection.change_value_db('question', 'view_number', '-', 'id', question_id)
+    connection.change_reputation('+', '5', creator_id)
     return redirect('/question/' + str(question_id))
 
 
@@ -270,8 +272,10 @@ def vote_down_question(question_id):
     alert = data_manager.is_logged(session)
     if alert is True:
         return redirect('/login')
+    creator_id = connection.get_user_id_by_other_id(question_id, 'question')
     connection.change_value_db('question', 'vote_number', '-', 'id', question_id)
     connection.change_value_db('question', 'view_number', '-', 'id', question_id)
+    connection.change_reputation('-', '2', creator_id)
     return redirect('/question/' + str(question_id))
 
 
@@ -280,9 +284,11 @@ def vote_up_answer(answer_id):
     alert = data_manager.is_logged(session)
     if alert is True:
         return redirect('/login')
+    creator_id = connection.get_user_id_by_other_id(answer_id, 'answer')
     connection.change_value_db('answer', 'vote_number', '+', 'id', answer_id)
     question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
     connection.change_value_db('question', 'view_number', '-', 'id', question_id)
+    connection.change_reputation('+', '10', creator_id)
     return redirect('/question/' + str(question_id))
 
 
@@ -291,9 +297,11 @@ def vote_down_answer(answer_id):
     alert = data_manager.is_logged(session)
     if alert is True:
         return redirect('/login')
+    creator_id = connection.get_user_id_by_other_id(answer_id, 'answer')
     connection.change_value_db('answer', 'vote_number', '-', 'id', answer_id)
     question_id = connection.get_from_db('question_id', 'answer', 'id', answer_id)
     connection.change_value_db('question', 'view_number', '-', 'id', question_id)
+    connection.change_reputation('-', '2', creator_id)
     return redirect('/question/' + str(question_id))
 
 

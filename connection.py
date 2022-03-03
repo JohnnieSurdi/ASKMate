@@ -651,3 +651,12 @@ def get_number_of_marked_questions_by_tag_id(cursor, tag_id):
     cursor.execute(query, (tag_id,))
     count = cursor.fetchone()
     return count['count']
+
+
+@database_common.connection_handler
+def change_reputation(cursor, sign, number, user_id):
+    query = """
+            UPDATE users
+            SET reputation = reputation %s %s
+            WHERE id = %s""" % (sign, number, user_id)
+    cursor.execute(query)
