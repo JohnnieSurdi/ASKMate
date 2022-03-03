@@ -444,6 +444,7 @@ def search_in_questions_and_answers(searched_phrase):
 def mark_searched_phrase(all_searched_questions, searched_phrase):  # W js
     all_searched_questions_to_return = []
     for question in all_searched_questions:
+        question_dict = {}
         question_dict['id'] = question['id']
         question_dict['submission_time'] = question['submission_time']
         question_dict['view_number'] = question['view_number']
@@ -473,6 +474,7 @@ def mark_searched_phrase(all_searched_questions, searched_phrase):  # W js
 def mark_searched_phrase_in_answers(searched_answers, searched_phrase):
     searched_answers_to_return = []
     for question in searched_answers:
+        question_dict = {}
         question_dict['id'] = question['id']
         question_dict['submission_time'] = question['submission_time']
         question_dict['question_id'] = question['question_id']
@@ -663,4 +665,13 @@ def change_reputation(cursor, sign, number, user_id):
             UPDATE users
             SET reputation = reputation %s %s
             WHERE id = %s""" % (sign, number, user_id)
+    cursor.execute(query)
+
+
+@database_common.connection_handler
+def dont_accept_answer(cursor, answer_id):
+    query = """
+        UPDATE answer
+        SET accepted = 0
+        WHERE id = %s""" % (answer_id, )
     cursor.execute(query)

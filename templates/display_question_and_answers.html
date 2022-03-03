@@ -248,12 +248,18 @@
                     </td>
                     <td>
                         {% if user_id == question['user_id'] %}
+                            {% if user_id != answer['user_id'] %}
                         {% if answer['accepted'] == 1 %}
-                            {{ answer['accepted'] }}
+                            <a href="/{{ question['id'] }}/{{ answer['id'] }}/not_accept_answer" title="accept" class="delete">
+                                N
+                            </a>
                         {% else %}
                             <a href="/{{ question['id'] }}/{{ answer['id'] }}/accept_answer" title="accept" class="delete">
                                 A
                             </a>
+                        {% endif %}
+                        {% else %}
+                               <p> </p>
                         {% endif %}
                         {% else %}
                             <p> </p>
